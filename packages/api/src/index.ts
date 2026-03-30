@@ -18,7 +18,9 @@ app.doc('/doc', {
   },
 })
 
+const port = parseInt(process.env.PORT ?? '4000', 10)
+
 export default {
-  port: 4000,
+  port,
   fetch: app.fetch,
 }

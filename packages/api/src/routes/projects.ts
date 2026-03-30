@@ -1,5 +1,7 @@
 import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
 import { ProjectSchema } from '@curios/shared/schemas'
+import { db } from '../db/index.js'
+import { projects } from '../db/schema.js'
 
 const projectsRoute = new OpenAPIHono()
 
@@ -20,23 +22,18 @@ const listRoute = createRoute({
   },
 })
 
-// Placeholder data until database is set up
-const placeholderProjects = [
-  {
-    id: '00000000-0000-0000-0000-000000000001',
-    slug: 'mattic-dev',
-    title: 'mattic.dev',
-    description: 'Portfolio OS — the site you are looking at right now.',
-    tech: ['SvelteKit', 'Hono', 'Bun', 'PostgreSQL', 'WebSockets'],
-    url: 'https://mattic.dev',
-    repo: 'https://github.com/legitmattias/curios',
-    createdAt: '2026-03-30T00:00:00Z',
-    updatedAt: '2026-03-30T00:00:00Z',
-  },
-]
+projectsRoute.openapi(listRoute, async (c) => {
+  const rows = await db.select().from(projects)
 
-projectsRoute.openapi(listRoute, (c) => {
-  return c.json({ data: placeholderProjects })
+  const data = rows.map((row) => ({
+    ...row,
+    url: row.url ?? undefined,
+    repo: row.repo ?? undefined,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }))
+
+  return c.json({ data })
 })
 
 export { projectsRoute }
