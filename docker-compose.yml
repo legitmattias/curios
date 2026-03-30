@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: curios
+      POSTGRES_PASSWORD: curios
+      POSTGRES_DB: curios
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U curios']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    ports:
+      - '4000:4000'
+    environment:
+      DATABASE_URL: postgres://curios:curios@postgres:5432/curios
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: packages/web/Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      ORIGIN: http://localhost:3000
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
