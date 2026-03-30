@@ -1,1 +1,3 @@
-# matticdev\n\nmattic.dev — personal portfolio site
+# CuriOS
+
+Portfolio OS at mattic.dev — a browser-based desktop environment showcasing real, backend-powered applications.

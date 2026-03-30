@@ -29,7 +29,7 @@ const placeholderProjects = [
     description: 'Portfolio OS — the site you are looking at right now.',
     tech: ['SvelteKit', 'Hono', 'Bun', 'PostgreSQL', 'WebSockets'],
     url: 'https://mattic.dev',
-    repo: 'https://github.com/legitmattias/mattic.dev',
+    repo: 'https://github.com/legitmattias/curios',
     createdAt: '2026-03-30T00:00:00Z',
     updatedAt: '2026-03-30T00:00:00Z',
   },
