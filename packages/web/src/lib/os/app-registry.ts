@@ -1,14 +1,15 @@
 import type { AppMeta } from './types.js';
 import PlaceholderApp from '$lib/apps/placeholder/PlaceholderApp.svelte';
+import FileExplorer from '$lib/apps/file-explorer/FileExplorer.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
 		id: 'files',
 		title: 'File Explorer',
 		icon: '📁',
-		component: PlaceholderApp,
-		defaultWidth: 700,
-		defaultHeight: 500
+		component: FileExplorer,
+		defaultWidth: 750,
+		defaultHeight: 520
 	},
 	terminal: {
 		id: 'terminal',

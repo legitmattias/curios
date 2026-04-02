@@ -33,6 +33,11 @@
 	--color-control-maximize: #40c060;
 	--color-control-maximize-hover: #50d070;
 
+	/* ── File Explorer ── */
+	--color-explorer-border: #2a2a3e;
+	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);
+	--color-explorer-item-active: rgba(124, 92, 191, 0.15);
+
 	/* ── Spacing scale ── */
 	--space-1: 4px;
 	--space-2: 8px;

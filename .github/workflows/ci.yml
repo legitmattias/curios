@@ -28,6 +28,7 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       DATABASE_URL: postgres://curios:curios@localhost:5432/curios
+      PUBLIC_API_URL: http://localhost:4000
 
     steps:
       - uses: actions/checkout@v4
