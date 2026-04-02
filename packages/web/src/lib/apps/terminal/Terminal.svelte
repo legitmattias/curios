@@ -58,6 +58,7 @@
 			appendLines([error(msg)]);
 		} finally {
 			isRunning = false;
+			requestAnimationFrame(() => focusInput());
 		}
 	}
 
@@ -185,6 +186,7 @@
 	.input-row {
 		display: flex;
 		align-items: center;
+		gap: var(--space-1);
 		padding: 0 var(--space-3) var(--space-2);
 		flex-shrink: 0;
 	}

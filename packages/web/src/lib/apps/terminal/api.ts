@@ -34,6 +34,9 @@ export function fetchProfile(): Promise<Profile> {
 	return fetchJson('/profile');
 }
 
-export function fetchHealth(): Promise<{ status: string; uptime: number }> {
-	return fetchJson('/health');
+export async function fetchHealth(): Promise<{ status: string; uptime: number }> {
+	const url = `${PUBLIC_API_URL}/health`;
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+	return res.json();
 }
