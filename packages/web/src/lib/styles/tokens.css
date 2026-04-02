@@ -33,6 +33,13 @@
 	--color-control-maximize: #40c060;
 	--color-control-maximize-hover: #50d070;
 
+	/* ── Terminal ── */
+	--color-terminal-bg: #14141e;
+	--color-terminal-text: #c8c8dc;
+	--color-terminal-prompt: #7c5cbf;
+	--color-terminal-system: #5a5a72;
+	--color-terminal-cursor: #7c5cbf;
+
 	/* ── File Explorer ── */
 	--color-explorer-border: #2a2a3e;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);

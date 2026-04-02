@@ -1,6 +1,6 @@
 import type { AppMeta } from './types.js';
-import PlaceholderApp from '$lib/apps/placeholder/PlaceholderApp.svelte';
 import FileExplorer from '$lib/apps/file-explorer/FileExplorer.svelte';
+import Terminal from '$lib/apps/terminal/Terminal.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
@@ -15,7 +15,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		id: 'terminal',
 		title: 'Terminal',
 		icon: '🖥',
-		component: PlaceholderApp,
+		component: Terminal,
 		defaultWidth: 640,
 		defaultHeight: 420
 	}
