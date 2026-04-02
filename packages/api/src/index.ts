@@ -1,4 +1,5 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
+import { cors } from 'hono/cors'
 import { healthRoute } from './routes/health.js'
 import { projectsRoute } from './routes/projects.js'
 import { skillsRoute } from './routes/skills.js'
@@ -6,6 +7,9 @@ import { experienceRoute } from './routes/experience.js'
 import { profileRoute } from './routes/profile.js'
 
 const app = new OpenAPIHono()
+
+// Middleware
+app.use('*', cors())
 
 // Routes
 app.route('/health', healthRoute)
