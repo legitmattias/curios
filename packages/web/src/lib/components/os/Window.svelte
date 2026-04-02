@@ -151,7 +151,7 @@
 				title="Minimize"
 			>
 				<svg viewBox="0 0 12 12" width="12" height="12">
-					<rect x="2" y="5.5" width="8" height="1" fill="currentColor" />
+					<rect x="2" y="5" width="8" height="2" rx="0.5" fill="currentColor" />
 				</svg>
 			</button>
 			<button
