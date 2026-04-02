@@ -1,0 +1,61 @@
+<script lang="ts">
+	import type { WindowState } from '$lib/os/types.js';
+	import TaskbarEntry from './TaskbarEntry.svelte';
+	import Clock from './Clock.svelte';
+
+	let {
+		windows,
+		onEntryClick
+	}: {
+		windows: WindowState[];
+		onEntryClick: (id: string) => void;
+	} = $props();
+</script>
+
+<div class="taskbar">
+	<div class="taskbar-entries">
+		{#each windows as win (win.id)}
+			<TaskbarEntry
+				title={win.title}
+				focused={win.focused}
+				minimized={win.status === 'minimized'}
+				onclick={() => onEntryClick(win.id)}
+			/>
+		{/each}
+	</div>
+	<div class="taskbar-tray">
+		<Clock />
+	</div>
+</div>
+
+<style>
+	.taskbar {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: var(--taskbar-height);
+		background: var(--color-taskbar-bg);
+		border-top: 1px solid var(--color-window-border);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 var(--space-2);
+		z-index: var(--z-taskbar);
+		user-select: none;
+	}
+
+	.taskbar-entries {
+		display: flex;
+		gap: var(--space-1);
+		flex: 1;
+		overflow-x: auto;
+		min-width: 0;
+	}
+
+	.taskbar-tray {
+		display: flex;
+		align-items: center;
+		flex-shrink: 0;
+	}
+</style>
