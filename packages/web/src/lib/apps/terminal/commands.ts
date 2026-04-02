@@ -159,10 +159,11 @@ const COMMANDS: Command[] = [
 				'  \\____\\__,_|_|  |_|\\___/|____/ '
 			];
 			const info = [
-				`${profile.name}@curios`,
+				'visitor@curios',
 				'──────────────────',
 				`OS:      CuriOS v0.1.0`,
 				`Host:    mattic.dev`,
+				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
 				`Backend: Hono + Bun`,
