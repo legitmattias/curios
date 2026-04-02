@@ -1,15 +1,4 @@
-import { z } from 'zod'
-
-export const ProjectSchema = z.object({
-  id: z.string().uuid(),
-  slug: z.string(),
-  title: z.string(),
-  description: z.string(),
-  tech: z.array(z.string()),
-  url: z.string().url().optional(),
-  repo: z.string().url().optional(),
-  createdAt: z.string().datetime(),
-  updatedAt: z.string().datetime(),
-})
-
-export type Project = z.infer<typeof ProjectSchema>
+export { ProjectSchema, type Project } from './project.js'
+export { SkillSchema, type Skill } from './skill.js'
+export { ExperienceSchema, type Experience } from './experience.js'
+export { ProfileSchema, type Profile } from './profile.js'
