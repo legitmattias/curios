@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { command, error, system, type OutputLine } from './output.js';
 	import { getCommand, findCompletions } from './commands.js';
 
@@ -100,18 +101,16 @@
 		inputEl?.focus();
 	}
 
-	// Welcome banner
+	// Welcome banner + focus on mount (untrack prevents re-triggering)
 	$effect(() => {
-		appendLines([
-			system('Welcome to CuriOS Terminal v0.1.0'),
-			system('Type "help" to see available commands.'),
-			system('')
-		]);
-	});
-
-	// Focus input when component mounts
-	$effect(() => {
-		focusInput();
+		untrack(() => {
+			appendLines([
+				system('Welcome to CuriOS Terminal v0.1.0'),
+				system('Type "help" to see available commands.'),
+				system('')
+			]);
+			focusInput();
+		});
 	});
 </script>
 
