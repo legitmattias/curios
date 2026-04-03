@@ -1,6 +1,7 @@
 import type { AppMeta } from './types.js';
 import FileExplorer from '$lib/apps/file-explorer/FileExplorer.svelte';
 import Terminal from '$lib/apps/terminal/Terminal.svelte';
+import SystemMonitor from '$lib/apps/system-monitor/SystemMonitor.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
@@ -18,6 +19,14 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		component: Terminal,
 		defaultWidth: 640,
 		defaultHeight: 420
+	},
+	'system-monitor': {
+		id: 'system-monitor',
+		title: 'System Monitor',
+		icon: '📊',
+		component: SystemMonitor,
+		defaultWidth: 820,
+		defaultHeight: 540
 	}
 };
 

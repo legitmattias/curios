@@ -40,6 +40,14 @@
 	--color-terminal-system: #5a5a72;
 	--color-terminal-cursor: #7c5cbf;
 
+	/* ── System Monitor ── */
+	--color-monitor-bg: #13131e;
+	--color-monitor-chart-stroke: var(--color-accent);
+	--color-monitor-grid: rgba(255, 255, 255, 0.04);
+	--color-monitor-badge-get: rgba(64, 192, 96, 0.2);
+	--color-monitor-badge-post: rgba(124, 92, 191, 0.2);
+	--color-monitor-badge-other: rgba(80, 80, 120, 0.2);
+
 	/* ── File Explorer ── */
 	--color-explorer-border: #2a2a3e;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);
