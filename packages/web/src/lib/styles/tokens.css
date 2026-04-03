@@ -1,6 +1,7 @@
 :root {
 	/* ── Desktop ── */
 	--color-desktop-bg: #1a1a2e;
+	--gradient-desktop: radial-gradient(ellipse at 20% 50%, #1f1535 0%, #1a1a2e 40%, #0f1420 100%);
 
 	/* ── Window ── */
 	--color-window-bg: #1e1e2e;
@@ -8,12 +9,17 @@
 	--color-window-header-focused: #32324e;
 	--color-window-border: #3a3a4e;
 	--color-window-border-focused: #5a5a7e;
+	--color-window-highlight: rgba(255, 255, 255, 0.04);
+	--color-window-highlight-focused: rgba(255, 255, 255, 0.08);
 
 	/* ── Taskbar ── */
 	--color-taskbar-bg: #16162a;
+	--color-taskbar-glass: rgba(16, 16, 32, 0.75);
 	--color-taskbar-entry: transparent;
 	--color-taskbar-entry-hover: rgba(255, 255, 255, 0.08);
 	--color-taskbar-entry-active: rgba(255, 255, 255, 0.12);
+	--color-taskbar-entry-pressed: rgba(255, 255, 255, 0.15);
+	--blur-taskbar: blur(12px);
 
 	/* ── Text ── */
 	--color-text-primary: #e0e0ec;
@@ -66,12 +72,22 @@
 	--radius-button: 4px;
 
 	/* ── Shadows ── */
-	--shadow-window: 0 4px 20px rgba(0, 0, 0, 0.3);
-	--shadow-window-focused: 0 8px 32px rgba(0, 0, 0, 0.5);
+	--shadow-window: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+	--shadow-window-focused:
+		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
+		0 0 0 1px rgba(124, 92, 191, 0.15);
+	--shadow-taskbar: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -4px 24px rgba(0, 0, 0, 0.3);
 
 	/* ── Z-index layers ── */
 	--z-desktop: 0;
 	--z-taskbar: 10000;
+
+	/* ── Animation ── */
+	--duration-fast: 150ms;
+	--duration-normal: 250ms;
+	--duration-slow: 350ms;
+	--ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	--ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
 	/* ── Transitions ── */
 	--transition-fast: 120ms ease;
@@ -83,4 +99,11 @@
 	/* ── Typography ── */
 	--font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	--font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+	--text-xs: 0.7rem;
+	--text-sm: 0.8rem;
+	--text-base: 0.875rem;
+	--text-md: 0.9375rem;
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
 }
