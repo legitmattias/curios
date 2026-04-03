@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { scale } from 'svelte/transition';
-	import { cubicOut } from 'svelte/easing';
 	import { windowManager } from '$lib/os/window-manager.svelte.js';
 	import { getAllApps, getApp } from '$lib/os/app-registry.js';
 	import DesktopIcon from './DesktopIcon.svelte';
@@ -19,7 +17,7 @@
 	}
 
 	function getViewportHeight(): number {
-		return window.innerHeight - 48; // subtract taskbar height
+		return window.innerHeight - 48;
 	}
 </script>
 
@@ -33,23 +31,17 @@
 	{#each windowManager.windows as win (win.id)}
 		{@const app = getApp(win.appId)}
 		{#if app}
-			<div
-				in:scale={{ duration: 200, start: 0.95, easing: cubicOut }}
-				out:scale={{ duration: 150, start: 0.95, easing: cubicOut }}
-				style="display: contents;"
-			>
-				<Window
-					{win}
-					appComponent={app.component}
-					appTitle={app.title}
-					onclose={() => windowManager.close(win.id)}
-					onminimize={() => windowManager.minimize(win.id)}
-					onmaximize={() => windowManager.maximize(win.id, window.innerWidth, getViewportHeight())}
-					onfocus={() => windowManager.focus(win.id)}
-					onmove={(x, y) => windowManager.move(win.id, x, y)}
-					onresize={(x, y, w, h) => windowManager.setRect(win.id, x, y, w, h)}
-				/>
-			</div>
+			<Window
+				{win}
+				appComponent={app.component}
+				appTitle={app.title}
+				onclose={() => windowManager.close(win.id)}
+				onminimize={() => windowManager.minimize(win.id)}
+				onmaximize={() => windowManager.maximize(win.id, window.innerWidth, getViewportHeight())}
+				onfocus={() => windowManager.focus(win.id)}
+				onmove={(x, y) => windowManager.move(win.id, x, y)}
+				onresize={(x, y, w, h) => windowManager.setRect(win.id, x, y, w, h)}
+			/>
 		{/if}
 	{/each}
 

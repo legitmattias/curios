@@ -11,6 +11,7 @@ export class WindowManager {
 	windows = $state<WindowState[]>([]);
 	private nextZIndex = 1;
 	private restoredRects = new SvelteMap<string, SavedRect>();
+	private preMinimizeStatus = new SvelteMap<string, 'normal' | 'maximized'>();
 	private openCount = 0;
 
 	get visibleWindows(): WindowState[] {
@@ -54,6 +55,7 @@ export class WindowManager {
 	close(id: string): void {
 		this.windows = this.windows.filter((w) => w.id !== id);
 		this.restoredRects.delete(id);
+		this.preMinimizeStatus.delete(id);
 
 		// Focus the topmost remaining window
 		if (this.windows.length > 0) {
@@ -72,6 +74,7 @@ export class WindowManager {
 		const win = this.findWindow(id);
 		if (!win || win.status === 'minimized') return;
 
+		this.preMinimizeStatus.set(id, win.status as 'normal' | 'maximized');
 		win.status = 'minimized';
 		win.focused = false;
 
@@ -113,7 +116,8 @@ export class WindowManager {
 		if (!win) return;
 
 		if (win.status === 'minimized') {
-			win.status = 'normal';
+			win.status = this.preMinimizeStatus.get(id) ?? 'normal';
+			this.preMinimizeStatus.delete(id);
 			this.focusWindow(win);
 			return;
 		}

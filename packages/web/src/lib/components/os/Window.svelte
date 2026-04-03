@@ -254,19 +254,22 @@
 		min-height: 150px;
 		transform-origin: center bottom;
 		transition:
+			left var(--duration-normal) var(--ease-out),
+			top var(--duration-normal) var(--ease-out),
+			width var(--duration-normal) var(--ease-out),
+			height var(--duration-normal) var(--ease-out),
+			border-radius var(--duration-normal) var(--ease-out),
 			box-shadow var(--duration-fast) var(--ease-out),
 			border-color var(--duration-fast) var(--ease-out);
 	}
 
 	.window.minimized {
-		visibility: hidden;
 		pointer-events: none;
-		animation: window-minimize var(--duration-normal) var(--ease-out) forwards;
-	}
-
-	/* Restore animation — applied briefly when coming out of minimized */
-	.window:not(.minimized) {
-		animation: window-restore var(--duration-normal) var(--ease-out);
+		opacity: 0;
+		transform: scale(0.85) translateY(12px);
+		transition:
+			opacity var(--duration-normal) var(--ease-out),
+			transform var(--duration-normal) var(--ease-out);
 	}
 
 	.window.focused {
@@ -277,35 +280,15 @@
 
 	.window.maximized {
 		border-radius: 0;
-		transition:
-			left var(--duration-normal) var(--ease-out),
-			top var(--duration-normal) var(--ease-out),
-			width var(--duration-normal) var(--ease-out),
-			height var(--duration-normal) var(--ease-out),
-			border-radius var(--duration-normal) var(--ease-out),
-			box-shadow var(--duration-fast) var(--ease-out),
-			border-color var(--duration-fast) var(--ease-out);
 	}
 
-	/* Suppress transitions during drag and resize */
+	/* Suppress position/size transitions during drag and resize */
 	.window.dragging,
 	.window.resizing {
-		transition: none;
+		transition:
+			box-shadow var(--duration-fast) var(--ease-out),
+			border-color var(--duration-fast) var(--ease-out);
 		user-select: none;
-	}
-
-	@keyframes window-minimize {
-		to {
-			opacity: 0;
-			transform: scale(0.85) translateY(12px);
-		}
-	}
-
-	@keyframes window-restore {
-		from {
-			opacity: 0;
-			transform: scale(0.85) translateY(12px);
-		}
 	}
 
 	/* ── Title bar ── */

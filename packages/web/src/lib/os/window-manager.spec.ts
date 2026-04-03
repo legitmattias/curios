@@ -204,6 +204,16 @@ describe('WindowManager', () => {
 			expect(wm.windows[0].focused).toBe(true);
 		});
 
+		it('restores a minimized-from-maximized window to maximized', () => {
+			const id = wm.open(mockApp);
+			wm.maximize(id, 1920, 1032);
+			wm.minimize(id);
+			wm.restore(id);
+
+			expect(wm.windows[0].status).toBe('maximized');
+			expect(wm.windows[0].width).toBe(1920);
+		});
+
 		it('restores a maximized window to saved rect', () => {
 			const id = wm.open(mockApp);
 			const origWidth = wm.windows[0].width;
