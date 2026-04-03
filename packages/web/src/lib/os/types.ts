@@ -18,7 +18,8 @@ export interface WindowState {
 export interface AppMeta {
 	id: string;
 	title: string;
-	icon: string;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	icon: Component<any>;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	component: Component<any>;
 	defaultWidth: number;

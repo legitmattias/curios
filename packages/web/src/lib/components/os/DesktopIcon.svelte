@@ -8,10 +8,14 @@
 		app: AppMeta;
 		onopen: (appId: string) => void;
 	} = $props();
+
+	const IconComponent = $derived(app.icon);
 </script>
 
 <button class="desktop-icon" ondblclick={() => onopen(app.id)}>
-	<span class="icon-glyph">{app.icon}</span>
+	<span class="icon-glyph">
+		<IconComponent size={32} />
+	</span>
 	<span class="icon-label">{app.title}</span>
 </button>
 
@@ -21,23 +25,32 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: var(--space-1);
+		gap: var(--space-2);
 		width: 80px;
 		padding: var(--space-2);
 		border: 2px solid transparent;
 		border-radius: var(--radius-button);
 		background: transparent;
-		color: var(--color-text-primary);
+		color: var(--color-text-secondary);
 		cursor: pointer;
 		user-select: none;
 		transition:
 			background var(--transition-fast),
-			border-color var(--transition-fast);
+			border-color var(--transition-fast),
+			color var(--transition-fast),
+			transform var(--transition-fast);
 		font-family: inherit;
 	}
 
 	.desktop-icon:hover {
 		background: rgba(255, 255, 255, 0.05);
+		border-color: rgba(255, 255, 255, 0.08);
+		color: var(--color-text-primary);
+	}
+
+	.desktop-icon:active {
+		background: rgba(255, 255, 255, 0.08);
+		transform: scale(0.96);
 	}
 
 	.desktop-icon:focus-visible {
@@ -46,12 +59,14 @@
 	}
 
 	.icon-glyph {
-		font-size: 2rem;
-		line-height: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 36px;
 	}
 
 	.icon-label {
-		font-size: 0.7rem;
+		font-size: var(--text-xs);
 		text-align: center;
 		word-break: break-word;
 		line-height: 1.2;

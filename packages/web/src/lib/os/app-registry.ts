@@ -2,12 +2,15 @@ import type { AppMeta } from './types.js';
 import FileExplorer from '$lib/apps/file-explorer/FileExplorer.svelte';
 import Terminal from '$lib/apps/terminal/Terminal.svelte';
 import SystemMonitor from '$lib/apps/system-monitor/SystemMonitor.svelte';
+import IconFiles from '$lib/components/icons/IconFiles.svelte';
+import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
+import IconMonitor from '$lib/components/icons/IconMonitor.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
 		id: 'files',
 		title: 'File Explorer',
-		icon: '📁',
+		icon: IconFiles,
 		component: FileExplorer,
 		defaultWidth: 750,
 		defaultHeight: 520
@@ -15,7 +18,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	terminal: {
 		id: 'terminal',
 		title: 'Terminal',
-		icon: '🖥',
+		icon: IconTerminal,
 		component: Terminal,
 		defaultWidth: 640,
 		defaultHeight: 420
@@ -23,7 +26,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	'system-monitor': {
 		id: 'system-monitor',
 		title: 'System Monitor',
-		icon: '📊',
+		icon: IconMonitor,
 		component: SystemMonitor,
 		defaultWidth: 820,
 		defaultHeight: 540

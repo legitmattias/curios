@@ -5,7 +5,7 @@ import type { AppMeta } from './types.js';
 const mockApp: AppMeta = {
 	id: 'test-app',
 	title: 'Test App',
-	icon: 'test-icon',
+	icon: null as never,
 	component: null as never,
 	defaultWidth: 400,
 	defaultHeight: 300
@@ -14,7 +14,7 @@ const mockApp: AppMeta = {
 const mockApp2: AppMeta = {
 	id: 'test-app-2',
 	title: 'Test App 2',
-	icon: 'test-icon-2',
+	icon: null as never,
 	component: null as never,
 	defaultWidth: 500,
 	defaultHeight: 400
