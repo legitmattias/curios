@@ -35,8 +35,10 @@
 		left: 0;
 		right: 0;
 		height: var(--taskbar-height);
-		background: var(--color-taskbar-bg);
-		border-top: 1px solid var(--color-window-border);
+		background: var(--color-taskbar-glass);
+		backdrop-filter: var(--blur-taskbar);
+		-webkit-backdrop-filter: var(--blur-taskbar);
+		box-shadow: var(--shadow-taskbar);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;

@@ -128,6 +128,8 @@
 	class:focused={win.focused}
 	class:maximized={win.status === 'maximized'}
 	class:minimized={win.status === 'minimized'}
+	class:dragging={isDragging}
+	class:resizing={isResizing}
 	style="left: {win.x}px; top: {win.y}px; width: {win.width}px; height: {win.height}px; z-index: {win.zIndex};"
 	onpointerdown={onfocus}
 >
@@ -244,24 +246,66 @@
 		flex-direction: column;
 		background: var(--color-window-bg);
 		border: 1px solid var(--color-window-border);
+		border-top-color: var(--color-window-highlight);
 		border-radius: var(--radius-window);
 		box-shadow: var(--shadow-window);
 		overflow: hidden;
 		min-width: 200px;
 		min-height: 150px;
+		transform-origin: center bottom;
+		transition:
+			box-shadow var(--duration-fast) var(--ease-out),
+			border-color var(--duration-fast) var(--ease-out);
 	}
 
 	.window.minimized {
-		display: none;
+		visibility: hidden;
+		pointer-events: none;
+		animation: window-minimize var(--duration-normal) var(--ease-out) forwards;
+	}
+
+	/* Restore animation — applied briefly when coming out of minimized */
+	.window:not(.minimized) {
+		animation: window-restore var(--duration-normal) var(--ease-out);
 	}
 
 	.window.focused {
 		border-color: var(--color-window-border-focused);
+		border-top-color: var(--color-window-highlight-focused);
 		box-shadow: var(--shadow-window-focused);
 	}
 
 	.window.maximized {
 		border-radius: 0;
+		transition:
+			left var(--duration-normal) var(--ease-out),
+			top var(--duration-normal) var(--ease-out),
+			width var(--duration-normal) var(--ease-out),
+			height var(--duration-normal) var(--ease-out),
+			border-radius var(--duration-normal) var(--ease-out),
+			box-shadow var(--duration-fast) var(--ease-out),
+			border-color var(--duration-fast) var(--ease-out);
+	}
+
+	/* Suppress transitions during drag and resize */
+	.window.dragging,
+	.window.resizing {
+		transition: none;
+		user-select: none;
+	}
+
+	@keyframes window-minimize {
+		to {
+			opacity: 0;
+			transform: scale(0.85) translateY(12px);
+		}
+	}
+
+	@keyframes window-restore {
+		from {
+			opacity: 0;
+			transform: scale(0.85) translateY(12px);
+		}
 	}
 
 	/* ── Title bar ── */
@@ -281,9 +325,13 @@
 		background: var(--color-window-header-focused);
 	}
 
+	.window.dragging .title-bar {
+		cursor: grabbing;
+	}
+
 	.title-text {
-		font-size: 0.8rem;
-		font-weight: 500;
+		font-size: var(--text-base);
+		font-weight: var(--font-weight-medium);
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
@@ -304,18 +352,23 @@
 		width: 24px;
 		height: 24px;
 		border: none;
-		border-radius: var(--radius-button);
+		border-radius: 50%;
 		background: transparent;
 		color: var(--color-text-secondary);
 		cursor: pointer;
 		transition:
 			background var(--transition-fast),
-			color var(--transition-fast);
+			color var(--transition-fast),
+			transform var(--transition-fast);
 		padding: 0;
 	}
 
 	.control-btn:hover {
 		color: var(--color-text-primary);
+	}
+
+	.control-btn:active {
+		transform: scale(0.88);
 	}
 
 	.control-btn.close:hover {
