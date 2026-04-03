@@ -14,13 +14,17 @@ COPY packages/api/ packages/api/
 
 # Run with Bun
 FROM oven/bun:1.3-alpine
+RUN addgroup -S curios && adduser -S curios -G curios
 WORKDIR /app
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/packages/api/node_modules ./packages/api/node_modules
-COPY --from=build /app/packages/shared/node_modules ./packages/shared/node_modules
-COPY --from=build /app/packages/shared/ ./packages/shared/
-COPY --from=build /app/packages/api/ ./packages/api/
+COPY --chown=curios:curios --from=build /app/node_modules ./node_modules
+COPY --chown=curios:curios --from=build /app/packages/api/node_modules ./packages/api/node_modules
+COPY --chown=curios:curios --from=build /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --chown=curios:curios --from=build /app/packages/shared/ ./packages/shared/
+COPY --chown=curios:curios --from=build /app/packages/api/ ./packages/api/
 
+USER curios
 WORKDIR /app/packages/api
 EXPOSE 4000
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 \
+  CMD wget -qO- http://localhost:4000/health || exit 1
 CMD ["bun", "run", "src/index.ts"]
