@@ -149,7 +149,7 @@ jobs:
             docker compose up -d
 
             # Run migrations
-            docker compose exec -T api bun run /app/packages/api/node_modules/.bin/drizzle-kit migrate
+            docker compose exec -T api bunx drizzle-kit migrate
 
             # Health checks
             echo "Waiting for services..."
@@ -184,7 +184,7 @@ jobs:
             docker compose up -d
 
             # Run migrations
-            docker compose exec -T api bun run /app/packages/api/node_modules/.bin/drizzle-kit migrate
+            docker compose exec -T api bunx drizzle-kit migrate
 
             # Health checks
             echo "Waiting for services..."
