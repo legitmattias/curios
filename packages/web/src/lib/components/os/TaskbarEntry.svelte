@@ -31,16 +31,24 @@
 		border-radius: var(--radius-button);
 		background: var(--color-taskbar-entry);
 		color: var(--color-text-primary);
-		font-size: 0.8rem;
+		font-size: var(--text-sm);
 		font-family: inherit;
+		letter-spacing: 0.01em;
 		cursor: pointer;
-		transition: background var(--transition-fast);
+		transition:
+			background var(--transition-fast),
+			transform var(--transition-fast);
 		user-select: none;
 		max-width: 160px;
 	}
 
 	.taskbar-entry:hover {
 		background: var(--color-taskbar-entry-hover);
+	}
+
+	.taskbar-entry:active {
+		background: var(--color-taskbar-entry-pressed);
+		transform: scale(0.96);
 	}
 
 	.taskbar-entry.focused {
@@ -66,5 +74,6 @@
 		height: 2px;
 		background: var(--color-accent);
 		border-radius: 1px;
+		transition: width var(--transition-normal);
 	}
 </style>

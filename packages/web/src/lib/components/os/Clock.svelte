@@ -17,9 +17,10 @@
 
 <style>
 	.clock {
-		font-size: 0.8rem;
+		font-size: var(--text-sm);
 		font-family: var(--font-mono);
-		color: var(--color-text-secondary);
+		color: var(--color-text-primary);
+		opacity: 0.7;
 		padding: 0 var(--space-3);
 		user-select: none;
 	}
