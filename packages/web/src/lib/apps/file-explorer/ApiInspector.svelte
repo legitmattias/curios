@@ -40,6 +40,8 @@
 	}
 
 	.toggle-btn {
+		position: relative;
+		z-index: 11;
 		padding: var(--space-1) var(--space-2);
 		border: 1px solid var(--color-explorer-border);
 		border-radius: var(--radius-button);
