@@ -5,6 +5,8 @@ import SystemMonitor from '$lib/apps/system-monitor/SystemMonitor.svelte';
 import IconFiles from '$lib/components/icons/IconFiles.svelte';
 import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 import IconMonitor from '$lib/components/icons/IconMonitor.svelte';
+import DocumentViewer from '$lib/apps/document-viewer/DocumentViewer.svelte';
+import IconDocument from '$lib/components/icons/IconDocument.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
@@ -30,6 +32,14 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		component: SystemMonitor,
 		defaultWidth: 820,
 		defaultHeight: 540
+	},
+	'document-viewer': {
+		id: 'document-viewer',
+		title: 'Documents',
+		icon: IconDocument,
+		component: DocumentViewer,
+		defaultWidth: 680,
+		defaultHeight: 560
 	}
 };
 

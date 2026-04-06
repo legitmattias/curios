@@ -54,6 +54,9 @@
 	--color-monitor-badge-post: rgba(124, 92, 191, 0.2);
 	--color-monitor-badge-other: rgba(80, 80, 120, 0.2);
 
+	/* ── Document Viewer ── */
+	--color-document-bg: #1a1a28;
+
 	/* ── File Explorer ── */
 	--color-explorer-border: #2a2a3e;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);
