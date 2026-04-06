@@ -1,5 +1,5 @@
 import { db } from './index.js'
-import { projects, skills, experience, profile } from './schema.js'
+import { projects, skills, experience, education, profile } from './schema.js'
 
 const seedProjects = [
   {
@@ -91,6 +91,29 @@ const seedExperience = [
   },
 ]
 
+const seedEducation = [
+  {
+    institution: 'Linnaeus University',
+    degree: 'Bachelor of Science',
+    field: 'Software Engineering',
+    startDate: '2024-09-01',
+    endDate: null,
+    description:
+      'Studying software engineering with focus on web technologies, system design, and software architecture.',
+    sortOrder: 0,
+  },
+  {
+    institution: 'Stockholm Technical Institute',
+    degree: 'Diploma',
+    field: 'Web Development',
+    startDate: '2018-08-01',
+    endDate: '2019-06-15',
+    description:
+      'Intensive program covering full stack web development, JavaScript, and modern frameworks.',
+    sortOrder: 1,
+  },
+]
+
 const seedProfile = {
   name: 'Mattias Ubbesen',
   title: 'Full Stack Developer',
@@ -116,6 +139,9 @@ async function seed() {
 
   await db.insert(experience).values(seedExperience).onConflictDoNothing()
   console.log(`  Experience: ${seedExperience.length}`)
+
+  await db.insert(education).values(seedEducation).onConflictDoNothing()
+  console.log(`  Education: ${seedEducation.length}`)
 
   await db.insert(profile).values(seedProfile).onConflictDoNothing()
   console.log(`  Profile: 1`)

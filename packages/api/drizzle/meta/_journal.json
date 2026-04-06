@@ -15,6 +15,13 @@
       "when": 1775131650772,
       "tag": "0001_romantic_gabe_jones",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775517840937,
+      "tag": "0002_spicy_speed_demon",
+      "breakpoints": true
     }
   ]
 }

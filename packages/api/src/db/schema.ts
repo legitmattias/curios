@@ -30,6 +30,17 @@ export const experience = pgTable('experience', {
   sortOrder: integer('sort_order').notNull().default(0),
 })
 
+export const education = pgTable('education', {
+  id: uuid().defaultRandom().primaryKey(),
+  institution: varchar({ length: 256 }).notNull(),
+  degree: varchar({ length: 256 }).notNull(),
+  field: varchar({ length: 256 }).notNull(),
+  startDate: date('start_date').notNull(),
+  endDate: date('end_date'),
+  description: text(),
+  sortOrder: integer('sort_order').notNull().default(0),
+})
+
 export const profile = pgTable('profile', {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar({ length: 128 }).notNull(),
