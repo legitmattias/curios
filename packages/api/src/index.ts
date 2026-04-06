@@ -8,6 +8,8 @@ import { skillsRoute } from './routes/skills.js'
 import { experienceRoute } from './routes/experience.js'
 import { profileRoute } from './routes/profile.js'
 import { metricsRoute } from './routes/metrics.js'
+import { educationRoute } from './routes/education.js'
+import { cvRoute } from './routes/cv.js'
 import { createMetricsWsHandlers } from './ws/metrics-handler.js'
 
 const app = new OpenAPIHono()
@@ -23,6 +25,8 @@ app.route('/skills', skillsRoute)
 app.route('/experience', experienceRoute)
 app.route('/profile', profileRoute)
 app.route('/metrics', metricsRoute)
+app.route('/education', educationRoute)
+app.route('/cv', cvRoute)
 
 // WebSocket
 app.get('/ws/metrics', upgradeWebSocket(() => createMetricsWsHandlers()))
