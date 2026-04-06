@@ -45,6 +45,12 @@
 		{/if}
 	{/each}
 
+	<div class="watermark">
+		<span class="watermark-name">Mattias Ubbesen</span>
+		<span class="watermark-title">Full Stack Developer</span>
+		<span class="watermark-domain">mattic.dev</span>
+	</div>
+
 	<Taskbar windows={windowManager.windows} onEntryClick={handleTaskbarClick} />
 </div>
 
@@ -64,5 +70,36 @@
 		gap: var(--space-2);
 		padding: var(--space-4);
 		height: calc(100% - var(--taskbar-height));
+	}
+
+	.watermark {
+		position: absolute;
+		bottom: calc(var(--taskbar-height) + var(--space-4));
+		right: var(--space-5);
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 2px;
+		pointer-events: none;
+		user-select: none;
+		opacity: 0.15;
+	}
+
+	.watermark-name {
+		font-size: 1rem;
+		font-weight: var(--font-weight-medium);
+		color: var(--color-text-primary);
+		letter-spacing: 0.03em;
+	}
+
+	.watermark-title {
+		font-size: var(--text-xs);
+		color: var(--color-text-primary);
+	}
+
+	.watermark-domain {
+		font-size: var(--text-xs);
+		font-family: var(--font-mono);
+		color: var(--color-text-primary);
 	}
 </style>

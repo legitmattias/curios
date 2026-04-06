@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { WindowState } from '$lib/os/types.js';
 	import TaskbarEntry from './TaskbarEntry.svelte';
+	import ContactCard from './ContactCard.svelte';
 	import Clock from './Clock.svelte';
 
 	let {
@@ -23,7 +24,9 @@
 			/>
 		{/each}
 	</div>
+
 	<div class="taskbar-tray">
+		<ContactCard />
 		<Clock />
 	</div>
 </div>
@@ -41,8 +44,7 @@
 		box-shadow: var(--shadow-taskbar);
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
-		padding: 0 var(--space-2);
+		padding: 0 var(--space-3);
 		z-index: var(--z-taskbar);
 		user-select: none;
 	}
@@ -58,6 +60,7 @@
 	.taskbar-tray {
 		display: flex;
 		align-items: center;
+		gap: var(--space-1);
 		flex-shrink: 0;
 	}
 </style>
