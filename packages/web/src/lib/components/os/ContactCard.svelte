@@ -1,8 +1,15 @@
 <script lang="ts">
 	let visible = $state(false);
+	let wrapper: HTMLDivElement;
 
 	function toggle() {
 		visible = !visible;
+	}
+
+	function handleWindowClick(e: MouseEvent) {
+		if (visible && wrapper && !wrapper.contains(e.target as Node)) {
+			visible = false;
+		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -10,9 +17,9 @@
 	}
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} onclick={handleWindowClick} />
 
-<div class="contact-wrapper">
+<div class="contact-wrapper" bind:this={wrapper}>
 	<button class="contact-trigger" onclick={toggle} title="Contact info">
 		<svg
 			width="14"
@@ -30,7 +37,6 @@
 	</button>
 
 	{#if visible}
-		<button class="card-backdrop" onclick={toggle} aria-label="Close contact card"></button>
 		<div class="card">
 			<div class="card-header">
 				<span class="card-name">Mattias Ubbesen</span>
@@ -90,16 +96,6 @@
 		color: var(--color-text-primary);
 	}
 
-	.card-backdrop {
-		position: fixed;
-		inset: 0;
-		z-index: 1;
-		border: none;
-		background: transparent;
-		cursor: default;
-		padding: 0;
-	}
-
 	.card {
 		position: absolute;
 		bottom: calc(100% + var(--space-2));
@@ -110,7 +106,7 @@
 		border-radius: var(--radius-window);
 		box-shadow: var(--shadow-window-focused);
 		padding: var(--space-4);
-		z-index: 2;
+		z-index: 10002;
 		animation: card-in var(--duration-fast) var(--ease-out);
 	}
 
