@@ -128,22 +128,28 @@ const seedProfile = {
 async function seed() {
   console.log('Seeding database...')
 
+  // Clear tables first (order matters — no foreign keys, but be consistent)
+  await db.delete(skills)
+  await db.delete(experience)
+  await db.delete(education)
+  await db.delete(profile)
+
   await db
     .insert(projects)
     .values(seedProjects)
     .onConflictDoNothing({ target: projects.slug })
   console.log(`  Projects: ${seedProjects.length}`)
 
-  await db.insert(skills).values(seedSkills).onConflictDoNothing()
+  await db.insert(skills).values(seedSkills)
   console.log(`  Skills: ${seedSkills.length}`)
 
-  await db.insert(experience).values(seedExperience).onConflictDoNothing()
+  await db.insert(experience).values(seedExperience)
   console.log(`  Experience: ${seedExperience.length}`)
 
-  await db.insert(education).values(seedEducation).onConflictDoNothing()
+  await db.insert(education).values(seedEducation)
   console.log(`  Education: ${seedEducation.length}`)
 
-  await db.insert(profile).values(seedProfile).onConflictDoNothing()
+  await db.insert(profile).values(seedProfile)
   console.log(`  Profile: 1`)
 
   console.log('Done.')
