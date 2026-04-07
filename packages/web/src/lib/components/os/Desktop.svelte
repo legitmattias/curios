@@ -81,7 +81,7 @@
 		font-size: 2.5rem;
 		font-weight: var(--font-weight-semibold);
 		color: var(--color-text-primary);
-		opacity: 0.08;
+		opacity: var(--opacity-watermark-logo);
 		pointer-events: none;
 		user-select: none;
 		letter-spacing: 0.05em;
@@ -97,7 +97,7 @@
 		gap: 2px;
 		pointer-events: none;
 		user-select: none;
-		opacity: 0.15;
+		opacity: var(--opacity-watermark);
 	}
 
 	.watermark-name {
