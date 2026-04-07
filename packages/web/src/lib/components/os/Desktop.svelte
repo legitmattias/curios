@@ -40,7 +40,12 @@
 	}
 </script>
 
-<div class="desktop" role="application" aria-label="CuriOS Desktop" oncontextmenu={handleDesktopContextMenu}>
+<div
+	class="desktop"
+	role="application"
+	aria-label="CuriOS Desktop"
+	oncontextmenu={handleDesktopContextMenu}
+>
 	<div class="icon-grid" role="group" aria-label="Applications">
 		{#each apps as app (app.id)}
 			<DesktopIcon {app} onopen={handleOpenApp} />
