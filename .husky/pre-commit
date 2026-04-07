@@ -1,0 +1,4 @@
+pnpm --filter @curios/web format
+pnpm -r lint
+pnpm --filter @curios/web check
+pnpm -r test
