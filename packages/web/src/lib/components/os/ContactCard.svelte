@@ -86,9 +86,7 @@
 						<button class="email-option" onclick={copyEmail}>
 							{copied ? 'Copied!' : 'Copy to clipboard'}
 						</button>
-						<button class="email-option" onclick={openMailClient}>
-							Open email client
-						</button>
+						<button class="email-option" onclick={openMailClient}> Open email client </button>
 					</div>
 				{/if}
 
