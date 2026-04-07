@@ -128,29 +128,45 @@ const seedProfile = {
 async function seed() {
   console.log('Seeding database...')
 
-  // Clear tables first (order matters — no foreign keys, but be consistent)
-  await db.delete(skills)
-  await db.delete(experience)
-  await db.delete(education)
-  await db.delete(profile)
-
+  // Projects: upsert by slug (unique constraint)
   await db
     .insert(projects)
     .values(seedProjects)
     .onConflictDoNothing({ target: projects.slug })
-  console.log(`  Projects: ${seedProjects.length}`)
+  console.log(`  Projects: ${seedProjects.length} (upsert)`)
 
-  await db.insert(skills).values(seedSkills)
-  console.log(`  Skills: ${seedSkills.length}`)
+  // All other tables: only seed if empty — never overwrite existing data
+  const existingSkills = await db.select().from(skills).limit(1)
+  if (existingSkills.length === 0) {
+    await db.insert(skills).values(seedSkills)
+    console.log(`  Skills: ${seedSkills.length} inserted`)
+  } else {
+    console.log(`  Skills: skipped (already has data)`)
+  }
 
-  await db.insert(experience).values(seedExperience)
-  console.log(`  Experience: ${seedExperience.length}`)
+  const existingExperience = await db.select().from(experience).limit(1)
+  if (existingExperience.length === 0) {
+    await db.insert(experience).values(seedExperience)
+    console.log(`  Experience: ${seedExperience.length} inserted`)
+  } else {
+    console.log(`  Experience: skipped (already has data)`)
+  }
 
-  await db.insert(education).values(seedEducation)
-  console.log(`  Education: ${seedEducation.length}`)
+  const existingEducation = await db.select().from(education).limit(1)
+  if (existingEducation.length === 0) {
+    await db.insert(education).values(seedEducation)
+    console.log(`  Education: ${seedEducation.length} inserted`)
+  } else {
+    console.log(`  Education: skipped (already has data)`)
+  }
 
-  await db.insert(profile).values(seedProfile)
-  console.log(`  Profile: 1`)
+  const existingProfile = await db.select().from(profile).limit(1)
+  if (existingProfile.length === 0) {
+    await db.insert(profile).values(seedProfile)
+    console.log(`  Profile: 1 inserted`)
+  } else {
+    console.log(`  Profile: skipped (already has data)`)
+  }
 
   console.log('Done.')
   process.exit(0)
