@@ -45,6 +45,8 @@
 		{/if}
 	{/each}
 
+	<div class="watermark-logo">CuriOS</div>
+
 	<div class="watermark">
 		<span class="watermark-name">Mattias Ubbesen</span>
 		<span class="watermark-title">Full Stack Developer</span>
@@ -70,6 +72,19 @@
 		gap: var(--space-2);
 		padding: var(--space-4);
 		height: calc(100% - var(--taskbar-height));
+	}
+
+	.watermark-logo {
+		position: absolute;
+		top: var(--space-5);
+		right: var(--space-6);
+		font-size: 2.5rem;
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-text-primary);
+		opacity: 0.08;
+		pointer-events: none;
+		user-select: none;
+		letter-spacing: 0.05em;
 	}
 
 	.watermark {
