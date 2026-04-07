@@ -20,33 +20,32 @@ function loadTheme(): Theme {
 function applyTheme(theme: Theme): void {
 	if (typeof document === 'undefined') return;
 	const root = document.documentElement;
-	// Remove all theme classes
 	for (const t of THEMES) {
 		root.classList.remove(`theme-${t}`);
 	}
-	// Dark is the default (no class needed), others get a class
 	if (theme !== 'dark') {
 		root.classList.add(`theme-${theme}`);
 	}
+	localStorage.setItem(STORAGE_KEY, theme);
 }
 
 class ThemeStore {
 	current = $state<Theme>(loadTheme());
 
 	constructor() {
-		$effect(() => {
-			applyTheme(this.current);
-			localStorage.setItem(STORAGE_KEY, this.current);
-		});
+		// Apply immediately on creation
+		applyTheme(this.current);
 	}
 
 	cycle(): void {
 		const index = THEMES.indexOf(this.current);
 		this.current = THEMES[(index + 1) % THEMES.length];
+		applyTheme(this.current);
 	}
 
 	set(theme: Theme): void {
 		this.current = theme;
+		applyTheme(this.current);
 	}
 }
 
