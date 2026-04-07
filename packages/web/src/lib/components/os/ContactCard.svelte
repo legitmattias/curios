@@ -1,19 +1,52 @@
 <script lang="ts">
 	let visible = $state(false);
+	let emailMenu = $state(false);
+	let copied = $state(false);
 	let wrapper: HTMLDivElement;
+
+	const EMAIL = 'hello@mattic.dev';
 
 	function toggle() {
 		visible = !visible;
+		emailMenu = false;
+		copied = false;
 	}
 
 	function handleWindowClick(e: MouseEvent) {
 		if (visible && wrapper && !wrapper.contains(e.target as Node)) {
 			visible = false;
+			emailMenu = false;
 		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') visible = false;
+		if (e.key === 'Escape') {
+			if (emailMenu) {
+				emailMenu = false;
+			} else {
+				visible = false;
+			}
+		}
+	}
+
+	function showEmailMenu(e: MouseEvent) {
+		e.preventDefault();
+		emailMenu = true;
+		copied = false;
+	}
+
+	async function copyEmail() {
+		await navigator.clipboard.writeText(EMAIL);
+		copied = true;
+		setTimeout(() => {
+			copied = false;
+			emailMenu = false;
+		}, 1500);
+	}
+
+	function openMailClient() {
+		window.location.href = `mailto:${EMAIL}`;
+		emailMenu = false;
 	}
 </script>
 
@@ -43,10 +76,22 @@
 				<span class="card-title">Full Stack Developer</span>
 			</div>
 			<div class="card-links">
-				<a href="mailto:hello@mattic.dev" class="card-link">
+				<button class="card-link" onclick={showEmailMenu}>
 					<span class="link-label">Email</span>
-					<span class="link-value">hello@mattic.dev</span>
-				</a>
+					<span class="link-value">{EMAIL}</span>
+				</button>
+
+				{#if emailMenu}
+					<div class="email-menu">
+						<button class="email-option" onclick={copyEmail}>
+							{copied ? 'Copied!' : 'Copy to clipboard'}
+						</button>
+						<button class="email-option" onclick={openMailClient}>
+							Open email client
+						</button>
+					</div>
+				{/if}
+
 				<a
 					href="https://github.com/legitmattias"
 					target="_blank"
@@ -141,6 +186,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--space-2);
+		position: relative;
 	}
 
 	.card-link {
@@ -151,6 +197,11 @@
 		padding: var(--space-1) var(--space-2);
 		border-radius: var(--radius-button);
 		transition: background var(--transition-fast);
+		border: none;
+		background: none;
+		text-align: left;
+		cursor: pointer;
+		font-family: inherit;
 	}
 
 	.card-link:hover {
@@ -167,6 +218,42 @@
 
 	.link-value {
 		font-size: var(--text-sm);
+		color: var(--color-text-primary);
+	}
+
+	.email-menu {
+		position: absolute;
+		left: var(--space-2);
+		right: var(--space-2);
+		display: flex;
+		flex-direction: column;
+		gap: var(--space-1);
+		padding: var(--space-2);
+		background: var(--color-window-header-focused);
+		border: 1px solid var(--color-window-border-focused);
+		border-radius: var(--radius-button);
+		box-shadow: var(--shadow-window);
+		z-index: 1;
+		animation: card-in var(--duration-fast) var(--ease-out);
+	}
+
+	.email-option {
+		padding: var(--space-1) var(--space-2);
+		border: none;
+		border-radius: var(--radius-button);
+		background: none;
+		color: var(--color-text-secondary);
+		font-family: inherit;
+		font-size: var(--text-xs);
+		cursor: pointer;
+		text-align: left;
+		transition:
+			background var(--transition-fast),
+			color var(--transition-fast);
+	}
+
+	.email-option:hover {
+		background: var(--color-explorer-item-active);
 		color: var(--color-text-primary);
 	}
 </style>
