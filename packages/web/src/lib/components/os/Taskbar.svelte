@@ -2,6 +2,7 @@
 	import type { WindowState } from '$lib/os/types.js';
 	import TaskbarEntry from './TaskbarEntry.svelte';
 	import ContactCard from './ContactCard.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 	import Clock from './Clock.svelte';
 
 	let {
@@ -26,6 +27,7 @@
 	</div>
 
 	<div class="taskbar-tray">
+		<ThemeToggle />
 		<ContactCard />
 		<Clock />
 	</div>
