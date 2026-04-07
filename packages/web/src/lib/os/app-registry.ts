@@ -7,6 +7,8 @@ import IconTerminal from '$lib/components/icons/IconTerminal.svelte';
 import IconMonitor from '$lib/components/icons/IconMonitor.svelte';
 import DocumentViewer from '$lib/apps/document-viewer/DocumentViewer.svelte';
 import IconDocument from '$lib/components/icons/IconDocument.svelte';
+import Settings from '$lib/apps/settings/Settings.svelte';
+import IconSettings from '$lib/components/icons/IconSettings.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
@@ -40,6 +42,14 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		component: DocumentViewer,
 		defaultWidth: 680,
 		defaultHeight: 560
+	},
+	settings: {
+		id: 'settings',
+		title: 'Settings',
+		icon: IconSettings,
+		component: Settings,
+		defaultWidth: 550,
+		defaultHeight: 420
 	}
 };
 
