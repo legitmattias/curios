@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './themes.css';
 
 *,
 *::before,
@@ -20,4 +21,14 @@ body {
 	background: var(--color-desktop-bg);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:root {
+		--duration-fast: 0ms;
+		--duration-normal: 0ms;
+		--duration-slow: 0ms;
+		--transition-fast: 0ms ease;
+		--transition-normal: 0ms ease;
+	}
 }

@@ -1,0 +1,159 @@
+/* ═══════════════════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════════════════ */
+
+:root.theme-light {
+	/* ── Desktop ── */
+	--color-desktop-bg: #e8e8f0;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #ddd8ee 0%, #e8e8f0 50%, #dee4ec 100%);
+
+	/* ── Window ── */
+	--color-window-bg: #ffffff;
+	--color-window-header: #f0f0f4;
+	--color-window-header-focused: #e8e8f0;
+	--color-window-border: #d0d0d8;
+	--color-window-border-focused: #9080b8;
+	--color-window-highlight: rgba(255, 255, 255, 0.8);
+	--color-window-highlight-focused: rgba(255, 255, 255, 1);
+
+	/* ── Taskbar ── */
+	--color-taskbar-bg: #e0e0e8;
+	--color-taskbar-glass: rgba(230, 230, 238, 0.85);
+	--color-taskbar-entry: transparent;
+	--color-taskbar-entry-hover: rgba(0, 0, 0, 0.06);
+	--color-taskbar-entry-active: rgba(0, 0, 0, 0.1);
+	--color-taskbar-entry-pressed: rgba(0, 0, 0, 0.14);
+	--blur-taskbar: blur(12px);
+
+	/* ── Text ── */
+	--color-text-primary: #1a1a24;
+	--color-text-secondary: #555568;
+	--color-text-muted: #8888a0;
+
+	/* ── Accent ── */
+	--color-accent: #6a4aaf;
+	--color-accent-hover: #7c5cbf;
+	--color-focus-ring: rgba(106, 74, 175, 0.4);
+
+	/* ── Window controls ── */
+	--color-control-close: #d04040;
+	--color-control-close-hover: #e05050;
+	--color-control-minimize: #c8a020;
+	--color-control-minimize-hover: #d8b030;
+	--color-control-maximize: #30a050;
+	--color-control-maximize-hover: #40b060;
+
+	/* ── Terminal ── */
+	--color-terminal-bg: #f5f5fa;
+	--color-terminal-text: #2a2a3a;
+	--color-terminal-prompt: #6a4aaf;
+	--color-terminal-system: #8888a0;
+	--color-terminal-cursor: #6a4aaf;
+
+	/* ── System Monitor ── */
+	--color-monitor-bg: #f0f0f6;
+	--color-monitor-chart-stroke: var(--color-accent);
+	--color-monitor-grid: rgba(0, 0, 0, 0.05);
+	--color-monitor-badge-get: rgba(48, 160, 80, 0.15);
+	--color-monitor-badge-post: rgba(106, 74, 175, 0.15);
+	--color-monitor-badge-other: rgba(80, 80, 120, 0.1);
+
+	/* ── Document Viewer ── */
+	--color-document-bg: #fafafe;
+
+	/* ── File Explorer ── */
+	--color-explorer-border: #d8d8e0;
+	--color-explorer-item-hover: rgba(0, 0, 0, 0.04);
+	--color-explorer-item-active: rgba(106, 74, 175, 0.1);
+
+	/* ── Shadows (lighter for light theme) ── */
+	--shadow-window: 0 1px 4px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
+	--shadow-window-focused:
+		0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(106, 74, 175, 0.12);
+	--shadow-taskbar: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -2px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* ═══════════════════════════════════════════════════════
+   HIGH CONTRAST THEME
+   ═══════════════════════════════════════════════════════ */
+
+:root.theme-high-contrast {
+	/* ── Desktop ── */
+	--color-desktop-bg: #000000;
+	--gradient-desktop: none;
+
+	/* ── Window ── */
+	--color-window-bg: #0a0a0a;
+	--color-window-header: #1a1a1a;
+	--color-window-header-focused: #222222;
+	--color-window-border: #ffffff;
+	--color-window-border-focused: #ffff00;
+	--color-window-highlight: transparent;
+	--color-window-highlight-focused: transparent;
+
+	/* ── Taskbar ── */
+	--color-taskbar-bg: #0a0a0a;
+	--color-taskbar-glass: #0a0a0a;
+	--color-taskbar-entry: transparent;
+	--color-taskbar-entry-hover: rgba(255, 255, 255, 0.15);
+	--color-taskbar-entry-active: rgba(255, 255, 255, 0.25);
+	--color-taskbar-entry-pressed: rgba(255, 255, 255, 0.35);
+	--blur-taskbar: none;
+
+	/* ── Text ── */
+	--color-text-primary: #ffffff;
+	--color-text-secondary: #e0e0e0;
+	--color-text-muted: #b0b0b0;
+
+	/* ── Accent ── */
+	--color-accent: #bb99ff;
+	--color-accent-hover: #ddbbff;
+	--color-focus-ring: #ffff00;
+
+	/* ── Window controls ── */
+	--color-control-close: #ff4444;
+	--color-control-close-hover: #ff6666;
+	--color-control-minimize: #ffcc00;
+	--color-control-minimize-hover: #ffdd44;
+	--color-control-maximize: #44ff44;
+	--color-control-maximize-hover: #66ff66;
+
+	/* ── Terminal ── */
+	--color-terminal-bg: #000000;
+	--color-terminal-text: #ffffff;
+	--color-terminal-prompt: #bb99ff;
+	--color-terminal-system: #b0b0b0;
+	--color-terminal-cursor: #ffff00;
+
+	/* ── System Monitor ── */
+	--color-monitor-bg: #000000;
+	--color-monitor-chart-stroke: #bb99ff;
+	--color-monitor-grid: rgba(255, 255, 255, 0.1);
+	--color-monitor-badge-get: rgba(68, 255, 68, 0.25);
+	--color-monitor-badge-post: rgba(187, 153, 255, 0.25);
+	--color-monitor-badge-other: rgba(200, 200, 200, 0.15);
+
+	/* ── Document Viewer ── */
+	--color-document-bg: #050505;
+
+	/* ── File Explorer ── */
+	--color-explorer-border: #ffffff;
+	--color-explorer-item-hover: rgba(255, 255, 255, 0.12);
+	--color-explorer-item-active: rgba(187, 153, 255, 0.25);
+
+	/* ── Shadows (replaced with solid borders) ── */
+	--shadow-window: none;
+	--shadow-window-focused: none;
+	--shadow-taskbar: none;
+
+	/* ── Radii (sharper for high contrast) ── */
+	--radius-window: 2px;
+	--radius-button: 2px;
+
+	/* ── Animations (disabled) ── */
+	--duration-fast: 0ms;
+	--duration-normal: 0ms;
+	--duration-slow: 0ms;
+	--transition-fast: 0ms ease;
+	--transition-normal: 0ms ease;
+}
