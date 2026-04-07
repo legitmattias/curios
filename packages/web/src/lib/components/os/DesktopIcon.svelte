@@ -12,12 +12,7 @@
 	const IconComponent = $derived(app.icon);
 </script>
 
-<button
-	class="desktop-icon"
-	role="listitem"
-	aria-label={app.title}
-	ondblclick={() => onopen(app.id)}
->
+<button class="desktop-icon" aria-label={app.title} ondblclick={() => onopen(app.id)}>
 	<span class="icon-glyph">
 		<IconComponent size={32} />
 	</span>

@@ -115,8 +115,13 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<div class="terminal" role="application" aria-label="Terminal" onclick={focusInput}>
+<div
+	class="terminal"
+	role="application"
+	aria-label="Terminal"
+	tabindex="-1"
+	onpointerdown={focusInput}
+>
 	<div class="output" bind:this={outputEl} aria-live="polite" aria-relevant="additions">
 		{#each outputLines as line (line.id)}
 			<pre class="line {line.type}">{line.text}</pre>

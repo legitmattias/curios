@@ -22,7 +22,7 @@
 </script>
 
 <div class="desktop">
-	<div class="icon-grid" role="list" aria-label="Applications">
+	<div class="icon-grid" role="group" aria-label="Applications">
 		{#each apps as app (app.id)}
 			<DesktopIcon {app} onopen={handleOpenApp} />
 		{/each}

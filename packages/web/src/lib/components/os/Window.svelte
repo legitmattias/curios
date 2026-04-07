@@ -127,6 +127,7 @@
 	class="window"
 	role="dialog"
 	aria-label={win.title}
+	tabindex="-1"
 	class:focused={win.focused}
 	class:maximized={win.status === 'maximized'}
 	class:minimized={win.status === 'minimized'}
