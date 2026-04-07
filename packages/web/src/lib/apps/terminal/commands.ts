@@ -5,8 +5,10 @@ import {
 	fetchSkills,
 	fetchExperience,
 	fetchProfile,
-	fetchHealth
+	fetchHealth,
+	fetchCv
 } from './api.js';
+import { themeStore, type Theme } from '$lib/os/theme-store.svelte.js';
 
 export interface Command {
 	name: string;
@@ -166,6 +168,7 @@ const COMMANDS: Command[] = [
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
+				`Theme:   ${themeStore.current}`,
 				`Backend: Hono + Bun`,
 				`DB:      PostgreSQL 17`
 			];
@@ -184,6 +187,72 @@ const COMMANDS: Command[] = [
 		description: 'Echo text back',
 		handler: async (args) => {
 			return [stdout(args.join(' '))];
+		}
+	},
+	{
+		name: 'cv',
+		description: 'Print CV summary',
+		handler: async () => {
+			const cv = await fetchCv();
+			const lines: OutputLine[] = [
+				stdout(`${cv.profile.name}`),
+				stdout(`${cv.profile.title} · ${cv.profile.location}`),
+				stdout('')
+			];
+
+			if (cv.experience.length > 0) {
+				lines.push(system('Experience'));
+				for (const exp of cv.experience) {
+					const end = exp.endDate ?? 'Present';
+					lines.push(stdout(`  ${exp.role} @ ${exp.company} (${exp.startDate} — ${end})`));
+				}
+				lines.push(stdout(''));
+			}
+
+			if (cv.education.length > 0) {
+				lines.push(system('Education'));
+				for (const edu of cv.education) {
+					const end = edu.endDate ?? 'Present';
+					lines.push(stdout(`  ${edu.degree} in ${edu.field} — ${edu.institution} (${end})`));
+				}
+				lines.push(stdout(''));
+			}
+
+			if (cv.skills.length > 0) {
+				lines.push(system('Skills'));
+				const groups: Record<string, string[]> = {};
+				for (const s of cv.skills) {
+					if (!groups[s.category]) groups[s.category] = [];
+					groups[s.category].push(s.name);
+				}
+				for (const [cat, names] of Object.entries(groups)) {
+					lines.push(stdout(`  ${cat}: ${names.join(', ')}`));
+				}
+				lines.push(stdout(''));
+			}
+
+			lines.push(system(`Download PDF: ${cv.profile.website ?? 'mattic.dev'}/cv/pdf`));
+			return lines;
+		}
+	},
+	{
+		name: 'theme',
+		description: 'Switch theme',
+		usage: 'theme [dark|light|high-contrast]',
+		handler: async (args) => {
+			const valid: Theme[] = ['dark', 'light', 'high-contrast'];
+			if (args.length === 0) {
+				return [
+					stdout(`Current theme: ${themeStore.current}`),
+					system(`Available: ${valid.join(', ')}`)
+				];
+			}
+			const requested = args[0] as Theme;
+			if (!valid.includes(requested)) {
+				return [error(`Unknown theme: ${requested}`), system(`Available: ${valid.join(', ')}`)];
+			}
+			themeStore.set(requested);
+			return [stdout(`Theme set to: ${requested}`)];
 		}
 	},
 	{

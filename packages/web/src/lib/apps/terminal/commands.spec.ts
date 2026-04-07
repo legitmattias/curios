@@ -26,6 +26,8 @@ describe('getCommand', () => {
 			'contact',
 			'neofetch',
 			'echo',
+			'cv',
+			'theme',
 			'whoami'
 		];
 		for (const name of expected) {
@@ -102,5 +104,23 @@ describe('command handlers', () => {
 		const cmd = getCommand('project')!;
 		const lines = await cmd.handler([]);
 		expect(lines.some((l) => l.type === 'error')).toBe(true);
+	});
+
+	it('theme without args shows current theme', async () => {
+		const cmd = getCommand('theme')!;
+		const lines = await cmd.handler([]);
+		expect(lines.some((l) => l.text.includes('Current theme:'))).toBe(true);
+	});
+
+	it('theme with invalid name returns error', async () => {
+		const cmd = getCommand('theme')!;
+		const lines = await cmd.handler(['neon']);
+		expect(lines.some((l) => l.type === 'error')).toBe(true);
+	});
+
+	it('theme with valid name sets theme', async () => {
+		const cmd = getCommand('theme')!;
+		const lines = await cmd.handler(['light']);
+		expect(lines.some((l) => l.text.includes('Theme set to: light'))).toBe(true);
 	});
 });

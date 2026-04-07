@@ -1,5 +1,5 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import type { Project, Skill, Experience, Profile } from '@curios/shared/types';
+import type { Project, Skill, Experience, Profile, CvData } from '@curios/shared/types';
 
 async function fetchJson<T>(path: string): Promise<T> {
 	const url = `${PUBLIC_API_URL}${path}`;
@@ -32,6 +32,10 @@ export function fetchExperience(): Promise<Experience[]> {
 
 export function fetchProfile(): Promise<Profile> {
 	return fetchJson('/profile');
+}
+
+export function fetchCv(): Promise<CvData> {
+	return fetchJson('/cv');
 }
 
 export async function fetchHealth(): Promise<{ status: string; uptime: number }> {
