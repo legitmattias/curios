@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
 	import type { WindowState } from '$lib/os/types.js';
+	import ContextMenu, { type MenuItem } from './ContextMenu.svelte';
 
 	let {
 		win,
@@ -120,6 +121,25 @@
 	];
 
 	const AppContent = $derived(appComponent);
+
+	let titleBarMenu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
+
+	function handleTitleBarContextMenu(e: MouseEvent) {
+		e.preventDefault();
+		e.stopPropagation();
+		titleBarMenu = {
+			x: e.clientX,
+			y: e.clientY,
+			items: [
+				{ label: 'Minimize', action: onminimize },
+				{
+					label: win.status === 'maximized' ? 'Restore' : 'Maximize',
+					action: onmaximize
+				},
+				{ label: 'Close', action: onclose, separator: true }
+			]
+		};
+	}
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -142,6 +162,7 @@
 		class="title-bar"
 		onpointerdown={onTitlePointerDown}
 		onpointermove={onTitlePointerMove}
+		oncontextmenu={handleTitleBarContextMenu}
 		onpointerup={onTitlePointerUp}
 	>
 		<span class="title-text">{win.title}</span>
@@ -239,6 +260,15 @@
 				onpointerup={onResizePointerUp}
 			></div>
 		{/each}
+	{/if}
+
+	{#if titleBarMenu}
+		<ContextMenu
+			items={titleBarMenu.items}
+			x={titleBarMenu.x}
+			y={titleBarMenu.y}
+			onclose={() => (titleBarMenu = null)}
+		/>
 	{/if}
 </div>
 

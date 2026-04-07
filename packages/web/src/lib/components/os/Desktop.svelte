@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { windowManager } from '$lib/os/window-manager.svelte.js';
+	import { themeStore } from '$lib/os/theme-store.svelte.js';
 	import { getAllApps, getApp } from '$lib/os/app-registry.js';
 	import DesktopIcon from './DesktopIcon.svelte';
 	import Taskbar from './Taskbar.svelte';
 	import Window from './Window.svelte';
+	import ContextMenu, { type MenuItem } from './ContextMenu.svelte';
 
 	const apps = getAllApps();
+
+	let contextMenu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
 
 	function handleOpenApp(appId: string) {
 		const app = getApp(appId);
@@ -19,9 +23,24 @@
 	function getViewportHeight(): number {
 		return window.innerHeight - 48;
 	}
+
+	function handleDesktopContextMenu(e: MouseEvent) {
+		e.preventDefault();
+		contextMenu = {
+			x: e.clientX,
+			y: e.clientY,
+			items: [
+				{ label: 'Dark theme', action: () => themeStore.set('dark') },
+				{ label: 'Light theme', action: () => themeStore.set('light') },
+				{ label: 'High contrast', action: () => themeStore.set('high-contrast'), separator: true },
+				{ label: 'Open Terminal', action: () => handleOpenApp('terminal') },
+				{ label: 'Open Settings', action: () => handleOpenApp('settings') }
+			]
+		};
+	}
 </script>
 
-<div class="desktop">
+<div class="desktop" role="application" aria-label="CuriOS Desktop" oncontextmenu={handleDesktopContextMenu}>
 	<div class="icon-grid" role="group" aria-label="Applications">
 		{#each apps as app (app.id)}
 			<DesktopIcon {app} onopen={handleOpenApp} />
@@ -52,6 +71,15 @@
 		<span class="watermark-title">Full Stack Developer</span>
 		<span class="watermark-domain">mattic.dev</span>
 	</div>
+
+	{#if contextMenu}
+		<ContextMenu
+			items={contextMenu.items}
+			x={contextMenu.x}
+			y={contextMenu.y}
+			onclose={() => (contextMenu = null)}
+		/>
+	{/if}
 
 	<Taskbar windows={windowManager.windows} onEntryClick={handleTaskbarClick} />
 </div>
