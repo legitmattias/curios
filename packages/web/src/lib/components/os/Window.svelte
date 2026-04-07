@@ -125,6 +125,8 @@
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="window"
+	role="dialog"
+	aria-label={win.title}
 	class:focused={win.focused}
 	class:maximized={win.status === 'maximized'}
 	class:minimized={win.status === 'minimized'}

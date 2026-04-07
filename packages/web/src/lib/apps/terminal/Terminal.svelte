@@ -116,9 +116,8 @@
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
-<div class="terminal" onclick={focusInput}>
-	<div class="output" bind:this={outputEl}>
+<div class="terminal" role="application" aria-label="Terminal" onclick={focusInput}>
+	<div class="output" bind:this={outputEl} aria-live="polite" aria-relevant="additions">
 		{#each outputLines as line (line.id)}
 			<pre class="line {line.type}">{line.text}</pre>
 		{/each}

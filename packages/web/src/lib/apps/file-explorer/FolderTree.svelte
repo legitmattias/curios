@@ -15,7 +15,12 @@
 	} = $props();
 </script>
 
-<ul class="tree" style="--depth: {depth}">
+<ul
+	class="tree"
+	role={depth === 0 ? 'tree' : 'group'}
+	aria-label={depth === 0 ? 'Folders' : undefined}
+	style="--depth: {depth}"
+>
 	{#each nodes as node (node.path)}
 		<li>
 			<button

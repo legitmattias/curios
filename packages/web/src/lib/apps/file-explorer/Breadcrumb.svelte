@@ -12,7 +12,7 @@
 	const crumbs = $derived(getBreadcrumbs(path));
 </script>
 
-<nav class="breadcrumb">
+<nav class="breadcrumb" aria-label="Breadcrumb">
 	{#each crumbs as crumb, i (crumb.path)}
 		{#if i > 0}
 			<span class="separator">/</span>
