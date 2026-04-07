@@ -52,6 +52,9 @@ jobs:
       - name: Run migrations
         run: pnpm --filter @curios/api db:migrate
 
+      - name: Seed database
+        run: pnpm --filter @curios/api db:seed
+
       - name: Test
         run: pnpm test
 

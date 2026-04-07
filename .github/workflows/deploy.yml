@@ -56,6 +56,7 @@ jobs:
       - run: pnpm --filter @curios/web exec playwright install chromium
       - run: pnpm lint
       - run: pnpm --filter @curios/api db:migrate
+      - run: pnpm --filter @curios/api db:seed
       - run: pnpm test
       - run: pnpm build
 
