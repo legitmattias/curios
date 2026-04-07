@@ -6,8 +6,8 @@
 	/* ── Desktop ── */
 	--color-desktop-bg: #e8e8f0;
 	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #ddd8ee 0%, #e8e8f0 50%, #dee4ec 100%);
-	--opacity-watermark: 0.25;
-	--opacity-watermark-logo: 0.12;
+	--opacity-watermark: 0.4;
+	--opacity-watermark-logo: 0.2;
 
 	/* ── Window ── */
 	--color-window-bg: #ffffff;
