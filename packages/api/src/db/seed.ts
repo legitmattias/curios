@@ -221,6 +221,13 @@ const svTranslations: {
   {
     entityType: 'education',
     slug: 'Linnaeus University',
+    field: 'institution',
+    value: 'Linnéuniversitetet',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Linnaeus University',
     field: 'degree',
     value: 'Kandidatexamen',
     translatedBy: 'human',
@@ -237,6 +244,13 @@ const svTranslations: {
     slug: 'Linnaeus University',
     field: 'description',
     value: 'Studerar mjukvaruteknik med fokus på webbteknologier, systemdesign och mjukvaruarkitektur.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Stockholm Technical Institute',
+    field: 'institution',
+    value: 'Stockholms tekniska institut',
     translatedBy: 'human',
   },
   {

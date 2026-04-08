@@ -50,7 +50,7 @@ async function getCvData(lang: string = 'en'): Promise<{ data: CvData; translati
     applyTranslationsSingle('profile', mappedProfile, lang, ['title', 'bio']),
     applyTranslations('experience', mappedExperience, lang, ['role', 'description']),
     applyTranslations('skill', skillRows, lang, ['category']),
-    applyTranslations('education', mappedEducation, lang, ['degree', 'field', 'description']),
+    applyTranslations('education', mappedEducation, lang, ['institution', 'degree', 'field', 'description']),
     applyTranslations('project', mappedProjects, lang, ['title', 'description']),
   ])
 

@@ -5,7 +5,7 @@ import { education } from '../db/schema.js'
 import { asc } from 'drizzle-orm'
 import { applyTranslations } from '../services/translation-helper.js'
 
-const EDUCATION_TRANSLATABLE = ['degree', 'field', 'description']
+const EDUCATION_TRANSLATABLE = ['institution', 'degree', 'field', 'description']
 
 const educationRoute = new OpenAPIHono()
 
