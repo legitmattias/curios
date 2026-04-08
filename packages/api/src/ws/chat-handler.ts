@@ -40,6 +40,7 @@ export function createChatWsHandlers(): WSEvents {
           },
         })
       } catch (err) {
+        console.error('Chat error:', err)
         const message = err instanceof Error ? err.message : 'Unknown error'
         ws.send(JSON.stringify({ type: 'error', message }))
       }
