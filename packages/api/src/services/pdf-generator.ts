@@ -1,6 +1,27 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import type { CvData } from '@curios/shared/types'
 
+const PDF_LABELS = {
+  en: {
+    profile: 'Profile',
+    experience: 'Experience',
+    education: 'Education',
+    skills: 'Skills',
+    projects: 'Projects',
+    present: 'Present',
+    generatedFrom: 'Generated from',
+  },
+  sv: {
+    profile: 'Profil',
+    experience: 'Erfarenhet',
+    education: 'Utbildning',
+    skills: 'Kompetenser',
+    projects: 'Projekt',
+    present: 'Pågående',
+    generatedFrom: 'Genererad från',
+  },
+} as const
+
 const PAGE_WIDTH = 595.28 // A4
 const PAGE_HEIGHT = 841.89
 const MARGIN_TOP = 48
@@ -86,13 +107,14 @@ function drawSectionTitle(ctx: DrawContext, title: string, x: number, width: num
   ctx.y -= 9
 }
 
-function formatDate(date: string | null): string {
-  if (!date) return 'Present'
+function formatDate(date: string | null, presentLabel: string = 'Present'): string {
+  if (!date) return presentLabel
   const d = new Date(date)
   return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
 }
 
-export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
+export async function generateCvPdf(data: CvData, lang: 'en' | 'sv' = 'en'): Promise<Uint8Array> {
+  const labels = PDF_LABELS[lang]
   const doc = await PDFDocument.create()
   const regular = await doc.embedFont(StandardFonts.Helvetica)
   const bold = await doc.embedFont(StandardFonts.HelveticaBold)
@@ -185,7 +207,7 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
 
   // ── Skills ──
   if (data.skills.length > 0) {
-    drawSectionTitle(sidebar, 'Skills', MARGIN_LEFT, SIDEBAR_WIDTH)
+    drawSectionTitle(sidebar, labels.skills, MARGIN_LEFT, SIDEBAR_WIDTH)
 
     const groups: Record<string, string[]> = {}
     for (const skill of data.skills) {
@@ -219,7 +241,7 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
 
   // ── Education ──
   if (data.education.length > 0) {
-    drawSectionTitle(sidebar, 'Education', MARGIN_LEFT, SIDEBAR_WIDTH)
+    drawSectionTitle(sidebar, labels.education, MARGIN_LEFT, SIDEBAR_WIDTH)
 
     for (const edu of data.education) {
       sidebar.page.drawText(edu.degree, {
@@ -249,7 +271,7 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
       })
       sidebar.y -= 8
 
-      const period = `${formatDate(edu.startDate)} — ${formatDate(edu.endDate)}`
+      const period = `${formatDate(edu.startDate, labels.present)} — ${formatDate(edu.endDate, labels.present)}`
       sidebar.page.drawText(period, {
         x: MARGIN_LEFT,
         y: sidebar.y,
@@ -268,13 +290,13 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
   const main: DrawContext = { page, fonts, y: columnsStartY }
 
   // ── Profile ──
-  drawSectionTitle(main, 'Profile', MAIN_X, MAIN_WIDTH)
+  drawSectionTitle(main, labels.profile, MAIN_X, MAIN_WIDTH)
   drawWrappedText(main, data.profile.bio, MAIN_X, 7.5, regular, COLORS.body, MAIN_WIDTH, 11)
   main.y -= 2
 
   // ── Experience ──
   if (data.experience.length > 0) {
-    drawSectionTitle(main, 'Experience', MAIN_X, MAIN_WIDTH)
+    drawSectionTitle(main, labels.experience, MAIN_X, MAIN_WIDTH)
 
     for (const exp of data.experience) {
       // Role + dates
@@ -286,7 +308,7 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
         color: COLORS.black,
       })
 
-      const dateStr = `${formatDate(exp.startDate)} — ${formatDate(exp.endDate)}`
+      const dateStr = `${formatDate(exp.startDate, labels.present)} — ${formatDate(exp.endDate, labels.present)}`
       const dateWidth = regular.widthOfTextAtSize(dateStr, 7)
       main.page.drawText(dateStr, {
         x: MAIN_X + MAIN_WIDTH - dateWidth,
@@ -325,7 +347,7 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
 
   // ── Projects ──
   if (data.projects.length > 0) {
-    drawSectionTitle(main, 'Projects', MAIN_X, MAIN_WIDTH)
+    drawSectionTitle(main, labels.projects, MAIN_X, MAIN_WIDTH)
 
     const topProjects = data.projects.slice(0, 3)
     for (const project of topProjects) {
@@ -363,7 +385,8 @@ export async function generateCvPdf(data: CvData): Promise<Uint8Array> {
     thickness: 0.3,
     color: COLORS.line,
   })
-  page.drawText(`Generated from mattic.dev  ·  ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}`, {
+  const dateLocale = lang === 'sv' ? 'sv-SE' : 'en-US'
+  page.drawText(`${labels.generatedFrom} mattic.dev  ·  ${new Date().toLocaleDateString(dateLocale, { year: 'numeric', month: 'long' })}`, {
     x: MARGIN_LEFT,
     y: footerY,
     size: 6,

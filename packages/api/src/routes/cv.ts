@@ -86,7 +86,8 @@ const pdfRoute = createRoute({
 
 cvRoute.openapi(pdfRoute, async (c) => {
   const data = await getCvData()
-  const pdfBytes = await generateCvPdf(data)
+  const lang = (c.req.query('lang') === 'sv' ? 'sv' : 'en') as 'en' | 'sv'
+  const pdfBytes = await generateCvPdf(data, lang)
 
   return new Response(pdfBytes, {
     headers: {
