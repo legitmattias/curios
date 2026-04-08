@@ -3,6 +3,9 @@ import { SkillSchema } from '@curios/shared/schemas'
 import { db } from '../db/index.js'
 import { skills } from '../db/schema.js'
 import { asc } from 'drizzle-orm'
+import { applyTranslations } from '../services/translation-helper.js'
+
+const SKILL_TRANSLATABLE = ['category']
 
 const skillsRoute = new OpenAPIHono()
 
@@ -24,12 +27,14 @@ const listRoute = createRoute({
 })
 
 skillsRoute.openapi(listRoute, async (c) => {
+  const lang = c.req.query('lang') ?? 'en'
   const rows = await db
     .select()
     .from(skills)
     .orderBy(asc(skills.category), asc(skills.sortOrder))
 
-  return c.json({ data: rows })
+  const result = await applyTranslations('skill', rows, lang, SKILL_TRANSLATABLE)
+  return c.json({ data: result.data, translationMeta: result.translationMeta })
 })
 
 export { skillsRoute }

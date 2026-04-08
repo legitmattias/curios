@@ -2,6 +2,9 @@ import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
 import { ProfileSchema } from '@curios/shared/schemas'
 import { db } from '../db/index.js'
 import { profile } from '../db/schema.js'
+import { applyTranslationsSingle } from '../services/translation-helper.js'
+
+const PROFILE_TRANSLATABLE = ['title', 'bio']
 
 const profileRoute = new OpenAPIHono()
 
@@ -35,6 +38,7 @@ const getRoute = createRoute({
 })
 
 profileRoute.openapi(getRoute, async (c) => {
+  const lang = c.req.query('lang') ?? 'en'
   const rows = await db.select().from(profile).limit(1)
 
   if (rows.length === 0) {
@@ -42,13 +46,14 @@ profileRoute.openapi(getRoute, async (c) => {
   }
 
   const row = rows[0]
-  const data = {
+  const mapped = {
     ...row,
     linkedin: row.linkedin ?? null,
     website: row.website ?? null,
   }
 
-  return c.json({ data })
+  const result = await applyTranslationsSingle('profile', mapped, lang, PROFILE_TRANSLATABLE)
+  return c.json({ data: result.data, translationMeta: result.translationMeta })
 })
 
 export { profileRoute }

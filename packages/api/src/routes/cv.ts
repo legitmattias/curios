@@ -4,11 +4,13 @@ import { db } from '../db/index.js'
 import { profile, experience, skills, education, projects } from '../db/schema.js'
 import { asc } from 'drizzle-orm'
 import { generateCvPdf } from '../services/pdf-generator.js'
+import { applyTranslations, applyTranslationsSingle } from '../services/translation-helper.js'
 import type { CvData } from '@curios/shared/types'
+import type { TranslationMeta } from '@curios/shared/types'
 
 const cvRoute = new OpenAPIHono()
 
-async function getCvData(): Promise<CvData> {
+async function getCvData(lang: string = 'en'): Promise<{ data: CvData; translationMeta?: TranslationMeta }> {
   const [profileRows, experienceRows, skillRows, educationRows, projectRows] =
     await Promise.all([
       db.select().from(profile).limit(1),
@@ -21,29 +23,55 @@ async function getCvData(): Promise<CvData> {
   const profileData = profileRows[0]
   if (!profileData) throw new Error('Profile not found')
 
+  const mappedProfile = {
+    ...profileData,
+    linkedin: profileData.linkedin ?? null,
+    website: profileData.website ?? null,
+  }
+  const mappedExperience = experienceRows.map((row) => ({
+    ...row,
+    endDate: row.endDate ?? null,
+  }))
+  const mappedEducation = educationRows.map((row) => ({
+    ...row,
+    endDate: row.endDate ?? null,
+    description: row.description ?? null,
+  }))
+  const mappedProjects = projectRows.map((row) => ({
+    ...row,
+    url: row.url ?? undefined,
+    repo: row.repo ?? undefined,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }))
+
+  // Apply translations
+  const [tProfile, tExperience, tSkills, tEducation, tProjects] = await Promise.all([
+    applyTranslationsSingle('profile', mappedProfile, lang, ['title', 'bio']),
+    applyTranslations('experience', mappedExperience, lang, ['role', 'description']),
+    applyTranslations('skill', skillRows, lang, ['category']),
+    applyTranslations('education', mappedEducation, lang, ['degree', 'field', 'description']),
+    applyTranslations('project', mappedProjects, lang, ['title', 'description']),
+  ])
+
+  // Merge translation metadata
+  const translationMeta: TranslationMeta = {
+    ...tProfile.translationMeta,
+    ...tExperience.translationMeta,
+    ...tSkills.translationMeta,
+    ...tEducation.translationMeta,
+    ...tProjects.translationMeta,
+  }
+
   return {
-    profile: {
-      ...profileData,
-      linkedin: profileData.linkedin ?? null,
-      website: profileData.website ?? null,
+    data: {
+      profile: tProfile.data,
+      experience: tExperience.data,
+      skills: tSkills.data,
+      education: tEducation.data,
+      projects: tProjects.data,
     },
-    experience: experienceRows.map((row) => ({
-      ...row,
-      endDate: row.endDate ?? null,
-    })),
-    skills: skillRows,
-    education: educationRows.map((row) => ({
-      ...row,
-      endDate: row.endDate ?? null,
-      description: row.description ?? null,
-    })),
-    projects: projectRows.map((row) => ({
-      ...row,
-      url: row.url ?? undefined,
-      repo: row.repo ?? undefined,
-      createdAt: row.createdAt.toISOString(),
-      updatedAt: row.updatedAt.toISOString(),
-    })),
+    translationMeta: Object.keys(translationMeta).length > 0 ? translationMeta : undefined,
   }
 }
 
@@ -65,8 +93,9 @@ const jsonRoute = createRoute({
 })
 
 cvRoute.openapi(jsonRoute, async (c) => {
-  const data = await getCvData()
-  return c.json({ data })
+  const lang = c.req.query('lang') ?? 'en'
+  const result = await getCvData(lang)
+  return c.json({ data: result.data, translationMeta: result.translationMeta })
 })
 
 const pdfRoute = createRoute({
@@ -85,9 +114,9 @@ const pdfRoute = createRoute({
 })
 
 cvRoute.openapi(pdfRoute, async (c) => {
-  const data = await getCvData()
   const lang = (c.req.query('lang') === 'sv' ? 'sv' : 'en') as 'en' | 'sv'
-  const pdfBytes = await generateCvPdf(data, lang)
+  const result = await getCvData(lang)
+  const pdfBytes = await generateCvPdf(result.data, lang)
 
   return new Response(pdfBytes, {
     headers: {
