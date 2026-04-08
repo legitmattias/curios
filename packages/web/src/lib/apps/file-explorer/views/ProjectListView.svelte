@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
-	import type { Project } from '@curios/shared/types';
+	import { localeStore } from '$lib/os/locale-store.svelte.js';
+	import type { Project, TranslationMeta } from '@curios/shared/types';
 	import { fetchProjects } from '../api.js';
+	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 
 	let {
 		onnavigate,
@@ -12,13 +14,20 @@
 	} = $props();
 
 	let projects = $state<Project[]>([]);
+	let translationMeta = $state<TranslationMeta | undefined>(undefined);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 
+	function isLlmTranslated(entityId: string, field: string): boolean {
+		return translationMeta?.[`${entityId}:${field}`]?.translatedBy === 'llm';
+	}
+
 	$effect(() => {
+		void localeStore.current; // track locale changes for re-fetch
 		fetchProjects()
 			.then((result) => {
 				projects = result.data;
+				translationMeta = result.translationMeta;
 				onapimeta(result.url, result.raw);
 			})
 			.catch((err) => {
@@ -42,7 +51,12 @@
 					<button class="file-item" onclick={() => onnavigate(`/projects/${project.slug}`)}>
 						<span class="file-icon">📋</span>
 						<div class="file-info">
-							<span class="file-name">{project.title}</span>
+							<span class="file-name">
+								{project.title}
+								<TranslationBadge
+									show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'title')}
+								/>
+							</span>
 							<span class="file-meta">{project.tech.join(', ')}</span>
 						</div>
 					</button>

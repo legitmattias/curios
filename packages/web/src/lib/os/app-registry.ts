@@ -13,7 +13,7 @@ import IconSettings from '$lib/components/icons/IconSettings.svelte';
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
 		id: 'files',
-		title: 'File Explorer',
+		title: 'app.fileExplorer',
 		icon: IconFiles,
 		component: FileExplorer,
 		defaultWidth: 750,
@@ -21,7 +21,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	},
 	terminal: {
 		id: 'terminal',
-		title: 'Terminal',
+		title: 'app.terminal',
 		icon: IconTerminal,
 		component: Terminal,
 		defaultWidth: 640,
@@ -29,7 +29,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	},
 	'system-monitor': {
 		id: 'system-monitor',
-		title: 'System Monitor',
+		title: 'app.systemMonitor',
 		icon: IconMonitor,
 		component: SystemMonitor,
 		defaultWidth: 820,
@@ -37,7 +37,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	},
 	'document-viewer': {
 		id: 'document-viewer',
-		title: 'Documents',
+		title: 'app.documents',
 		icon: IconDocument,
 		component: DocumentViewer,
 		defaultWidth: 680,
@@ -45,7 +45,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 	},
 	settings: {
 		id: 'settings',
-		title: 'Settings',
+		title: 'app.settings',
 		icon: IconSettings,
 		component: Settings,
 		defaultWidth: 550,

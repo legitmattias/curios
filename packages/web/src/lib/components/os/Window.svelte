@@ -147,7 +147,7 @@
 <div
 	class="window"
 	role="dialog"
-	aria-label={win.title}
+	aria-label={t(win.title)}
 	tabindex="-1"
 	class:focused={win.focused}
 	class:maximized={win.status === 'maximized'}
@@ -166,7 +166,7 @@
 		oncontextmenu={handleTitleBarContextMenu}
 		onpointerup={onTitlePointerUp}
 	>
-		<span class="title-text">{win.title}</span>
+		<span class="title-text">{t(win.title)}</span>
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div class="window-controls" onpointerdown={(e) => e.stopPropagation()}>
 			<button

@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
-	import type { Experience } from '@curios/shared/types';
+	import { localeStore } from '$lib/os/locale-store.svelte.js';
+	import type { Experience, TranslationMeta } from '@curios/shared/types';
 	import { fetchExperience } from '../api.js';
+	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 
 	let {
 		onapimeta
@@ -10,8 +12,13 @@
 	} = $props();
 
 	let entries = $state<Experience[]>([]);
+	let translationMeta = $state<TranslationMeta | undefined>(undefined);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
+
+	function isLlmTranslated(entityId: string, field: string): boolean {
+		return translationMeta?.[`${entityId}:${field}`]?.translatedBy === 'llm';
+	}
 
 	function formatDate(date: string | null): string {
 		if (!date) return t('cv.present');
@@ -20,9 +27,11 @@
 	}
 
 	$effect(() => {
+		void localeStore.current; // track locale changes for re-fetch
 		fetchExperience()
 			.then((result) => {
 				entries = result.data;
+				translationMeta = result.translationMeta;
 				onapimeta(result.url, result.raw);
 			})
 			.catch((err) => {
@@ -44,11 +53,21 @@
 			{#each entries as entry (entry.id)}
 				<div class="entry">
 					<div class="entry-header">
-						<h3 class="role">{entry.role}</h3>
+						<h3 class="role">
+							{entry.role}
+							<TranslationBadge
+								show={localeStore.current !== 'en' && isLlmTranslated(entry.id, 'role')}
+							/>
+						</h3>
 						<span class="dates">{formatDate(entry.startDate)} — {formatDate(entry.endDate)}</span>
 					</div>
 					<p class="company">{entry.company}</p>
-					<p class="description">{entry.description}</p>
+					<p class="description">
+						{entry.description}
+						<TranslationBadge
+							show={localeStore.current !== 'en' && isLlmTranslated(entry.id, 'description')}
+						/>
+					</p>
 					<div class="tags">
 						{#each entry.tech as tech (tech)}
 							<span class="tag">{tech}</span>

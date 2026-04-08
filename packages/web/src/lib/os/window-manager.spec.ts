@@ -4,7 +4,7 @@ import type { AppMeta } from './types.js';
 
 const mockApp: AppMeta = {
 	id: 'test-app',
-	title: 'Test App',
+	title: 'app.testApp',
 	icon: null as never,
 	component: null as never,
 	defaultWidth: 400,
@@ -13,7 +13,7 @@ const mockApp: AppMeta = {
 
 const mockApp2: AppMeta = {
 	id: 'test-app-2',
-	title: 'Test App 2',
+	title: 'app.testApp2',
 	icon: null as never,
 	component: null as never,
 	defaultWidth: 500,
@@ -35,7 +35,7 @@ describe('WindowManager', () => {
 			const win = wm.windows[0];
 			expect(win.id).toBe(id);
 			expect(win.appId).toBe('test-app');
-			expect(win.title).toBe('Test App');
+			expect(win.title).toBe('app.testApp');
 			expect(win.width).toBe(400);
 			expect(win.height).toBe(300);
 			expect(win.status).toBe('normal');

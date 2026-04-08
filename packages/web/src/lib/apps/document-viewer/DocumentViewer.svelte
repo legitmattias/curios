@@ -2,19 +2,27 @@
 	import { untrack } from 'svelte';
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { localeStore } from '$lib/os/locale-store.svelte.js';
-	import type { CvData } from '@curios/shared/types';
+	import type { CvData, TranslationMeta } from '@curios/shared/types';
 	import { fetchCv, getPdfUrl } from './api.js';
 	import CvSection from './CvSection.svelte';
+	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 
 	let cv = $state<CvData | null>(null);
+	let translationMeta = $state<TranslationMeta | undefined>(undefined);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 
+	function isLlmTranslated(entityId: string, field: string): boolean {
+		return translationMeta?.[`${entityId}:${field}`]?.translatedBy === 'llm';
+	}
+
 	$effect(() => {
+		void localeStore.current; // track locale changes for re-fetch
 		untrack(() => {
 			fetchCv()
 				.then((result) => {
 					cv = result.data;
+					translationMeta = result.translationMeta;
 				})
 				.catch((err) => {
 					error = err.message;
@@ -80,7 +88,12 @@
 
 			<!-- About -->
 			<CvSection title={t('cv.about')}>
-				<p class="cv-bio">{cv.profile.bio}</p>
+				<p class="cv-bio">
+					{cv.profile.bio}
+					<TranslationBadge
+						show={localeStore.current !== 'en' && isLlmTranslated(cv.profile.id, 'bio')}
+					/>
+				</p>
 			</CvSection>
 
 			<!-- Experience -->
@@ -89,13 +102,23 @@
 					{#each cv.experience as exp (exp.id)}
 						<div class="cv-entry">
 							<div class="entry-header">
-								<span class="entry-role">{exp.role}</span>
+								<span class="entry-role">
+									{exp.role}
+									<TranslationBadge
+										show={localeStore.current !== 'en' && isLlmTranslated(exp.id, 'role')}
+									/>
+								</span>
 								<span class="entry-dates"
 									>{formatDate(exp.startDate)} — {formatDate(exp.endDate)}</span
 								>
 							</div>
 							<span class="entry-org">{exp.company}</span>
-							<p class="entry-desc">{exp.description}</p>
+							<p class="entry-desc">
+								{exp.description}
+								<TranslationBadge
+									show={localeStore.current !== 'en' && isLlmTranslated(exp.id, 'description')}
+								/>
+							</p>
 							<div class="entry-tags">
 								{#each exp.tech as tech (tech)}
 									<span class="tag">{tech}</span>
@@ -112,14 +135,25 @@
 					{#each cv.education as edu (edu.id)}
 						<div class="cv-entry">
 							<div class="entry-header">
-								<span class="entry-role">{edu.degree} in {edu.field}</span>
+								<span class="entry-role">
+									{edu.degree} in {edu.field}
+									<TranslationBadge
+										show={localeStore.current !== 'en' &&
+											(isLlmTranslated(edu.id, 'degree') || isLlmTranslated(edu.id, 'field'))}
+									/>
+								</span>
 								<span class="entry-dates"
 									>{formatDate(edu.startDate)} — {formatDate(edu.endDate)}</span
 								>
 							</div>
 							<span class="entry-org">{edu.institution}</span>
 							{#if edu.description}
-								<p class="entry-desc">{edu.description}</p>
+								<p class="entry-desc">
+									{edu.description}
+									<TranslationBadge
+										show={localeStore.current !== 'en' && isLlmTranslated(edu.id, 'description')}
+									/>
+								</p>
 							{/if}
 						</div>
 					{/each}
@@ -152,9 +186,19 @@
 					{#each cv.projects as project (project.slug)}
 						<div class="cv-entry">
 							<div class="entry-header">
-								<span class="entry-role">{project.title}</span>
+								<span class="entry-role">
+									{project.title}
+									<TranslationBadge
+										show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'title')}
+									/>
+								</span>
 							</div>
-							<p class="entry-desc">{project.description}</p>
+							<p class="entry-desc">
+								{project.description}
+								<TranslationBadge
+									show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'description')}
+								/>
+							</p>
 							<div class="entry-tags">
 								{#each project.tech as tech (tech)}
 									<span class="tag">{tech}</span>

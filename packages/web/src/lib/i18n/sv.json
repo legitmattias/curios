@@ -108,7 +108,7 @@
 	"monitor.live": "live",
 	"monitor.stale": "inaktuell",
 
-	"cv.toolbar": "Meritförteckning",
+	"cv.toolbar": "CV",
 	"cv.downloadPdf": "Ladda ner PDF",
 	"cv.loading": "Laddar CV...",
 	"cv.about": "Om",

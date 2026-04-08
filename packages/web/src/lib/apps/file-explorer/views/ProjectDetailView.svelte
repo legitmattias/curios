@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
-	import type { Project } from '@curios/shared/types';
+	import { localeStore } from '$lib/os/locale-store.svelte.js';
+	import type { Project, TranslationMeta } from '@curios/shared/types';
 	import { fetchProject } from '../api.js';
+	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 
 	let {
 		slug,
@@ -12,15 +14,22 @@
 	} = $props();
 
 	let project = $state<Project | null>(null);
+	let translationMeta = $state<TranslationMeta | undefined>(undefined);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
 
+	function isLlmTranslated(entityId: string, field: string): boolean {
+		return translationMeta?.[`${entityId}:${field}`]?.translatedBy === 'llm';
+	}
+
 	$effect(() => {
+		void localeStore.current; // track locale changes for re-fetch
 		loading = true;
 		error = null;
 		fetchProject(slug)
 			.then((result) => {
 				project = result.data;
+				translationMeta = result.translationMeta;
 				onapimeta(result.url, result.raw);
 			})
 			.catch((err) => {
@@ -38,8 +47,18 @@
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else if project}
-		<h2 class="title">{project.title}</h2>
-		<p class="description">{project.description}</p>
+		<h2 class="title">
+			{project.title}
+			<TranslationBadge
+				show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'title')}
+			/>
+		</h2>
+		<p class="description">
+			{project.description}
+			<TranslationBadge
+				show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'description')}
+			/>
+		</p>
 
 		<div class="section">
 			<h3 class="section-title">{t('explorer.detail.techStack')}</h3>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	let {
 		title,
 		focused = false,
@@ -12,8 +14,8 @@
 	} = $props();
 </script>
 
-<button class="taskbar-entry" class:focused class:minimized {onclick} {title}>
-	<span class="entry-label">{title}</span>
+<button class="taskbar-entry" class:focused class:minimized {onclick} title={t(title)}>
+	<span class="entry-label">{t(title)}</span>
 	{#if focused}
 		<span class="focus-indicator"></span>
 	{/if}

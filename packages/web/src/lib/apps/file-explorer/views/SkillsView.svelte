@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
-	import type { Skill } from '@curios/shared/types';
+	import { localeStore } from '$lib/os/locale-store.svelte.js';
+	import type { Skill, TranslationMeta } from '@curios/shared/types';
 	import { fetchSkills } from '../api.js';
+	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 
 	let {
 		onapimeta
@@ -10,8 +12,13 @@
 	} = $props();
 
 	let skills = $state<Skill[]>([]);
+	let translationMeta = $state<TranslationMeta | undefined>(undefined);
 	let loading = $state(true);
 	let error = $state<string | null>(null);
+
+	function isLlmTranslated(entityId: string, field: string): boolean {
+		return translationMeta?.[`${entityId}:${field}`]?.translatedBy === 'llm';
+	}
 
 	const grouped = $derived(() => {
 		const groups: Record<string, Skill[]> = {};
@@ -23,9 +30,11 @@
 	});
 
 	$effect(() => {
+		void localeStore.current; // track locale changes for re-fetch
 		fetchSkills()
 			.then((result) => {
 				skills = result.data;
+				translationMeta = result.translationMeta;
 				onapimeta(result.url, result.raw);
 			})
 			.catch((err) => {
@@ -45,7 +54,12 @@
 	{:else}
 		{#each Object.entries(grouped()) as [category, items] (category)}
 			<div class="category">
-				<h3 class="category-title">{category}</h3>
+				<h3 class="category-title">
+					{category}
+					<TranslationBadge
+						show={localeStore.current !== 'en' && isLlmTranslated(items[0].id, 'category')}
+					/>
+				</h3>
 				<ul class="skill-list">
 					{#each items as skill (skill.id)}
 						<li class="skill-item">{skill.name}</li>
