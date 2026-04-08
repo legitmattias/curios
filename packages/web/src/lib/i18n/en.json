@@ -140,5 +140,7 @@
 	"pdf.skills": "Skills",
 	"pdf.projects": "Projects",
 	"pdf.present": "Present",
-	"pdf.generatedFrom": "Generated from"
+	"pdf.generatedFrom": "Generated from",
+
+	"translation.tooltip": "Automatically translated. Switch to English (EN) in the taskbar for the original."
 }

@@ -1,8 +1,15 @@
 import { PUBLIC_API_URL } from '$env/static/public';
+import { localeStore } from '$lib/os/locale-store.svelte.js';
 import type { Project, Skill, Experience, Profile, CvData } from '@curios/shared/types';
 
+function buildUrl(path: string): string {
+	const lang = localeStore.current;
+	const separator = path.includes('?') ? '&' : '?';
+	return `${PUBLIC_API_URL}${path}${lang !== 'en' ? `${separator}lang=${lang}` : ''}`;
+}
+
 async function fetchJson<T>(path: string): Promise<T> {
-	const url = `${PUBLIC_API_URL}${path}`;
+	const url = buildUrl(path);
 	const res = await fetch(url);
 
 	if (!res.ok) {

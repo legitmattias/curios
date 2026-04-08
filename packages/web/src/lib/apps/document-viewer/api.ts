@@ -1,8 +1,10 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import type { CvData } from '@curios/shared/types';
+import { localeStore } from '$lib/os/locale-store.svelte.js';
+import type { CvData, TranslationMeta } from '@curios/shared/types';
 
-export async function fetchCv(): Promise<CvData> {
-	const url = `${PUBLIC_API_URL}/cv`;
+export async function fetchCv(): Promise<{ data: CvData; translationMeta?: TranslationMeta }> {
+	const lang = localeStore.current;
+	const url = `${PUBLIC_API_URL}/cv${lang !== 'en' ? `?lang=${lang}` : ''}`;
 	const res = await fetch(url);
 
 	if (!res.ok) {
@@ -11,7 +13,7 @@ export async function fetchCv(): Promise<CvData> {
 	}
 
 	const json = await res.json();
-	return json.data as CvData;
+	return { data: json.data as CvData, translationMeta: json.translationMeta };
 }
 
 export function getPdfUrl(lang: string = 'en'): string {

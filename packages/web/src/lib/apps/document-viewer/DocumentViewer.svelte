@@ -13,8 +13,8 @@
 	$effect(() => {
 		untrack(() => {
 			fetchCv()
-				.then((data) => {
-					cv = data;
+				.then((result) => {
+					cv = result.data;
 				})
 				.catch((err) => {
 					error = err.message;

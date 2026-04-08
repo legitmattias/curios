@@ -140,5 +140,7 @@
 	"pdf.skills": "Kompetenser",
 	"pdf.projects": "Projekt",
 	"pdf.present": "Pågående",
-	"pdf.generatedFrom": "Genererad från"
+	"pdf.generatedFrom": "Genererad från",
+
+	"translation.tooltip": "Automatiskt översatt. Byt till engelska (EN) i aktivitetsfältet för originalet."
 }
