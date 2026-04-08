@@ -37,8 +37,8 @@
 	}
 
 	function showEmailMenu(e: MouseEvent) {
-		e.preventDefault();
-		emailMenu = true;
+		e.stopPropagation();
+		emailMenu = !emailMenu;
 		copied = false;
 	}
 
