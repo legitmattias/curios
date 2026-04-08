@@ -1,5 +1,5 @@
 import { db } from './index.js'
-import { projects, skills, experience, education, profile } from './schema.js'
+import { projects, skills, experience, education, profile, translations } from './schema.js'
 
 const seedProjects = [
   {
@@ -38,20 +38,16 @@ const seedProjects = [
 ]
 
 const seedSkills = [
-  // Backend
   { name: 'Node.js / Bun', category: 'Backend', sortOrder: 0 },
   { name: 'Hono / Express', category: 'Backend', sortOrder: 1 },
   { name: 'PostgreSQL', category: 'Backend', sortOrder: 2 },
   { name: 'REST API Design', category: 'Backend', sortOrder: 3 },
-  // Frontend
   { name: 'SvelteKit', category: 'Frontend', sortOrder: 0 },
   { name: 'TypeScript', category: 'Frontend', sortOrder: 1 },
   { name: 'CSS Architecture', category: 'Frontend', sortOrder: 2 },
-  // DevOps
   { name: 'Docker', category: 'DevOps', sortOrder: 0 },
   { name: 'GitHub Actions', category: 'DevOps', sortOrder: 1 },
   { name: 'Linux / VPS', category: 'DevOps', sortOrder: 2 },
-  // Languages
   { name: 'TypeScript', category: 'Languages', sortOrder: 0 },
   { name: 'JavaScript', category: 'Languages', sortOrder: 1 },
   { name: 'Rust', category: 'Languages', sortOrder: 2 },
@@ -125,6 +121,147 @@ const seedProfile = {
   website: 'https://mattic.dev',
 }
 
+// Swedish translations for placeholder content
+// Uses natural Swedish tech language — English terms kept where standard in Swedish IT
+const svTranslations: {
+  entityType: string
+  slug: string // used to find entity ID
+  field: string
+  value: string
+  translatedBy: 'human' | 'llm'
+}[] = [
+  // Projects
+  {
+    entityType: 'project',
+    slug: 'curios',
+    field: 'description',
+    value: 'Portfolio-OS — en webbläsarbaserad skrivbordsmiljö som visar upp riktiga, backend-drivna applikationer. Innehåller fönsterhanterare, filutforskare, terminal och systemövervakning.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'project',
+    slug: 'dossier',
+    field: 'description',
+    value: 'Strukturerat kunskapsprofil-system som driver AI-chatbotar med korrekta, källbaserade svar. Använder LLM och RAG för att omvandla personlig data till konversationsbaserad kunskap.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'project',
+    slug: 'readmark',
+    field: 'description',
+    value: 'Ett CLI-baserat bokmärkesverktyg för utvecklare. Tagga, sök och organisera länkar från terminalen. Synkar mellan maskiner via en lättviktig SQLite-databas.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'project',
+    slug: 'codescope',
+    field: 'description',
+    value: 'Statiskt analysverktyg som visualiserar kodkomplexitet och beroendegrafer. Tolkar källfiler med Tree-sitter och renderar interaktiva rapporter i webbläsaren.',
+    translatedBy: 'human',
+  },
+  // Profile
+  {
+    entityType: 'profile',
+    slug: '_profile',
+    field: 'title',
+    value: 'Fullstackutvecklare',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'profile',
+    slug: '_profile',
+    field: 'bio',
+    value: 'Fullstackutvecklare baserad i Stockholm med en passion för att bygga välgjorda verktyg och system. Fokuserar på TypeScript, moderna webbramverk och utvecklarupplevelse. Tycker om att omvandla komplexa problem till rena, underhållbara lösningar.',
+    translatedBy: 'human',
+  },
+  // Experience
+  {
+    entityType: 'experience',
+    slug: 'Nordic Systems AB',
+    field: 'role',
+    value: 'Senior fullstackutvecklare',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'experience',
+    slug: 'Nordic Systems AB',
+    field: 'description',
+    value: 'Leder utveckling av interna verktyg och kundvända plattformar. Designar API:er, mentorerar juniora utvecklare och driver adoption av modern TypeScript-tooling.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'experience',
+    slug: 'WebCraft Solutions',
+    field: 'role',
+    value: 'Fullstackutvecklare',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'experience',
+    slug: 'WebCraft Solutions',
+    field: 'description',
+    value: 'Byggde och underhöll e-handelsplattformar och innehållshanteringssystem. Introducerade automatiserad testning och CI/CD-pipelines i teamet.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'experience',
+    slug: 'Digital First Agency',
+    field: 'role',
+    value: 'Juniorutvecklare',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'experience',
+    slug: 'Digital First Agency',
+    field: 'description',
+    value: 'Utvecklade responsiva webbplatser och interaktiva prototyper för byråkunder. Lärde sig moderna JavaScript-ramverk och versionshanteringsflöden.',
+    translatedBy: 'human',
+  },
+  // Education
+  {
+    entityType: 'education',
+    slug: 'Linnaeus University',
+    field: 'degree',
+    value: 'Kandidatexamen',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Linnaeus University',
+    field: 'field',
+    value: 'Mjukvaruteknik',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Linnaeus University',
+    field: 'description',
+    value: 'Studerar mjukvaruteknik med fokus på webbteknologier, systemdesign och mjukvaruarkitektur.',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Stockholm Technical Institute',
+    field: 'degree',
+    value: 'Diplom',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Stockholm Technical Institute',
+    field: 'field',
+    value: 'Webbutveckling',
+    translatedBy: 'human',
+  },
+  {
+    entityType: 'education',
+    slug: 'Stockholm Technical Institute',
+    field: 'description',
+    value: 'Intensivt program som täcker fullstackwebbutveckling, JavaScript och moderna ramverk.',
+    translatedBy: 'human',
+  },
+]
+
 async function seed() {
   console.log('Seeding database...')
 
@@ -135,7 +272,7 @@ async function seed() {
     .onConflictDoNothing({ target: projects.slug })
   console.log(`  Projects: ${seedProjects.length} (upsert)`)
 
-  // All other tables: only seed if empty — never overwrite existing data
+  // All other tables: only seed if empty
   const existingSkills = await db.select().from(skills).limit(1)
   if (existingSkills.length === 0) {
     await db.insert(skills).values(seedSkills)
@@ -168,8 +305,61 @@ async function seed() {
     console.log(`  Profile: skipped (already has data)`)
   }
 
+  // Seed Swedish translations (idempotent via unique constraint upsert)
+  await seedTranslations()
+
   console.log('Done.')
   process.exit(0)
+}
+
+async function seedTranslations() {
+  // Build entity ID lookup by querying each table
+  const allProjects = await db.select().from(projects)
+  const allExperience = await db.select().from(experience)
+  const allEducation = await db.select().from(education)
+  const allProfile = await db.select().from(profile).limit(1)
+
+  const projectIdBySlug = new Map(allProjects.map((p) => [p.slug, p.id]))
+  const experienceIdByCompany = new Map(allExperience.map((e) => [e.company, e.id]))
+  const educationIdByInstitution = new Map(allEducation.map((e) => [e.institution, e.id]))
+  const profileId = allProfile[0]?.id
+
+  let count = 0
+
+  for (const t of svTranslations) {
+    let entityId: string | undefined
+
+    if (t.entityType === 'project') {
+      entityId = projectIdBySlug.get(t.slug)
+    } else if (t.entityType === 'experience') {
+      entityId = experienceIdByCompany.get(t.slug)
+    } else if (t.entityType === 'education') {
+      entityId = educationIdByInstitution.get(t.slug)
+    } else if (t.entityType === 'profile') {
+      entityId = profileId
+    }
+
+    if (!entityId) {
+      console.log(`  Translation: skipped ${t.entityType}/${t.slug}/${t.field} (entity not found)`)
+      continue
+    }
+
+    await db
+      .insert(translations)
+      .values({
+        entityType: t.entityType,
+        entityId,
+        locale: 'sv',
+        field: t.field,
+        value: t.value,
+        translatedBy: t.translatedBy,
+      })
+      .onConflictDoNothing()
+
+    count++
+  }
+
+  console.log(`  Translations: ${count} Swedish translations seeded`)
 }
 
 seed().catch((err) => {
