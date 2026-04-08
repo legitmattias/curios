@@ -5,6 +5,7 @@
 	let emailMenu = $state(false);
 	let copied = $state(false);
 	let wrapper: HTMLDivElement;
+	let emailMenuEl: HTMLDivElement | undefined = $state();
 
 	const EMAIL = 'hello@mattic.dev';
 
@@ -15,6 +16,10 @@
 	}
 
 	function handleWindowClick(e: MouseEvent) {
+		if (emailMenu && emailMenuEl && !emailMenuEl.contains(e.target as Node)) {
+			emailMenu = false;
+			return;
+		}
 		if (visible && wrapper && !wrapper.contains(e.target as Node)) {
 			visible = false;
 			emailMenu = false;
@@ -77,14 +82,14 @@
 				<span class="card-name">Mattias Ubbesen</span>
 				<span class="card-title">{t('contact.title')}</span>
 			</div>
-			<div class="card-links">
+			<div class="card-links" class:menu-open={emailMenu}>
 				<button class="card-link" onclick={showEmailMenu}>
 					<span class="link-label">{t('contact.email')}</span>
 					<span class="link-value">{EMAIL}</span>
 				</button>
 
 				{#if emailMenu}
-					<div class="email-menu">
+					<div class="email-menu" bind:this={emailMenuEl}>
 						<button class="email-option" onclick={copyEmail}>
 							{copied ? t('contact.copied') : t('contact.copy')}
 						</button>
@@ -221,6 +226,11 @@
 	.link-value {
 		font-size: var(--text-sm);
 		color: var(--color-text-primary);
+	}
+
+	.card-links.menu-open > :not(.email-menu) {
+		opacity: 0.3;
+		pointer-events: none;
 	}
 
 	.email-menu {
