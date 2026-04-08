@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	let visible = $state(false);
 	let emailMenu = $state(false);
 	let copied = $state(false);
@@ -53,7 +55,7 @@
 <svelte:window onkeydown={handleKeydown} onclick={handleWindowClick} />
 
 <div class="contact-wrapper" bind:this={wrapper}>
-	<button class="contact-trigger" onclick={toggle} title="Contact info">
+	<button class="contact-trigger" onclick={toggle} title={t('contact.trigger')}>
 		<svg
 			width="14"
 			height="14"
@@ -73,20 +75,22 @@
 		<div class="card">
 			<div class="card-header">
 				<span class="card-name">Mattias Ubbesen</span>
-				<span class="card-title">Full Stack Developer</span>
+				<span class="card-title">{t('contact.title')}</span>
 			</div>
 			<div class="card-links">
 				<button class="card-link" onclick={showEmailMenu}>
-					<span class="link-label">Email</span>
+					<span class="link-label">{t('contact.email')}</span>
 					<span class="link-value">{EMAIL}</span>
 				</button>
 
 				{#if emailMenu}
 					<div class="email-menu">
 						<button class="email-option" onclick={copyEmail}>
-							{copied ? 'Copied!' : 'Copy to clipboard'}
+							{copied ? t('contact.copied') : t('contact.copy')}
 						</button>
-						<button class="email-option" onclick={openMailClient}> Open email client </button>
+						<button class="email-option" onclick={openMailClient}>
+							{t('contact.openClient')}
+						</button>
 					</div>
 				{/if}
 
@@ -96,7 +100,7 @@
 					rel="noopener external"
 					class="card-link"
 				>
-					<span class="link-label">GitHub</span>
+					<span class="link-label">{t('contact.github')}</span>
 					<span class="link-value">legitmattias</span>
 				</a>
 				<a
@@ -105,7 +109,7 @@
 					rel="noopener external"
 					class="card-link"
 				>
-					<span class="link-label">LinkedIn</span>
+					<span class="link-label">{t('contact.linkedin')}</span>
 					<span class="link-value">Mattias Ubbesen</span>
 				</a>
 			</div>

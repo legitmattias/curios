@@ -2,6 +2,7 @@
 	import type { Component } from 'svelte';
 	import type { WindowState } from '$lib/os/types.js';
 	import ContextMenu, { type MenuItem } from './ContextMenu.svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
 
 	let {
 		win,
@@ -131,12 +132,12 @@
 			x: e.clientX,
 			y: e.clientY,
 			items: [
-				{ label: 'Minimize', action: onminimize },
+				{ label: t('window.ctx.minimize'), action: onminimize },
 				{
-					label: win.status === 'maximized' ? 'Restore' : 'Maximize',
+					label: win.status === 'maximized' ? t('window.ctx.restore') : t('window.ctx.maximize'),
 					action: onmaximize
 				},
-				{ label: 'Close', action: onclose, separator: true }
+				{ label: t('window.ctx.close'), action: onclose, separator: true }
 			]
 		};
 	}
@@ -174,7 +175,7 @@
 					e.stopPropagation();
 					onminimize();
 				}}
-				title="Minimize"
+				title={t('shell.minimize')}
 			>
 				<svg viewBox="0 0 12 12" width="12" height="12">
 					<rect x="2" y="5" width="8" height="2" rx="0.5" fill="currentColor" />
@@ -186,7 +187,7 @@
 					e.stopPropagation();
 					onmaximize();
 				}}
-				title={win.status === 'maximized' ? 'Restore' : 'Maximize'}
+				title={win.status === 'maximized' ? t('shell.restore') : t('shell.maximize')}
 			>
 				<svg viewBox="0 0 12 12" width="12" height="12">
 					{#if win.status === 'maximized'}
@@ -230,7 +231,7 @@
 					e.stopPropagation();
 					onclose();
 				}}
-				title="Close"
+				title={t('shell.close')}
 			>
 				<svg viewBox="0 0 12 12" width="12" height="12">
 					<path

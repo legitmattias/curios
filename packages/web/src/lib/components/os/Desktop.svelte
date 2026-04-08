@@ -6,6 +6,7 @@
 	import Taskbar from './Taskbar.svelte';
 	import Window from './Window.svelte';
 	import ContextMenu, { type MenuItem } from './ContextMenu.svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
 
 	const apps = getAllApps();
 
@@ -30,11 +31,15 @@
 			x: e.clientX,
 			y: e.clientY,
 			items: [
-				{ label: 'Dark theme', action: () => themeStore.set('dark') },
-				{ label: 'Light theme', action: () => themeStore.set('light') },
-				{ label: 'High contrast', action: () => themeStore.set('high-contrast'), separator: true },
-				{ label: 'Open Terminal', action: () => handleOpenApp('terminal') },
-				{ label: 'Open Settings', action: () => handleOpenApp('settings') }
+				{ label: t('desktop.ctx.darkTheme'), action: () => themeStore.set('dark') },
+				{ label: t('desktop.ctx.lightTheme'), action: () => themeStore.set('light') },
+				{
+					label: t('desktop.ctx.highContrast'),
+					action: () => themeStore.set('high-contrast'),
+					separator: true
+				},
+				{ label: t('desktop.ctx.openTerminal'), action: () => handleOpenApp('terminal') },
+				{ label: t('desktop.ctx.openSettings'), action: () => handleOpenApp('settings') }
 			]
 		};
 	}
@@ -73,7 +78,7 @@
 
 	<div class="watermark">
 		<span class="watermark-name">Mattias Ubbesen</span>
-		<span class="watermark-title">Full Stack Developer</span>
+		<span class="watermark-title">{t('desktop.watermark.title')}</span>
 		<span class="watermark-domain">mattic.dev</span>
 	</div>
 
