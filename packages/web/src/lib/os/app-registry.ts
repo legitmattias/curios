@@ -9,6 +9,8 @@ import DocumentViewer from '$lib/apps/document-viewer/DocumentViewer.svelte';
 import IconDocument from '$lib/components/icons/IconDocument.svelte';
 import Settings from '$lib/apps/settings/Settings.svelte';
 import IconSettings from '$lib/components/icons/IconSettings.svelte';
+import Chat from '$lib/apps/chat/Chat.svelte';
+import IconChat from '$lib/components/icons/IconChat.svelte';
 
 export const APP_REGISTRY: Record<string, AppMeta> = {
 	files: {
@@ -50,6 +52,14 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		component: Settings,
 		defaultWidth: 550,
 		defaultHeight: 420
+	},
+	chat: {
+		id: 'chat',
+		title: 'app.chat',
+		icon: IconChat,
+		component: Chat,
+		defaultWidth: 500,
+		defaultHeight: 600
 	}
 };
 

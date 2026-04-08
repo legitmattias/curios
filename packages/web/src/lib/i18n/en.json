@@ -142,5 +142,17 @@
 	"pdf.present": "Present",
 	"pdf.generatedFrom": "Generated from",
 
-	"translation.tooltip": "Automatically translated. Switch to English (EN) in the taskbar for the original."
+	"translation.tooltip": "Automatically translated. Switch to English (EN) in the taskbar for the original.",
+
+	"app.chat": "Chat",
+	"chat.welcome": "Hi! I'm an AI agent with access to Mattias' professional profile. Ask me anything about his skills, experience, or projects.",
+	"chat.inputPlaceholder": "Type a message...",
+	"chat.thinking": "Thinking...",
+	"chat.fetchingData": "Fetching data",
+	"chat.rateLimit": "You've reached the message limit for this session. Feel free to open a new chat window!",
+	"chat.error": "Something went wrong. Please try again.",
+	"chat.prompt.skills": "What technologies does Mattias work with?",
+	"chat.prompt.projects": "Tell me about his projects",
+	"chat.prompt.available": "Is he available for work?",
+	"chat.prompt.learning": "What is he currently learning?"
 }
