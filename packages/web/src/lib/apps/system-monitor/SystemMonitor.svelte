@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { MetricsSnapshot } from '@curios/shared/types';
 	import { createMetricsConnection } from './metrics-ws.js';
 	import MetricsSummaryBar from './MetricsSummaryBar.svelte';
@@ -35,10 +36,14 @@
 
 		<div class="dashboard">
 			<div class="column">
-				<LineChart data={snapshot.requestRateSeries} label="Request Rate" unit=" req/s" />
+				<LineChart
+					data={snapshot.requestRateSeries}
+					label={t('monitor.requestRate')}
+					unit=" req/s"
+				/>
 				<LineChart
 					data={snapshot.responseTimeSeries}
-					label="Response Time"
+					label={t('monitor.responseTime')}
 					unit="ms"
 					color="var(--color-control-maximize)"
 				/>
@@ -52,7 +57,7 @@
 	{:else}
 		<div class="loading">
 			<span class="status-indicator {connectionStatus}"></span>
-			{connectionStatus === 'connecting' ? 'Connecting...' : 'Connection lost'}
+			{connectionStatus === 'connecting' ? t('monitor.connecting') : t('monitor.connectionLost')}
 		</div>
 	{/if}
 

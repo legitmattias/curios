@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Experience } from '@curios/shared/types';
 	import { fetchExperience } from '../api.js';
 
@@ -13,7 +14,7 @@
 	let error = $state<string | null>(null);
 
 	function formatDate(date: string | null): string {
-		if (!date) return 'Present';
+		if (!date) return t('cv.present');
 		const d = new Date(date);
 		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
 	}
@@ -35,7 +36,7 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading experience...</p>
+		<p class="status">{t('explorer.loadingExperience')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else}

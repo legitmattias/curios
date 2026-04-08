@@ -1,13 +1,14 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import AppearanceTab from './AppearanceTab.svelte';
 	import SystemInfoTab from './SystemInfoTab.svelte';
 
 	type Tab = 'appearance' | 'system';
 	let activeTab = $state<Tab>('appearance');
 
-	const tabs: { id: Tab; label: string }[] = [
-		{ id: 'appearance', label: 'Appearance' },
-		{ id: 'system', label: 'System Info' }
+	const tabs: { id: Tab; key: string }[] = [
+		{ id: 'appearance', key: 'settings.appearance' },
+		{ id: 'system', key: 'settings.systemInfo' }
 	];
 </script>
 
@@ -19,7 +20,7 @@
 				class:active={activeTab === tab.id}
 				onclick={() => (activeTab = tab.id)}
 			>
-				{tab.label}
+				{t(tab.key)}
 			</button>
 		{/each}
 	</nav>

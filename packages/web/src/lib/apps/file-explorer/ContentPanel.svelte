@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { VirtualNode } from './filesystem.js';
 	import ApiInspector from './ApiInspector.svelte';
 	import ProjectListView from './views/ProjectListView.svelte';
@@ -42,7 +43,7 @@
 	<div class="content-area">
 		{#if !node || node.view === 'root'}
 			<div class="root-view">
-				<p class="hint">Select a folder to browse.</p>
+				<p class="hint">{t('explorer.selectFolder')}</p>
 			</div>
 		{:else if node.view === 'project-list'}
 			<ProjectListView {onnavigate} onapimeta={handleApiMeta} />

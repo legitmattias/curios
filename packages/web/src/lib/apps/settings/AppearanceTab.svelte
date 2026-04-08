@@ -1,45 +1,46 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import { themeStore, type Theme } from '$lib/os/theme-store.svelte.js';
 
-	const themes: { id: Theme; label: string; description: string; colors: string[] }[] = [
+	const themes: { id: Theme; labelKey: string; descKey: string; colors: string[] }[] = [
 		{
 			id: 'dark',
-			label: 'Dark',
-			description: 'Default dark theme with purple accent',
+			labelKey: 'settings.theme.dark',
+			descKey: 'settings.theme.darkDesc',
 			colors: ['#1a1a2e', '#1e1e2e', '#7c5cbf', '#e0e0ec']
 		},
 		{
 			id: 'light',
-			label: 'Light',
-			description: 'Clean light theme for bright environments',
+			labelKey: 'settings.theme.light',
+			descKey: 'settings.theme.lightDesc',
 			colors: ['#e8e8f0', '#ffffff', '#6a4aaf', '#1a1a24']
 		},
 		{
 			id: 'high-contrast',
-			label: 'High Contrast',
-			description: 'Maximum readability with bold borders',
+			labelKey: 'settings.theme.highContrast',
+			descKey: 'settings.theme.highContrastDesc',
 			colors: ['#000000', '#0a0a0a', '#bb99ff', '#ffffff']
 		}
 	];
 </script>
 
 <div class="appearance">
-	<h3 class="section-title">Theme</h3>
+	<h3 class="section-title">{t('settings.theme')}</h3>
 	<div class="theme-cards">
 		{#each themes as theme (theme.id)}
 			<button
 				class="theme-card"
 				class:active={themeStore.current === theme.id}
 				onclick={() => themeStore.set(theme.id)}
-				aria-label="Set {theme.label} theme"
+				aria-label="Set {t(theme.labelKey)} theme"
 			>
 				<div class="preview">
 					{#each theme.colors as color (color)}
 						<div class="preview-swatch" style="background: {color}"></div>
 					{/each}
 				</div>
-				<span class="theme-label">{theme.label}</span>
-				<span class="theme-desc">{theme.description}</span>
+				<span class="theme-label">{t(theme.labelKey)}</span>
+				<span class="theme-desc">{t(theme.descKey)}</span>
 			</button>
 		{/each}
 	</div>

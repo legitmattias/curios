@@ -14,6 +14,6 @@ export async function fetchCv(): Promise<CvData> {
 	return json.data as CvData;
 }
 
-export function getPdfUrl(): string {
-	return `${PUBLIC_API_URL}/cv/pdf`;
+export function getPdfUrl(lang: string = 'en'): string {
+	return `${PUBLIC_API_URL}/cv/pdf?lang=${lang}`;
 }

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Profile } from '@curios/shared/types';
 	import { fetchProfile } from '../api.js';
 
@@ -29,25 +30,25 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading...</p>
+		<p class="status">{t('explorer.loading')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else if profile}
-		<h2 class="heading">Contact</h2>
+		<h2 class="heading">{t('explorer.contact.heading')}</h2>
 		<dl class="contact-list">
 			<div class="contact-row">
-				<dt>Email</dt>
+				<dt>{t('explorer.contact.email')}</dt>
 				<dd><a href="mailto:{profile.email}">{profile.email}</a></dd>
 			</div>
 			<div class="contact-row">
-				<dt>GitHub</dt>
+				<dt>{t('explorer.contact.github')}</dt>
 				<dd>
 					<a href={profile.github} target="_blank" rel="noopener external">{profile.github}</a>
 				</dd>
 			</div>
 			{#if profile.linkedin}
 				<div class="contact-row">
-					<dt>LinkedIn</dt>
+					<dt>{t('explorer.contact.linkedin')}</dt>
 					<dd>
 						<a href={profile.linkedin} target="_blank" rel="noopener external">{profile.linkedin}</a
 						>
@@ -56,7 +57,7 @@
 			{/if}
 			{#if profile.website}
 				<div class="contact-row">
-					<dt>Website</dt>
+					<dt>{t('explorer.contact.website')}</dt>
 					<dd>
 						<a href={profile.website} target="_blank" rel="noopener external">{profile.website}</a>
 					</dd>

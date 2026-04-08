@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Profile } from '@curios/shared/types';
 	import { fetchProfile } from '../api.js';
 
@@ -29,7 +30,7 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading...</p>
+		<p class="status">{t('explorer.loading')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else if profile}

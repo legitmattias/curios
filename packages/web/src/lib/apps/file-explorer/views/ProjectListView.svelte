@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Project } from '@curios/shared/types';
 	import { fetchProjects } from '../api.js';
 
@@ -31,7 +32,7 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading projects...</p>
+		<p class="status">{t('explorer.loadingProjects')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	let {
 		uptimeSeconds,
 		activeConnections,
@@ -25,15 +27,15 @@
 
 <div class="summary-bar">
 	<div class="stat">
-		<span class="stat-label">Uptime</span>
+		<span class="stat-label">{t('monitor.uptime')}</span>
 		<span class="stat-value">{formattedUptime()}</span>
 	</div>
 	<div class="stat">
-		<span class="stat-label">Connections</span>
+		<span class="stat-label">{t('monitor.connections')}</span>
 		<span class="stat-value">{activeConnections}</span>
 	</div>
 	<div class="stat">
-		<span class="stat-label">Total Requests</span>
+		<span class="stat-label">{t('monitor.totalRequests')}</span>
 		<span class="stat-value">{totalRequests.toLocaleString()}</span>
 	</div>
 </div>

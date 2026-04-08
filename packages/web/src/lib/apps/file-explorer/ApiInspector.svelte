@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	let {
 		url,
 		response,
@@ -17,17 +19,17 @@
 
 <div class="inspector-wrapper">
 	<button class="toggle-btn" onclick={ontoggle} title="View API call">
-		{visible ? '✕ Hide' : '{ } API'}
+		{visible ? t('explorer.apiBtn.hide') : t('explorer.apiBtn.show')}
 	</button>
 
 	{#if visible}
 		<div class="inspector">
 			<div class="section">
-				<span class="label">Request</span>
+				<span class="label">{t('explorer.api.request')}</span>
 				<pre class="code">{curlCommand}</pre>
 			</div>
 			<div class="section response-section">
-				<span class="label">Response</span>
+				<span class="label">{t('explorer.api.response')}</span>
 				<pre class="code">{formattedJson}</pre>
 			</div>
 		</div>

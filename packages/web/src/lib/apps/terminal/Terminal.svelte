@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
 	import { command, error, system, type OutputLine } from './output.js';
 	import { getCommand, findCompletions } from './commands.js';
 
@@ -38,8 +39,8 @@
 
 		if (!cmd) {
 			appendLines([
-				error(`command not found: ${cmdName}`),
-				system('Type "help" for available commands.')
+				error(`${t('terminal.cmdNotFound')} ${cmdName}`),
+				system(t('terminal.typeHelp'))
 			]);
 			return;
 		}
@@ -105,11 +106,7 @@
 	// Welcome banner + focus on mount (untrack prevents re-triggering)
 	$effect(() => {
 		untrack(() => {
-			appendLines([
-				system('Welcome to CuriOS Terminal v0.1.0'),
-				system('Type "help" to see available commands.'),
-				system('')
-			]);
+			appendLines([system(t('terminal.welcome')), system(t('terminal.helpHint')), system('')]);
 			focusInput();
 		});
 	});

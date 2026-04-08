@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	const info = [
 		{ label: 'OS', value: 'CuriOS v0.1.0' },
 		{ label: 'Owner', value: 'Mattias Ubbesen' },
@@ -12,13 +14,13 @@
 	];
 
 	const links = [
-		{ label: 'Source Code', url: 'https://github.com/legitmattias/curios' },
-		{ label: 'API Docs', url: 'https://api.mattic.dev/doc' }
+		{ labelKey: 'settings.sourceCode', url: 'https://github.com/legitmattias/curios' },
+		{ labelKey: 'settings.apiDocs', url: 'https://api.mattic.dev/doc' }
 	];
 </script>
 
 <div class="system-info">
-	<h3 class="section-title">System</h3>
+	<h3 class="section-title">{t('settings.system')}</h3>
 	<dl class="info-list">
 		{#each info as item (item.label)}
 			<div class="info-row">
@@ -28,11 +30,11 @@
 		{/each}
 	</dl>
 
-	<h3 class="section-title links-title">Links</h3>
+	<h3 class="section-title links-title">{t('settings.links')}</h3>
 	<div class="link-list">
 		{#each links as link (link.url)}
 			<a href={link.url} target="_blank" rel="noopener external" class="info-link">
-				{link.label}
+				{t(link.labelKey)}
 				<svg
 					width="10"
 					height="10"
@@ -52,11 +54,9 @@
 	</div>
 
 	<div class="about">
-		<h3 class="section-title">About</h3>
+		<h3 class="section-title">{t('settings.about')}</h3>
 		<p class="about-text">
-			CuriOS is a portfolio site that presents as a browser-based operating system. Every app is a
-			real, functional piece of software — the terminal runs commands against a real API, the system
-			monitor shows live metrics, and the file explorer browses actual database content.
+			{t('settings.aboutText')}
 		</p>
 	</div>
 </div>

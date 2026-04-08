@@ -9,6 +9,7 @@ import {
 	fetchCv
 } from './api.js';
 import { themeStore, type Theme } from '$lib/os/theme-store.svelte.js';
+import { t } from '$lib/os/i18n.svelte.js';
 
 export interface Command {
 	name: string;
@@ -29,13 +30,14 @@ const COMMANDS: Command[] = [
 		name: 'help',
 		description: 'Show available commands',
 		handler: async () => {
-			const lines: OutputLine[] = [system('Available commands:'), stdout('')];
+			const lines: OutputLine[] = [system(t('terminal.availableCommands')), stdout('')];
 			for (const cmd of COMMANDS) {
 				const usage = cmd.usage ? `  ${cmd.usage}` : '';
-				lines.push(stdout(`  ${cmd.name.padEnd(14)} ${cmd.description}${usage}`));
+				const desc = t(`terminal.desc.${cmd.name}`);
+				lines.push(stdout(`  ${cmd.name.padEnd(14)} ${desc}${usage}`));
 			}
 			lines.push(stdout(''));
-			lines.push(system('Tab to autocomplete. Up/Down for history.'));
+			lines.push(system(t('terminal.tabHint')));
 			return lines;
 		}
 	},
@@ -50,8 +52,8 @@ const COMMANDS: Command[] = [
 		handler: async () => {
 			const health = await fetchHealth();
 			return [
-				stdout(`Status:  ${health.status}`),
-				stdout(`Uptime:  ${formatUptime(health.uptime)}`)
+				stdout(`${t('terminal.label.status')}  ${health.status}`),
+				stdout(`${t('terminal.label.uptime')}  ${formatUptime(health.uptime)}`)
 			];
 		}
 	},
@@ -66,7 +68,7 @@ const COMMANDS: Command[] = [
 				lines.push(stdout(`  ${''.padEnd(14)} ${p.tech.join(', ')}`));
 				lines.push(stdout(''));
 			}
-			lines.push(system(`${projects.length} projects. Use "project <slug>" for details.`));
+			lines.push(system(`${projects.length} ${t('terminal.projects.count')}`));
 			return lines;
 		}
 	},
@@ -76,7 +78,7 @@ const COMMANDS: Command[] = [
 		usage: 'project <slug>',
 		handler: async (args) => {
 			if (args.length === 0) {
-				return [error('Usage: project <slug>'), system('Run "projects" to see available slugs.')];
+				return [error(t('terminal.project.usage')), system(t('terminal.project.hint'))];
 			}
 			const p = await fetchProject(args[0]);
 			const lines: OutputLine[] = [
@@ -117,7 +119,7 @@ const COMMANDS: Command[] = [
 			const entries = await fetchExperience();
 			const lines: OutputLine[] = [];
 			for (const e of entries) {
-				const end = e.endDate ?? 'Present';
+				const end = e.endDate ?? t('cv.present');
 				lines.push(stdout(`  ${e.role} @ ${e.company}`));
 				lines.push(stdout(`  ${e.startDate} — ${end}`));
 				lines.push(stdout(`  ${e.tech.join(', ')}`));
@@ -201,25 +203,25 @@ const COMMANDS: Command[] = [
 			];
 
 			if (cv.experience.length > 0) {
-				lines.push(system('Experience'));
+				lines.push(system(t('terminal.cv.experience')));
 				for (const exp of cv.experience) {
-					const end = exp.endDate ?? 'Present';
+					const end = exp.endDate ?? t('cv.present');
 					lines.push(stdout(`  ${exp.role} @ ${exp.company} (${exp.startDate} — ${end})`));
 				}
 				lines.push(stdout(''));
 			}
 
 			if (cv.education.length > 0) {
-				lines.push(system('Education'));
+				lines.push(system(t('terminal.cv.education')));
 				for (const edu of cv.education) {
-					const end = edu.endDate ?? 'Present';
+					const end = edu.endDate ?? t('cv.present');
 					lines.push(stdout(`  ${edu.degree} in ${edu.field} — ${edu.institution} (${end})`));
 				}
 				lines.push(stdout(''));
 			}
 
 			if (cv.skills.length > 0) {
-				lines.push(system('Skills'));
+				lines.push(system(t('terminal.cv.skills')));
 				const groups: Record<string, string[]> = {};
 				for (const s of cv.skills) {
 					if (!groups[s.category]) groups[s.category] = [];
@@ -231,7 +233,9 @@ const COMMANDS: Command[] = [
 				lines.push(stdout(''));
 			}
 
-			lines.push(system(`Download PDF: ${cv.profile.website ?? 'mattic.dev'}/cv/pdf`));
+			lines.push(
+				system(`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattic.dev'}/cv/pdf`)
+			);
 			return lines;
 		}
 	},
@@ -243,16 +247,19 @@ const COMMANDS: Command[] = [
 			const valid: Theme[] = ['dark', 'light', 'high-contrast'];
 			if (args.length === 0) {
 				return [
-					stdout(`Current theme: ${themeStore.current}`),
-					system(`Available: ${valid.join(', ')}`)
+					stdout(`${t('terminal.theme.current')} ${themeStore.current}`),
+					system(`${t('terminal.theme.available')} ${valid.join(', ')}`)
 				];
 			}
 			const requested = args[0] as Theme;
 			if (!valid.includes(requested)) {
-				return [error(`Unknown theme: ${requested}`), system(`Available: ${valid.join(', ')}`)];
+				return [
+					error(`${t('terminal.theme.unknown')} ${requested}`),
+					system(`${t('terminal.theme.available')} ${valid.join(', ')}`)
+				];
 			}
 			themeStore.set(requested);
-			return [stdout(`Theme set to: ${requested}`)];
+			return [stdout(`${t('terminal.theme.setTo')} ${requested}`)];
 		}
 	},
 	{

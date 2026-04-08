@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { MetricEvent } from '@curios/shared/types';
 
 	let {
@@ -22,7 +23,7 @@
 
 <div class="recent-requests">
 	<div class="section-header">
-		<span class="section-label">Recent Requests</span>
+		<span class="section-label">{t('monitor.recentRequests')}</span>
 	</div>
 	<div class="request-list">
 		{#each requests as req (req.timestamp + req.path)}
@@ -34,7 +35,7 @@
 			</div>
 		{/each}
 		{#if requests.length === 0}
-			<div class="empty">No requests yet</div>
+			<div class="empty">{t('monitor.noRequests')}</div>
 		{/if}
 	</div>
 </div>

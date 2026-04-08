@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
+	import { localeStore } from '$lib/os/locale-store.svelte.js';
 	import type { CvData } from '@curios/shared/types';
 	import { fetchCv, getPdfUrl } from './api.js';
 	import CvSection from './CvSection.svelte';
@@ -24,19 +26,19 @@
 	});
 
 	function formatDate(date: string | null): string {
-		if (!date) return 'Present';
+		if (!date) return t('cv.present');
 		const d = new Date(date);
 		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
 	}
 
 	function downloadPdf() {
-		window.open(getPdfUrl(), '_blank');
+		window.open(getPdfUrl(localeStore.current), '_blank');
 	}
 </script>
 
 <div class="document-viewer">
 	<div class="toolbar">
-		<span class="toolbar-title">Curriculum Vitae</span>
+		<span class="toolbar-title">{t('cv.toolbar')}</span>
 		<button class="download-btn" onclick={downloadPdf}>
 			<svg
 				width="14"
@@ -52,13 +54,13 @@
 				<polyline points="7 10 12 15 17 10" />
 				<line x1="12" y1="15" x2="12" y2="3" />
 			</svg>
-			Download PDF
+			{t('cv.downloadPdf')}
 		</button>
 	</div>
 
 	<div class="document">
 		{#if loading}
-			<p class="status">Loading CV...</p>
+			<p class="status">{t('cv.loading')}</p>
 		{:else if error}
 			<p class="status error">{error}</p>
 		{:else if cv}
@@ -77,13 +79,13 @@
 			</header>
 
 			<!-- About -->
-			<CvSection title="About">
+			<CvSection title={t('cv.about')}>
 				<p class="cv-bio">{cv.profile.bio}</p>
 			</CvSection>
 
 			<!-- Experience -->
 			{#if cv.experience.length > 0}
-				<CvSection title="Experience">
+				<CvSection title={t('cv.experience')}>
 					{#each cv.experience as exp (exp.id)}
 						<div class="cv-entry">
 							<div class="entry-header">
@@ -106,7 +108,7 @@
 
 			<!-- Education -->
 			{#if cv.education.length > 0}
-				<CvSection title="Education">
+				<CvSection title={t('cv.education')}>
 					{#each cv.education as edu (edu.id)}
 						<div class="cv-entry">
 							<div class="entry-header">
@@ -126,7 +128,7 @@
 
 			<!-- Skills -->
 			{#if cv.skills.length > 0}
-				<CvSection title="Skills">
+				<CvSection title={t('cv.skills')}>
 					{@const groups = cv.skills.reduce(
 						(acc, s) => {
 							if (!acc[s.category]) acc[s.category] = [];
@@ -146,7 +148,7 @@
 
 			<!-- Projects -->
 			{#if cv.projects.length > 0}
-				<CvSection title="Projects">
+				<CvSection title={t('cv.projects')}>
 					{#each cv.projects as project (project.slug)}
 						<div class="cv-entry">
 							<div class="entry-header">

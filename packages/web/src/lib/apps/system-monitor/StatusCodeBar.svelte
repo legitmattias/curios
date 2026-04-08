@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
+
 	let {
 		counts
 	}: {
@@ -14,8 +16,8 @@
 
 <div class="status-codes">
 	<div class="bar-header">
-		<span class="bar-label">Status Codes</span>
-		<span class="bar-total">{total} total</span>
+		<span class="bar-label">{t('monitor.statusCodes')}</span>
+		<span class="bar-total">{total} {t('monitor.total')}</span>
 	</div>
 
 	<div class="bar-row">

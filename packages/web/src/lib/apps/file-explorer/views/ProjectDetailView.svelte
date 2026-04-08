@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Project } from '@curios/shared/types';
 	import { fetchProject } from '../api.js';
 
@@ -33,7 +34,7 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading...</p>
+		<p class="status">{t('explorer.loading')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else if project}
@@ -41,7 +42,7 @@
 		<p class="description">{project.description}</p>
 
 		<div class="section">
-			<h3 class="section-title">Tech Stack</h3>
+			<h3 class="section-title">{t('explorer.detail.techStack')}</h3>
 			<div class="tags">
 				{#each project.tech as tech (tech)}
 					<span class="tag">{tech}</span>
@@ -51,7 +52,7 @@
 
 		{#if project.url || project.repo}
 			<div class="section">
-				<h3 class="section-title">Links</h3>
+				<h3 class="section-title">{t('explorer.detail.links')}</h3>
 				<div class="links">
 					{#if project.url}
 						<a href={project.url} target="_blank" rel="noopener external">{project.url}</a>

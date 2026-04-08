@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '$lib/os/i18n.svelte.js';
 	import type { Skill } from '@curios/shared/types';
 	import { fetchSkills } from '../api.js';
 
@@ -38,7 +39,7 @@
 
 <div class="view">
 	{#if loading}
-		<p class="status">Loading skills...</p>
+		<p class="status">{t('explorer.loadingSkills')}</p>
 	{:else if error}
 		<p class="status error">{error}</p>
 	{:else}
