@@ -11,6 +11,7 @@ import { metricsRoute } from './routes/metrics.js'
 import { educationRoute } from './routes/education.js'
 import { cvRoute } from './routes/cv.js'
 import { createMetricsWsHandlers } from './ws/metrics-handler.js'
+import { createChatWsHandlers } from './ws/chat-handler.js'
 
 const app = new OpenAPIHono()
 
@@ -30,6 +31,7 @@ app.route('/cv', cvRoute)
 
 // WebSocket
 app.get('/ws/metrics', upgradeWebSocket(() => createMetricsWsHandlers()))
+app.get('/ws/chat', upgradeWebSocket(() => createChatWsHandlers()))
 
 // OpenAPI docs endpoint
 app.doc('/doc', {

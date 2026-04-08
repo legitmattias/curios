@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from 'hono'
 import { recordRequest } from '../services/metrics-store.js'
 
-const EXCLUDED_PATHS = new Set(['/health', '/ws/metrics'])
+const EXCLUDED_PATHS = new Set(['/health', '/ws/metrics', '/ws/chat'])
 
 export const metricsMiddleware: MiddlewareHandler = async (c, next) => {
   const start = Date.now()
