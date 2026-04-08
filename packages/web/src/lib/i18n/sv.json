@@ -29,9 +29,9 @@
 	"theme.light": "Ljust tema",
 	"theme.highContrast": "Hög kontrast",
 
-	"app.fileExplorer": "Filutforskaren",
+	"app.fileExplorer": "Filer",
 	"app.terminal": "Terminal",
-	"app.systemMonitor": "Systemövervakning",
+	"app.systemMonitor": "Systeminfo",
 	"app.documents": "Dokument",
 	"app.settings": "Inställningar",
 
