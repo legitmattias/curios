@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { VirtualNode } from './filesystem.js';
 	import FolderTree from './FolderTree.svelte';
+	import { t } from '$lib/os/i18n.svelte.js';
 
 	let {
 		nodes,
@@ -29,7 +30,11 @@
 				onclick={() => onnavigate(node.path)}
 			>
 				<span class="icon">{node.icon}</span>
-				<span class="label">{node.name}</span>
+				<span class="label"
+					>{t(`explorer.${node.name}`) !== `explorer.${node.name}`
+						? t(`explorer.${node.name}`)
+						: node.name}</span
+				>
 			</button>
 			{#if node.children && node.children.length > 0}
 				<FolderTree nodes={node.children} {currentPath} {onnavigate} depth={depth + 1} />

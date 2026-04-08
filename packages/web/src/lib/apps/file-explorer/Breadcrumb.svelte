@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getBreadcrumbs } from './filesystem.js';
+	import { t } from '$lib/os/i18n.svelte.js';
 
 	let {
 		path,
@@ -22,7 +23,9 @@
 			class:active={i === crumbs.length - 1}
 			onclick={() => onnavigate(crumb.path)}
 		>
-			{crumb.name}
+			{t(`explorer.${crumb.name}`) !== `explorer.${crumb.name}`
+				? t(`explorer.${crumb.name}`)
+				: crumb.name}
 		</button>
 	{/each}
 </nav>
