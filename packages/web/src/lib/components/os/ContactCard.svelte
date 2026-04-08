@@ -16,12 +16,12 @@
 	}
 
 	function handleWindowClick(e: MouseEvent) {
-		if (emailMenu && emailMenuEl && !emailMenuEl.contains(e.target as Node)) {
+		if (visible && wrapper && !wrapper.contains(e.target as Node)) {
+			visible = false;
 			emailMenu = false;
 			return;
 		}
-		if (visible && wrapper && !wrapper.contains(e.target as Node)) {
-			visible = false;
+		if (emailMenu && emailMenuEl && !emailMenuEl.contains(e.target as Node)) {
 			emailMenu = false;
 		}
 	}
@@ -82,7 +82,7 @@
 				<span class="card-name">Mattias Ubbesen</span>
 				<span class="card-title">{t('contact.title')}</span>
 			</div>
-			<div class="card-links" class:menu-open={emailMenu}>
+			<div class="card-links">
 				<button class="card-link" onclick={showEmailMenu}>
 					<span class="link-label">{t('contact.email')}</span>
 					<span class="link-value">{EMAIL}</span>
@@ -104,6 +104,7 @@
 					target="_blank"
 					rel="noopener external"
 					class="card-link"
+					class:disabled={emailMenu}
 				>
 					<span class="link-label">{t('contact.github')}</span>
 					<span class="link-value">legitmattias</span>
@@ -113,6 +114,7 @@
 					target="_blank"
 					rel="noopener external"
 					class="card-link"
+					class:disabled={emailMenu}
 				>
 					<span class="link-label">{t('contact.linkedin')}</span>
 					<span class="link-value">Mattias Ubbesen</span>
@@ -228,7 +230,7 @@
 		color: var(--color-text-primary);
 	}
 
-	.card-links.menu-open > :not(.email-menu) {
+	.card-link.disabled {
 		opacity: 0.3;
 		pointer-events: none;
 	}
