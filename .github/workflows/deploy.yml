@@ -160,7 +160,7 @@ jobs:
           ORIGIN: ${{ vars.ORIGIN }}
           # Chat / Dossier
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+          DOSSIER_MCP_URL: ${{ vars.DOSSIER_MCP_URL }}
           DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
         run: |
@@ -213,7 +213,7 @@ jobs:
           ORIGIN: ${{ vars.ORIGIN }}
           # Chat / Dossier
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+          DOSSIER_MCP_URL: ${{ vars.DOSSIER_MCP_URL }}
           DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
         run: |
