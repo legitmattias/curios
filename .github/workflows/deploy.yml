@@ -137,6 +137,18 @@ jobs:
       CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync docker-compose to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: docker-compose.staging.yml
+          target: /srv/curios/staging
+          overwrite: true
+
       - name: Deploy to staging
         uses: appleboy/ssh-action@v1
         with:
@@ -147,6 +159,7 @@ jobs:
           script: |
             set -e
             cd /srv/curios/staging
+            mv -f docker-compose.staging.yml docker-compose.yml
 
             # Update env vars from GitHub secrets
             sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
@@ -185,6 +198,18 @@ jobs:
       CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync docker-compose to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: docker-compose.production.yml
+          target: /srv/curios/production
+          overwrite: true
+
       - name: Deploy to production
         uses: appleboy/ssh-action@v1
         with:
@@ -195,6 +220,7 @@ jobs:
           script: |
             set -e
             cd /srv/curios/production
+            mv -f docker-compose.production.yml docker-compose.yml
 
             # Update env vars from GitHub secrets
             sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
