@@ -25,8 +25,8 @@ WORKDIR /app
 COPY --from=build /app/packages/web/build ./build
 COPY --from=build /app/packages/web/package.json ./
 
-# Install production dependencies (marked, dompurify needed for SSR)
-RUN npm install --omit=dev && chown -R curios:curios /app
+# Install runtime dependencies needed for SSR (workspace:^ deps are build-only)
+RUN npm install marked dompurify && chown -R curios:curios /app
 
 USER curios
 EXPOSE 3000
