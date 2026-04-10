@@ -24,9 +24,7 @@ function getMcpApiKey(): string {
   return key
 }
 
-export async function getDossierClient(): Promise<Client> {
-  if (client) return client
-
+async function createClient(): Promise<Client> {
   const transport = new StreamableHTTPClientTransport(
     new URL(getMcpUrl()),
     {
@@ -38,10 +36,26 @@ export async function getDossierClient(): Promise<Client> {
     },
   )
 
-  client = new Client({ name: 'curios', version: '1.0.0' })
-  await client.connect(transport)
-
+  const newClient = new Client({ name: 'curios', version: '1.0.0' })
+  await newClient.connect(transport)
   console.log('Connected to Dossier MCP server')
+  return newClient
+}
+
+export async function getDossierClient(): Promise<Client> {
+  if (client) {
+    try {
+      // Verify connection is still alive
+      await client.listTools()
+      return client
+    } catch {
+      console.log('Dossier MCP connection lost, reconnecting...')
+      client = null
+      cachedTools = null
+    }
+  }
+
+  client = await createClient()
   return client
 }
 
