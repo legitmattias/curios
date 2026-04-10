@@ -12,6 +12,8 @@
 		streaming?: boolean;
 	}
 
+	const MAX_MESSAGE_LENGTH = 500;
+
 	let messages = $state<Message[]>([]);
 	let inputValue = $state('');
 	let isWaiting = $state(false);
@@ -22,6 +24,9 @@
 	let messagesEl: HTMLDivElement;
 	let inputEl: HTMLInputElement;
 	let nextId = 0;
+
+	const charsRemaining = $derived(MAX_MESSAGE_LENGTH - inputValue.length);
+	const isOverLimit = $derived(charsRemaining < 0);
 
 	function scrollToBottom() {
 		requestAnimationFrame(() => {
@@ -72,12 +77,14 @@
 
 			case 'error':
 				isWaiting = false;
-				if (msg.message === 'rate_limit') {
+				if (msg.message === 'rate_limit' || msg.message === 'ip_rate_limit') {
 					messages.push({
 						id: String(nextId++),
 						role: 'assistant',
 						content: t('chat.rateLimit')
 					});
+				} else if (msg.message === 'too_long') {
+					statusText = t('chat.tooLong');
 				} else {
 					statusText = t('chat.error');
 				}
@@ -87,7 +94,7 @@
 	}
 
 	function sendMessage(content: string) {
-		if (!content.trim() || isWaiting || !connection) return;
+		if (!content.trim() || isOverLimit || isWaiting || !connection) return;
 
 		showPrompts = false;
 		isWaiting = true;
@@ -144,19 +151,28 @@
 	</div>
 
 	<div class="input-area">
-		<input
-			bind:this={inputEl}
-			bind:value={inputValue}
-			onkeydown={handleKeydown}
-			placeholder={t('chat.inputPlaceholder')}
-			disabled={isWaiting || connectionStatus !== 'connected'}
-			type="text"
-			class="chat-input"
-		/>
+		<div class="input-wrapper">
+			<input
+				bind:this={inputEl}
+				bind:value={inputValue}
+				onkeydown={handleKeydown}
+				placeholder={t('chat.inputPlaceholder')}
+				disabled={isWaiting || connectionStatus !== 'connected'}
+				maxlength={MAX_MESSAGE_LENGTH}
+				type="text"
+				class="chat-input"
+				class:over-limit={isOverLimit}
+			/>
+			{#if inputValue.length > MAX_MESSAGE_LENGTH * 0.8}
+				<span class="char-count" class:over-limit={isOverLimit}>
+					{charsRemaining}
+				</span>
+			{/if}
+		</div>
 		<button
 			class="send-btn"
 			onclick={() => sendMessage(inputValue)}
-			disabled={isWaiting || !inputValue.trim() || connectionStatus !== 'connected'}
+			disabled={isWaiting || isOverLimit || !inputValue.trim() || connectionStatus !== 'connected'}
 			aria-label="Send"
 		>
 			<svg
@@ -243,8 +259,13 @@
 		flex-shrink: 0;
 	}
 
-	.chat-input {
+	.input-wrapper {
 		flex: 1;
+		position: relative;
+	}
+
+	.chat-input {
+		width: 100%;
 		padding: var(--space-2) var(--space-3);
 		border: 1px solid var(--color-explorer-border);
 		border-radius: var(--radius-window);
@@ -262,6 +283,24 @@
 
 	.chat-input:disabled {
 		opacity: 0.5;
+	}
+
+	.chat-input.over-limit {
+		border-color: var(--color-error, #e53e3e);
+	}
+
+	.char-count {
+		position: absolute;
+		right: var(--space-2);
+		top: 50%;
+		transform: translateY(-50%);
+		font-size: var(--text-xs);
+		color: var(--color-text-muted);
+		pointer-events: none;
+	}
+
+	.char-count.over-limit {
+		color: var(--color-error, #e53e3e);
 	}
 
 	.send-btn {

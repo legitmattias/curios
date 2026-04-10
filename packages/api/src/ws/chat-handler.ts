@@ -1,28 +1,47 @@
 import type { WSEvents } from 'hono/ws'
 import { createSession, handleChatMessage, type ChatSession } from '../services/chat-agent.js'
+import {
+  canConnect,
+  onConnect,
+  onDisconnect,
+  canSendMessage,
+  validateMessage,
+} from '../services/chat-limiter.js'
 
-export function createChatWsHandlers(): WSEvents {
+export function createChatWsHandlers(clientIp: string): WSEvents {
   let session: ChatSession
 
   return {
-    onOpen() {
+    onOpen(_event, ws) {
+      if (!canConnect(clientIp)) {
+        ws.send(JSON.stringify({ type: 'error', message: 'connection_limit' }))
+        ws.close()
+        return
+      }
+
+      onConnect(clientIp)
       session = createSession()
-      console.log('Chat session opened')
+      console.log(`Chat session opened [${clientIp}]`)
     },
 
     async onMessage(event, ws) {
       try {
         const data = JSON.parse(String(event.data))
+        const result = validateMessage(data)
 
-        if (data.type !== 'message' || typeof data.content !== 'string') {
-          ws.send(JSON.stringify({ type: 'error', message: 'Invalid message format' }))
+        if ('error' in result) {
+          if (result.error !== 'empty') {
+            ws.send(JSON.stringify({ type: 'error', message: result.error }))
+          }
           return
         }
 
-        const userMessage = data.content.trim()
-        if (!userMessage) return
+        if (!canSendMessage(clientIp)) {
+          ws.send(JSON.stringify({ type: 'error', message: 'ip_rate_limit' }))
+          return
+        }
 
-        await handleChatMessage(session, userMessage, {
+        await handleChatMessage(session, result.content, {
           onStatus(status) {
             ws.send(JSON.stringify({ type: 'status', status }))
           },
@@ -41,17 +60,18 @@ export function createChatWsHandlers(): WSEvents {
         })
       } catch (err) {
         console.error('Chat error:', err)
-        const message = err instanceof Error ? err.message : 'Unknown error'
-        ws.send(JSON.stringify({ type: 'error', message }))
+        ws.send(JSON.stringify({ type: 'error', message: 'internal_error' }))
       }
     },
 
     onClose() {
-      console.log('Chat session closed')
+      onDisconnect(clientIp)
+      console.log(`Chat session closed [${clientIp}]`)
     },
 
     onError() {
-      console.log('Chat session error')
+      onDisconnect(clientIp)
+      console.log(`Chat session error [${clientIp}]`)
     },
   }
 }

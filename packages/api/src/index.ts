@@ -31,7 +31,12 @@ app.route('/cv', cvRoute)
 
 // WebSocket
 app.get('/ws/metrics', upgradeWebSocket(() => createMetricsWsHandlers()))
-app.get('/ws/chat', upgradeWebSocket(() => createChatWsHandlers()))
+app.get('/ws/chat', upgradeWebSocket((c) => {
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim()
+    ?? c.req.header('x-real-ip')
+    ?? 'unknown'
+  return createChatWsHandlers(ip)
+}))
 
 // OpenAPI docs endpoint
 app.doc('/doc', {

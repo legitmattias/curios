@@ -151,6 +151,7 @@
 	"chat.fetchingData": "Fetching data",
 	"chat.rateLimit": "You've reached the message limit for this session. Feel free to open a new chat window!",
 	"chat.error": "Something went wrong. Please try again.",
+	"chat.tooLong": "Message is too long. Please shorten it.",
 	"chat.prompt.skills": "What technologies does Mattias work with?",
 	"chat.prompt.projects": "Tell me about his projects",
 	"chat.prompt.available": "Is he available for work?",

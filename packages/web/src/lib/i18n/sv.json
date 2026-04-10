@@ -151,6 +151,7 @@
 	"chat.fetchingData": "Hämtar data",
 	"chat.rateLimit": "Du har nått meddelandegränsen för den här sessionen. Öppna gärna ett nytt chattfönster!",
 	"chat.error": "Något gick fel. Försök igen.",
+	"chat.tooLong": "Meddelandet är för långt. Förkorta det.",
 	"chat.prompt.skills": "Vilka teknologier arbetar Mattias med?",
 	"chat.prompt.projects": "Berätta om hans projekt",
 	"chat.prompt.available": "Är han tillgänglig för arbete?",
