@@ -21,8 +21,12 @@ RUN pnpm --filter @curios/web build
 FROM node:22-alpine
 RUN addgroup -S curios && adduser -S curios -G curios
 WORKDIR /app
-COPY --chown=curios:curios --from=build /app/packages/web/build ./build
-COPY --chown=curios:curios --from=build /app/packages/web/package.json ./
+
+COPY --from=build /app/packages/web/build ./build
+COPY --from=build /app/packages/web/package.json ./
+
+# Install production dependencies (marked, dompurify needed for SSR)
+RUN npm install --omit=dev && chown -R curios:curios /app
 
 USER curios
 EXPOSE 3000
