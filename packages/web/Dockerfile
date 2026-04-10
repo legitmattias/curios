@@ -23,10 +23,11 @@ RUN addgroup -S curios && adduser -S curios -G curios
 WORKDIR /app
 
 COPY --from=build /app/packages/web/build ./build
-COPY --from=build /app/packages/web/package.json ./
 
-# Install runtime dependencies needed for SSR (workspace:^ deps are build-only)
-RUN npm install marked dompurify && chown -R curios:curios /app
+# Install runtime dependencies needed for SSR (separate from workspace package.json)
+RUN echo '{"dependencies":{"marked":"^18.0.0","dompurify":"^3.3.3"}}' > package.json \
+    && npm install \
+    && chown -R curios:curios /app
 
 USER curios
 EXPOSE 3000
