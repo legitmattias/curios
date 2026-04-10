@@ -126,64 +126,59 @@ jobs:
           cache-to: type=gha,scope=web-prod,mode=max
 
   # ── Deploy to staging ─────────────────────────────────────
+  # Uses Docker context over SSH — the CI runner reads the compose file
+  # locally and sends Docker API calls to the remote daemon. No files
+  # are copied to the server; env vars never touch disk on the VPS.
   deploy-staging:
     needs: build-and-push
     runs-on: ubuntu-24.04
     environment: staging
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
-      DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
-      CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync docker-compose to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: docker-compose.staging.yml
-          target: /srv/curios/staging
-          overwrite: true
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          printf 'Host %s\n  IdentityFile %s\n' \
+            "${{ secrets.DEPLOY_HOST }}" "$HOME/.ssh/deploy_key" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
-      - name: Deploy to staging
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: ANTHROPIC_API_KEY,DOSSIER_MCP_URL,DOSSIER_MCP_API_KEY,CHAT_MAX_MESSAGES
-          script: |
-            set -e
-            cd /srv/curios/staging
-            mv -f docker-compose.staging.yml docker-compose.yml
+      - name: Deploy
+        env:
+          DOCKER_HOST: ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+          # Postgres
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PORT: ${{ vars.PORT }}
+          # Web
+          ORIGIN: ${{ vars.ORIGIN }}
+          # Chat / Dossier
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+          DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
+          CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker compose -p staging -f docker-compose.staging.yml pull
+          docker compose -p staging -f docker-compose.staging.yml up -d
+          docker compose -p staging -f docker-compose.staging.yml exec -T api bunx drizzle-kit migrate
+          docker compose -p staging -f docker-compose.staging.yml exec -T api bunx tsx src/db/seed.ts
 
-            # Update env vars from GitHub secrets
-            sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
-            echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" >> .env
-            echo "DOSSIER_MCP_URL=${DOSSIER_MCP_URL}" >> .env
-            echo "DOSSIER_MCP_API_KEY=${DOSSIER_MCP_API_KEY}" >> .env
-            echo "CHAT_MAX_MESSAGES=${CHAT_MAX_MESSAGES}" >> .env
-
-            # Pull new images
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose pull
-
-            # Restart services (postgres untouched if unchanged)
-            docker compose up -d
-
-            # Run migrations
-            docker compose exec -T api bunx drizzle-kit migrate
-
-            # Health checks
-            echo "Waiting for services..."
-            sleep 5
-            curl -sf http://localhost:4010/health || (echo "API health check failed" && exit 1)
-            curl -sf http://localhost:3010 || (echo "Web health check failed" && exit 1)
-            echo "Staging deploy complete."
+      - name: Health check
+        run: |
+          echo "Waiting for services..."
+          sleep 5
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            'curl -sf http://localhost:4010/health || (echo "API health check failed" && exit 1)'
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            'curl -sf http://localhost:3010 || (echo "Web health check failed" && exit 1)'
+          echo "Staging deploy complete."
 
   # ── Deploy to production ──────────────────────────────────
   deploy-production:
@@ -191,57 +186,49 @@ jobs:
     runs-on: ubuntu-24.04
     environment: production
     if: github.event.inputs.environment == 'production'
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
-      DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
-      CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync docker-compose to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          source: docker-compose.production.yml
-          target: /srv/curios/production
-          overwrite: true
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+          printf 'Host %s\n  IdentityFile %s\n' \
+            "${{ secrets.DEPLOY_HOST }}" "$HOME/.ssh/deploy_key" > ~/.ssh/config
+          chmod 600 ~/.ssh/config
 
-      - name: Deploy to production
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          envs: ANTHROPIC_API_KEY,DOSSIER_MCP_URL,DOSSIER_MCP_API_KEY,CHAT_MAX_MESSAGES
-          script: |
-            set -e
-            cd /srv/curios/production
-            mv -f docker-compose.production.yml docker-compose.yml
+      - name: Deploy
+        env:
+          DOCKER_HOST: ssh://${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+          # Postgres
+          POSTGRES_USER: ${{ vars.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ vars.POSTGRES_DB }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          PORT: ${{ vars.PORT }}
+          # Web
+          ORIGIN: ${{ vars.ORIGIN }}
+          # Chat / Dossier
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+          DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
+          CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker compose -p production -f docker-compose.production.yml pull
+          docker compose -p production -f docker-compose.production.yml up -d
+          docker compose -p production -f docker-compose.production.yml exec -T api bunx drizzle-kit migrate
+          docker compose -p production -f docker-compose.production.yml exec -T api bunx tsx src/db/seed.ts
 
-            # Update env vars from GitHub secrets
-            sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
-            echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" >> .env
-            echo "DOSSIER_MCP_URL=${DOSSIER_MCP_URL}" >> .env
-            echo "DOSSIER_MCP_API_KEY=${DOSSIER_MCP_API_KEY}" >> .env
-            echo "CHAT_MAX_MESSAGES=${CHAT_MAX_MESSAGES}" >> .env
-
-            # Pull new images
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            docker compose pull
-
-            # Restart services
-            docker compose up -d
-
-            # Run migrations
-            docker compose exec -T api bunx drizzle-kit migrate
-
-            # Health checks
-            echo "Waiting for services..."
-            sleep 5
-            curl -sf http://localhost:4000/health || (echo "API health check failed" && exit 1)
-            curl -sf http://localhost:3000 || (echo "Web health check failed" && exit 1)
-            echo "Production deploy complete."
+      - name: Health check
+        run: |
+          echo "Waiting for services..."
+          sleep 5
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            'curl -sf http://localhost:4000/health || (echo "API health check failed" && exit 1)'
+          ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
+            'curl -sf http://localhost:3000 || (echo "Web health check failed" && exit 1)'
+          echo "Production deploy complete."
