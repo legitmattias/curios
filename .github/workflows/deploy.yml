@@ -168,7 +168,7 @@ jobs:
           docker compose -p staging -f docker-compose.staging.yml pull
           docker compose -p staging -f docker-compose.staging.yml up -d
           docker compose -p staging -f docker-compose.staging.yml exec -T api bunx drizzle-kit migrate
-          docker compose -p staging -f docker-compose.staging.yml exec -T api bunx tsx src/db/seed.ts
+          docker compose -p staging -f docker-compose.staging.yml exec -T api bun run src/db/seed.ts
 
       - name: Health check
         run: |
@@ -221,7 +221,7 @@ jobs:
           docker compose -p production -f docker-compose.production.yml pull
           docker compose -p production -f docker-compose.production.yml up -d
           docker compose -p production -f docker-compose.production.yml exec -T api bunx drizzle-kit migrate
-          docker compose -p production -f docker-compose.production.yml exec -T api bunx tsx src/db/seed.ts
+          docker compose -p production -f docker-compose.production.yml exec -T api bun run src/db/seed.ts
 
       - name: Health check
         run: |
