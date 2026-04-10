@@ -130,6 +130,11 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-24.04
     environment: staging
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+      DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
+      CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
       - name: Deploy to staging
@@ -138,9 +143,17 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: ANTHROPIC_API_KEY,DOSSIER_MCP_URL,DOSSIER_MCP_API_KEY,CHAT_MAX_MESSAGES
           script: |
             set -e
             cd /srv/curios/staging
+
+            # Update env vars from GitHub secrets
+            sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
+            echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" >> .env
+            echo "DOSSIER_MCP_URL=${DOSSIER_MCP_URL}" >> .env
+            echo "DOSSIER_MCP_API_KEY=${DOSSIER_MCP_API_KEY}" >> .env
+            echo "CHAT_MAX_MESSAGES=${CHAT_MAX_MESSAGES}" >> .env
 
             # Pull new images
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -165,6 +178,11 @@ jobs:
     runs-on: ubuntu-24.04
     environment: production
     if: github.event.inputs.environment == 'production'
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      DOSSIER_MCP_URL: ${{ secrets.DOSSIER_MCP_URL }}
+      DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
+      CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
 
     steps:
       - name: Deploy to production
@@ -173,9 +191,17 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_SSH_KEY }}
+          envs: ANTHROPIC_API_KEY,DOSSIER_MCP_URL,DOSSIER_MCP_API_KEY,CHAT_MAX_MESSAGES
           script: |
             set -e
             cd /srv/curios/production
+
+            # Update env vars from GitHub secrets
+            sed -i '/^ANTHROPIC_API_KEY=/d; /^DOSSIER_MCP_URL=/d; /^DOSSIER_MCP_API_KEY=/d; /^CHAT_MAX_MESSAGES=/d' .env
+            echo "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}" >> .env
+            echo "DOSSIER_MCP_URL=${DOSSIER_MCP_URL}" >> .env
+            echo "DOSSIER_MCP_API_KEY=${DOSSIER_MCP_API_KEY}" >> .env
+            echo "CHAT_MAX_MESSAGES=${CHAT_MAX_MESSAGES}" >> .env
 
             # Pull new images
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
