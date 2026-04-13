@@ -1,22 +1,22 @@
 :root {
 	/* ── Desktop ── */
-	--color-desktop-bg: #141a20;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #0c2028 0%, #141a20 50%, #0c1018 100%);
+	--color-desktop-bg: #121e22;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #0a2a2e 0%, #121e22 50%, #0c1418 100%);
 	--opacity-watermark: 0.15;
 	--opacity-watermark-logo: 0.08;
 
 	/* ── Window ── */
-	--color-window-bg: #1a2028;
-	--color-window-header: #222a32;
-	--color-window-header-focused: #283238;
-	--color-window-border: #2e3840;
-	--color-window-border-focused: #3a5058;
+	--color-window-bg: #152024;
+	--color-window-header: #1c2a2e;
+	--color-window-header-focused: #223234;
+	--color-window-border: #2a3a3e;
+	--color-window-border-focused: #2a9d8f;
 	--color-window-highlight: rgba(255, 255, 255, 0.04);
 	--color-window-highlight-focused: rgba(255, 255, 255, 0.08);
 
 	/* ── Taskbar ── */
-	--color-taskbar-bg: #10181e;
-	--color-taskbar-glass: rgba(14, 20, 28, 0.75);
+	--color-taskbar-bg: #0c181c;
+	--color-taskbar-glass: rgba(10, 20, 24, 0.75);
 	--color-taskbar-entry: transparent;
 	--color-taskbar-entry-hover: rgba(255, 255, 255, 0.08);
 	--color-taskbar-entry-active: rgba(255, 255, 255, 0.12);
@@ -29,9 +29,9 @@
 	--color-text-muted: #4e5e68;
 
 	/* ── Accent ── */
-	--color-accent: #2a9d8f;
-	--color-accent-hover: #3ab8a8;
-	--color-focus-ring: rgba(42, 157, 143, 0.5);
+	--color-accent: #20b2aa;
+	--color-accent-hover: #30d4ca;
+	--color-focus-ring: rgba(32, 178, 170, 0.5);
 
 	/* ── Window controls ── */
 	--color-control-close: #e06060;
@@ -44,25 +44,25 @@
 	/* ── Terminal ── */
 	--color-terminal-bg: #0e151a;
 	--color-terminal-text: #c0ccd4;
-	--color-terminal-prompt: #2a9d8f;
+	--color-terminal-prompt: #20b2aa;
 	--color-terminal-system: #4e5e68;
-	--color-terminal-cursor: #2a9d8f;
+	--color-terminal-cursor: #20b2aa;
 
 	/* ── System Monitor ── */
 	--color-monitor-bg: #0e151a;
 	--color-monitor-chart-stroke: var(--color-accent);
 	--color-monitor-grid: rgba(255, 255, 255, 0.04);
 	--color-monitor-badge-get: rgba(64, 192, 96, 0.2);
-	--color-monitor-badge-post: rgba(42, 157, 143, 0.2);
+	--color-monitor-badge-post: rgba(32, 178, 170, 0.2);
 	--color-monitor-badge-other: rgba(60, 80, 90, 0.2);
 
 	/* ── Document Viewer ── */
 	--color-document-bg: #161e24;
 
 	/* ── File Explorer ── */
-	--color-explorer-border: #263038;
+	--color-explorer-border: #223034;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);
-	--color-explorer-item-active: rgba(42, 157, 143, 0.15);
+	--color-explorer-item-active: rgba(32, 178, 170, 0.15);
 
 	/* ── Spacing scale ── */
 	--space-1: 4px;
@@ -80,7 +80,7 @@
 	--shadow-window: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
 	--shadow-window-focused:
 		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(42, 157, 143, 0.15);
+		0 0 0 1px rgba(32, 178, 170, 0.15);
 	--shadow-taskbar: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -4px 24px rgba(0, 0, 0, 0.3);
 
 	/* ── Z-index layers ── */

@@ -93,44 +93,44 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.theme-slate {
-	--color-desktop-bg: #161a1e;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #141e28 0%, #161a1e 50%, #0e1214 100%);
+	--color-desktop-bg: #141820;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #101e2e 0%, #141820 50%, #0c1018 100%);
 
-	--color-window-bg: #1c2024;
-	--color-window-header: #24282e;
-	--color-window-header-focused: #2a3036;
-	--color-window-border: #323a40;
-	--color-window-border-focused: #445058;
+	--color-window-bg: #181e28;
+	--color-window-header: #202830;
+	--color-window-header-focused: #263038;
+	--color-window-border: #2e3844;
+	--color-window-border-focused: #4a90c0;
 
-	--color-taskbar-bg: #12161a;
-	--color-taskbar-glass: rgba(14, 18, 22, 0.75);
+	--color-taskbar-bg: #101620;
+	--color-taskbar-glass: rgba(12, 18, 26, 0.75);
 
-	--color-text-primary: #d8dce0;
-	--color-text-secondary: #7e8890;
-	--color-text-muted: #505c64;
+	--color-text-primary: #dce0e8;
+	--color-text-secondary: #7a8898;
+	--color-text-muted: #4e5c6c;
 
-	--color-accent: #5488a8;
-	--color-accent-hover: #6498b8;
-	--color-focus-ring: rgba(84, 136, 168, 0.5);
+	--color-accent: #4a90c0;
+	--color-accent-hover: #5ca8d8;
+	--color-focus-ring: rgba(74, 144, 192, 0.5);
 
-	--color-terminal-bg: #10141a;
-	--color-terminal-text: #c4ccd2;
-	--color-terminal-prompt: #5488a8;
-	--color-terminal-system: #505c64;
-	--color-terminal-cursor: #5488a8;
+	--color-terminal-bg: #0e141c;
+	--color-terminal-text: #c8d0d8;
+	--color-terminal-prompt: #4a90c0;
+	--color-terminal-system: #4e5c6c;
+	--color-terminal-cursor: #4a90c0;
 
-	--color-monitor-bg: #10141a;
-	--color-monitor-badge-post: rgba(84, 136, 168, 0.2);
-	--color-monitor-badge-other: rgba(60, 70, 80, 0.2);
+	--color-monitor-bg: #0e141c;
+	--color-monitor-badge-post: rgba(74, 144, 192, 0.2);
+	--color-monitor-badge-other: rgba(50, 60, 80, 0.2);
 
-	--color-document-bg: #181c22;
+	--color-document-bg: #161c24;
 
-	--color-explorer-border: #282e34;
-	--color-explorer-item-active: rgba(84, 136, 168, 0.15);
+	--color-explorer-border: #242c36;
+	--color-explorer-item-active: rgba(74, 144, 192, 0.15);
 
 	--shadow-window-focused:
 		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(84, 136, 168, 0.15);
+		0 0 0 1px rgba(74, 144, 192, 0.15);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -149,7 +149,7 @@
 	--color-window-header: #f0f0f4;
 	--color-window-header-focused: #e8e8f0;
 	--color-window-border: #d0d0d8;
-	--color-window-border-focused: #60a8a0;
+	--color-window-border-focused: #18a098;
 	--color-window-highlight: rgba(255, 255, 255, 0.8);
 	--color-window-highlight-focused: rgba(255, 255, 255, 1);
 
@@ -168,9 +168,9 @@
 	--color-text-muted: #8888a0;
 
 	/* ── Accent ── */
-	--color-accent: #1f8a7e;
-	--color-accent-hover: #2a9d8f;
-	--color-focus-ring: rgba(31, 138, 126, 0.4);
+	--color-accent: #18a098;
+	--color-accent-hover: #20b2aa;
+	--color-focus-ring: rgba(24, 160, 152, 0.4);
 
 	/* ── Window controls ── */
 	--color-control-close: #d04040;
@@ -183,16 +183,16 @@
 	/* ── Terminal ── */
 	--color-terminal-bg: #f5f5fa;
 	--color-terminal-text: #2a2a3a;
-	--color-terminal-prompt: #1f8a7e;
+	--color-terminal-prompt: #18a098;
 	--color-terminal-system: #8888a0;
-	--color-terminal-cursor: #1f8a7e;
+	--color-terminal-cursor: #18a098;
 
 	/* ── System Monitor ── */
 	--color-monitor-bg: #f0f0f6;
 	--color-monitor-chart-stroke: var(--color-accent);
 	--color-monitor-grid: rgba(0, 0, 0, 0.05);
 	--color-monitor-badge-get: rgba(48, 160, 80, 0.15);
-	--color-monitor-badge-post: rgba(31, 138, 126, 0.15);
+	--color-monitor-badge-post: rgba(24, 160, 152, 0.15);
 	--color-monitor-badge-other: rgba(80, 80, 120, 0.1);
 
 	/* ── Document Viewer ── */
@@ -201,12 +201,12 @@
 	/* ── File Explorer ── */
 	--color-explorer-border: #d8d8e0;
 	--color-explorer-item-hover: rgba(0, 0, 0, 0.04);
-	--color-explorer-item-active: rgba(31, 138, 126, 0.1);
+	--color-explorer-item-active: rgba(24, 160, 152, 0.1);
 
 	/* ── Shadows (lighter for light theme) ── */
 	--shadow-window: 0 1px 4px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
 	--shadow-window-focused:
-		0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(31, 138, 126, 0.12);
+		0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(24, 160, 152, 0.12);
 	--shadow-taskbar: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -2px 12px rgba(0, 0, 0, 0.06);
 }
 

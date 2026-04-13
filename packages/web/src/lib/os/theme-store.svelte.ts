@@ -1,6 +1,9 @@
 export type Theme = 'dark' | 'purple' | 'amber' | 'slate' | 'light' | 'high-contrast';
 
 const THEMES: Theme[] = ['dark', 'purple', 'amber', 'slate', 'light', 'high-contrast'];
+
+// Base modes for taskbar toggle and terminal — accent themes are settings-only
+const BASE_MODES: Theme[] = ['dark', 'light', 'high-contrast'];
 const STORAGE_KEY = 'curios-theme';
 
 function getSystemPreference(): Theme {
@@ -37,9 +40,11 @@ class ThemeStore {
 		applyTheme(this.current);
 	}
 
+	/** Cycle through base modes only (dark → light → high-contrast) */
 	cycle(): void {
-		const index = THEMES.indexOf(this.current);
-		this.current = THEMES[(index + 1) % THEMES.length];
+		const currentBase = BASE_MODES.includes(this.current) ? this.current : 'dark';
+		const index = BASE_MODES.indexOf(currentBase);
+		this.current = BASE_MODES[(index + 1) % BASE_MODES.length];
 		applyTheme(this.current);
 	}
 

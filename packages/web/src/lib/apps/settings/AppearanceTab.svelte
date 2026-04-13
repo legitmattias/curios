@@ -7,7 +7,7 @@
 			id: 'dark',
 			labelKey: 'settings.theme.dark',
 			descKey: 'settings.theme.darkDesc',
-			colors: ['#141a20', '#1a2028', '#2a9d8f', '#dce4e8']
+			colors: ['#121e22', '#152024', '#20b2aa', '#dce4e8']
 		},
 		{
 			id: 'purple',
@@ -25,13 +25,13 @@
 			id: 'slate',
 			labelKey: 'settings.theme.slate',
 			descKey: 'settings.theme.slateDesc',
-			colors: ['#161a1e', '#1c2024', '#5488a8', '#d8dce0']
+			colors: ['#141820', '#181e28', '#4a90c0', '#dce0e8']
 		},
 		{
 			id: 'light',
 			labelKey: 'settings.theme.light',
 			descKey: 'settings.theme.lightDesc',
-			colors: ['#e8e8f0', '#ffffff', '#1f8a7e', '#1a1a24']
+			colors: ['#e8e8f0', '#ffffff', '#18a098', '#1a1a24']
 		},
 		{
 			id: 'high-contrast',

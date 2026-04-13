@@ -2,18 +2,11 @@
 	import { themeStore } from '$lib/os/theme-store.svelte.js';
 	import { t } from '$lib/os/i18n.svelte.js';
 
-	import type { Theme } from '$lib/os/theme-store.svelte.js';
-
-	const moonIcon = {
-		viewBox: '0 0 24 24',
-		path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
-	};
-
-	const icons: Record<Theme, { viewBox: string; path: string }> = {
-		dark: moonIcon,
-		purple: moonIcon,
-		amber: moonIcon,
-		slate: moonIcon,
+	const icons = {
+		dark: {
+			viewBox: '0 0 24 24',
+			path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
+		},
 		light: {
 			viewBox: '0 0 24 24',
 			path: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m12.73-12.73l1.41-1.41M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z'
@@ -24,17 +17,19 @@
 		}
 	};
 
-	const labelKeys: Record<Theme, string> = {
-		dark: 'theme.dark',
-		purple: 'theme.purple',
-		amber: 'theme.amber',
-		slate: 'theme.slate',
-		light: 'theme.light',
-		'high-contrast': 'theme.highContrast'
-	};
+	// Map accent themes to their base mode icon
+	function getBaseMode(theme: string): 'dark' | 'light' | 'high-contrast' {
+		if (theme === 'light') return 'light';
+		if (theme === 'high-contrast') return 'high-contrast';
+		return 'dark';
+	}
 
-	const icon = $derived(icons[themeStore.current]);
-	const label = $derived(t(labelKeys[themeStore.current]));
+	const icon = $derived(icons[getBaseMode(themeStore.current)]);
+	const label = $derived(
+		t(
+			`theme.${getBaseMode(themeStore.current) === 'high-contrast' ? 'highContrast' : getBaseMode(themeStore.current)}`
+		)
+	);
 </script>
 
 <button class="theme-toggle" onclick={() => themeStore.cycle()} title={label} aria-label={label}>
