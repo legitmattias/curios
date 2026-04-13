@@ -118,7 +118,7 @@
 	"cv.experience": "Erfarenhet",
 	"cv.education": "Utbildning",
 	"cv.skills": "Kompetenser",
-	"cv.projects": "Projekt",
+	"cv.projects": "Utvalda projekt",
 	"cv.present": "Pågående",
 
 	"settings.appearance": "Utseende",
@@ -151,7 +151,7 @@
 	"pdf.experience": "Erfarenhet",
 	"pdf.education": "Utbildning",
 	"pdf.skills": "Kompetenser",
-	"pdf.projects": "Projekt",
+	"pdf.projects": "Utvalda projekt",
 	"pdf.present": "Pågående",
 	"pdf.generatedFrom": "Genererad från",
 

@@ -36,6 +36,13 @@
       "when": 1776119682759,
       "tag": "0004_strong_forgotten_one",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1776123312800,
+      "tag": "0005_noisy_proudstar",
+      "breakpoints": true
     }
   ]
 }

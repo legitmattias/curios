@@ -118,7 +118,7 @@
 	"cv.experience": "Experience",
 	"cv.education": "Education",
 	"cv.skills": "Skills",
-	"cv.projects": "Projects",
+	"cv.projects": "Featured Projects",
 	"cv.present": "Present",
 
 	"settings.appearance": "Appearance",
@@ -151,7 +151,7 @@
 	"pdf.experience": "Experience",
 	"pdf.education": "Education",
 	"pdf.skills": "Skills",
-	"pdf.projects": "Projects",
+	"pdf.projects": "Featured Projects",
 	"pdf.present": "Present",
 	"pdf.generatedFrom": "Generated from",
 

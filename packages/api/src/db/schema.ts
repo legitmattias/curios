@@ -17,6 +17,7 @@ export const projects = pgTable("projects", {
   tech: text().array().notNull(),
   url: varchar({ length: 512 }),
   repo: varchar({ length: 512 }),
+  sortOrder: integer("sort_order").notNull().default(0),
   contentHash: varchar("content_hash", { length: 64 }),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
