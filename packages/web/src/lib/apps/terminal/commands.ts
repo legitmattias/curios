@@ -8,7 +8,7 @@ import {
 	fetchHealth,
 	fetchCv
 } from './api.js';
-import { themeStore, type Theme } from '$lib/os/theme-store.svelte.js';
+import { themeStore, type Mode, type Accent } from '$lib/os/theme-store.svelte.js';
 import { t } from '$lib/os/i18n.svelte.js';
 
 export interface Command {
@@ -170,7 +170,7 @@ const COMMANDS: Command[] = [
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
-				`Theme:   ${themeStore.current}`,
+				`Theme:   ${themeStore.mode} + ${themeStore.accent}`,
 				`Backend: Hono + Bun`,
 				`DB:      PostgreSQL 17`
 			];
@@ -243,25 +243,56 @@ const COMMANDS: Command[] = [
 	},
 	{
 		name: 'theme',
-		description: 'Switch theme',
-		usage: 'theme [dark|light|high-contrast]',
+		description: 'Switch theme mode or accent',
+		usage: 'theme [mode <dark|light|high-contrast>] [accent <teal|purple|amber|slate>]',
 		handler: async (args) => {
-			const valid: Theme[] = ['dark', 'light', 'high-contrast'];
+			const validModes: Mode[] = ['dark', 'light', 'high-contrast'];
+			const validAccents: Accent[] = ['teal', 'purple', 'amber', 'slate'];
+
 			if (args.length === 0) {
 				return [
-					stdout(`${t('terminal.theme.current')} ${themeStore.current}`),
-					system(`${t('terminal.theme.available')} ${valid.join(', ')}`)
+					stdout(`${t('terminal.theme.currentMode')} ${themeStore.mode}`),
+					stdout(`${t('terminal.theme.currentAccent')} ${themeStore.accent}`),
+					system(`${t('terminal.theme.availableModes')} ${validModes.join(', ')}`),
+					system(`${t('terminal.theme.availableAccents')} ${validAccents.join(', ')}`)
 				];
 			}
-			const requested = args[0] as Theme;
-			if (!valid.includes(requested)) {
-				return [
-					error(`${t('terminal.theme.unknown')} ${requested}`),
-					system(`${t('terminal.theme.available')} ${valid.join(', ')}`)
-				];
+
+			if (args[0] === 'mode' && args[1]) {
+				const requested = args[1] as Mode;
+				if (!validModes.includes(requested)) {
+					return [
+						error(`${t('terminal.theme.unknown')} ${requested}`),
+						system(`${t('terminal.theme.availableModes')} ${validModes.join(', ')}`)
+					];
+				}
+				themeStore.setMode(requested);
+				return [stdout(`${t('terminal.theme.modeSetTo')} ${requested}`)];
 			}
-			themeStore.set(requested);
-			return [stdout(`${t('terminal.theme.setTo')} ${requested}`)];
+
+			if (args[0] === 'accent' && args[1]) {
+				const requested = args[1] as Accent;
+				if (!validAccents.includes(requested)) {
+					return [
+						error(`${t('terminal.theme.unknown')} ${requested}`),
+						system(`${t('terminal.theme.availableAccents')} ${validAccents.join(', ')}`)
+					];
+				}
+				themeStore.setAccent(requested);
+				return [stdout(`${t('terminal.theme.accentSetTo')} ${requested}`)];
+			}
+
+			// Shorthand: theme dark/light/high-contrast
+			if (validModes.includes(args[0] as Mode)) {
+				themeStore.setMode(args[0] as Mode);
+				return [stdout(`${t('terminal.theme.modeSetTo')} ${args[0]}`)];
+			}
+
+			return [
+				error(`${t('terminal.theme.unknown')} ${args[0]}`),
+				system(`${t('terminal.theme.availableModes')} ${validModes.join(', ')}`),
+				system(`${t('terminal.theme.availableAccents')} ${validAccents.join(', ')}`)
+			];
 		}
 	},
 	{

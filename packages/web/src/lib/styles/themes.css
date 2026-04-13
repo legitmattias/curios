@@ -1,146 +1,11 @@
 /* ═══════════════════════════════════════════════════════
-   PURPLE ACCENT (original theme)
+   MODE: Light
    ═══════════════════════════════════════════════════════ */
 
-:root.theme-purple {
-	--color-desktop-bg: #1a1a2e;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #2a1845 0%, #1a1a2e 50%, #0c1018 100%);
-
-	--color-window-bg: #1e1e2e;
-	--color-window-header: #2a2a3e;
-	--color-window-header-focused: #32324e;
-	--color-window-border: #3a3a4e;
-	--color-window-border-focused: #5a5a7e;
-
-	--color-taskbar-bg: #16162a;
-	--color-taskbar-glass: rgba(16, 16, 32, 0.75);
-
-	--color-text-primary: #e0e0ec;
-	--color-text-secondary: #8888a8;
-	--color-text-muted: #5a5a72;
-
-	--color-accent: #7c5cbf;
-	--color-accent-hover: #9070d4;
-	--color-focus-ring: rgba(124, 92, 191, 0.5);
-
-	--color-terminal-bg: #14141e;
-	--color-terminal-text: #c8c8dc;
-	--color-terminal-prompt: #7c5cbf;
-	--color-terminal-system: #5a5a72;
-	--color-terminal-cursor: #7c5cbf;
-
-	--color-monitor-bg: #13131e;
-	--color-monitor-badge-post: rgba(124, 92, 191, 0.2);
-	--color-monitor-badge-other: rgba(80, 80, 120, 0.2);
-
-	--color-document-bg: #1a1a28;
-
-	--color-explorer-border: #2a2a3e;
-	--color-explorer-item-active: rgba(124, 92, 191, 0.15);
-
-	--shadow-window-focused:
-		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(124, 92, 191, 0.15);
-}
-
-/* ═══════════════════════════════════════════════════════
-   AMBER ACCENT
-   ═══════════════════════════════════════════════════════ */
-
-:root.theme-amber {
-	--color-desktop-bg: #1a1610;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #28200c 0%, #1a1610 50%, #141008 100%);
-
-	--color-window-bg: #201c16;
-	--color-window-header: #2c2820;
-	--color-window-header-focused: #343026;
-	--color-window-border: #3e3828;
-	--color-window-border-focused: #5a5038;
-
-	--color-taskbar-bg: #161208;
-	--color-taskbar-glass: rgba(20, 16, 8, 0.75);
-
-	--color-text-primary: #e8e0d4;
-	--color-text-secondary: #9a8e7a;
-	--color-text-muted: #6a5e4e;
-
-	--color-accent: #d4883a;
-	--color-accent-hover: #e09a4c;
-	--color-focus-ring: rgba(212, 136, 58, 0.5);
-
-	--color-terminal-bg: #141008;
-	--color-terminal-text: #d8d0c4;
-	--color-terminal-prompt: #d4883a;
-	--color-terminal-system: #6a5e4e;
-	--color-terminal-cursor: #d4883a;
-
-	--color-monitor-bg: #141008;
-	--color-monitor-badge-post: rgba(212, 136, 58, 0.2);
-	--color-monitor-badge-other: rgba(100, 80, 50, 0.2);
-
-	--color-document-bg: #1c1810;
-
-	--color-explorer-border: #302a20;
-	--color-explorer-item-active: rgba(212, 136, 58, 0.15);
-
-	--shadow-window-focused:
-		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(212, 136, 58, 0.15);
-}
-
-/* ═══════════════════════════════════════════════════════
-   SLATE ACCENT (muted blue-green)
-   ═══════════════════════════════════════════════════════ */
-
-:root.theme-slate {
-	--color-desktop-bg: #141820;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #101e2e 0%, #141820 50%, #0c1018 100%);
-
-	--color-window-bg: #181e28;
-	--color-window-header: #202830;
-	--color-window-header-focused: #263038;
-	--color-window-border: #2e3844;
-	--color-window-border-focused: #4a90c0;
-
-	--color-taskbar-bg: #101620;
-	--color-taskbar-glass: rgba(12, 18, 26, 0.75);
-
-	--color-text-primary: #dce0e8;
-	--color-text-secondary: #7a8898;
-	--color-text-muted: #4e5c6c;
-
-	--color-accent: #4a90c0;
-	--color-accent-hover: #5ca8d8;
-	--color-focus-ring: rgba(74, 144, 192, 0.5);
-
-	--color-terminal-bg: #0e141c;
-	--color-terminal-text: #c8d0d8;
-	--color-terminal-prompt: #4a90c0;
-	--color-terminal-system: #4e5c6c;
-	--color-terminal-cursor: #4a90c0;
-
-	--color-monitor-bg: #0e141c;
-	--color-monitor-badge-post: rgba(74, 144, 192, 0.2);
-	--color-monitor-badge-other: rgba(50, 60, 80, 0.2);
-
-	--color-document-bg: #161c24;
-
-	--color-explorer-border: #242c36;
-	--color-explorer-item-active: rgba(74, 144, 192, 0.15);
-
-	--shadow-window-focused:
-		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(74, 144, 192, 0.15);
-}
-
-/* ═══════════════════════════════════════════════════════
-   LIGHT THEME
-   ═══════════════════════════════════════════════════════ */
-
-:root.theme-light {
+:root.mode-light {
 	/* ── Desktop ── */
 	--color-desktop-bg: #e8e8f0;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #ddd8ee 0%, #e8e8f0 50%, #dee4ec 100%);
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #dde0ee 0%, #e8e8f0 50%, #dee4ec 100%);
 	--opacity-watermark: 0.4;
 	--opacity-watermark-logo: 0.2;
 
@@ -149,7 +14,6 @@
 	--color-window-header: #f0f0f4;
 	--color-window-header-focused: #e8e8f0;
 	--color-window-border: #d0d0d8;
-	--color-window-border-focused: #18a098;
 	--color-window-highlight: rgba(255, 255, 255, 0.8);
 	--color-window-highlight-focused: rgba(255, 255, 255, 1);
 
@@ -167,11 +31,6 @@
 	--color-text-secondary: #555568;
 	--color-text-muted: #8888a0;
 
-	/* ── Accent ── */
-	--color-accent: #18a098;
-	--color-accent-hover: #20b2aa;
-	--color-focus-ring: rgba(24, 160, 152, 0.4);
-
 	/* ── Window controls ── */
 	--color-control-close: #d04040;
 	--color-control-close-hover: #e05050;
@@ -183,16 +42,12 @@
 	/* ── Terminal ── */
 	--color-terminal-bg: #f5f5fa;
 	--color-terminal-text: #2a2a3a;
-	--color-terminal-prompt: #18a098;
 	--color-terminal-system: #8888a0;
-	--color-terminal-cursor: #18a098;
 
 	/* ── System Monitor ── */
 	--color-monitor-bg: #f0f0f6;
-	--color-monitor-chart-stroke: var(--color-accent);
 	--color-monitor-grid: rgba(0, 0, 0, 0.05);
 	--color-monitor-badge-get: rgba(48, 160, 80, 0.15);
-	--color-monitor-badge-post: rgba(24, 160, 152, 0.15);
 	--color-monitor-badge-other: rgba(80, 80, 120, 0.1);
 
 	/* ── Document Viewer ── */
@@ -201,20 +56,18 @@
 	/* ── File Explorer ── */
 	--color-explorer-border: #d8d8e0;
 	--color-explorer-item-hover: rgba(0, 0, 0, 0.04);
-	--color-explorer-item-active: rgba(24, 160, 152, 0.1);
 
-	/* ── Shadows (lighter for light theme) ── */
+	/* ── Shadows ── */
 	--shadow-window: 0 1px 4px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(0, 0, 0, 0.06);
-	--shadow-window-focused:
-		0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(24, 160, 152, 0.12);
+	--shadow-window-focused-depth: 0 2px 6px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.08);
 	--shadow-taskbar: 0 -1px 0 rgba(0, 0, 0, 0.04), 0 -2px 12px rgba(0, 0, 0, 0.06);
 }
 
 /* ═══════════════════════════════════════════════════════
-   HIGH CONTRAST THEME
+   MODE: High Contrast
    ═══════════════════════════════════════════════════════ */
 
-:root.theme-high-contrast {
+:root.mode-high-contrast {
 	/* ── Desktop ── */
 	--color-desktop-bg: #000000;
 	--gradient-desktop: none;
@@ -224,7 +77,6 @@
 	--color-window-header: #1a1a1a;
 	--color-window-header-focused: #222222;
 	--color-window-border: #ffffff;
-	--color-window-border-focused: #ffff00;
 	--color-window-highlight: transparent;
 	--color-window-highlight-focused: transparent;
 
@@ -242,11 +94,6 @@
 	--color-text-secondary: #e0e0e0;
 	--color-text-muted: #b0b0b0;
 
-	/* ── Accent ── */
-	--color-accent: #bb99ff;
-	--color-accent-hover: #ddbbff;
-	--color-focus-ring: #ffff00;
-
 	/* ── Window controls ── */
 	--color-control-close: #ff4444;
 	--color-control-close-hover: #ff6666;
@@ -258,16 +105,12 @@
 	/* ── Terminal ── */
 	--color-terminal-bg: #000000;
 	--color-terminal-text: #ffffff;
-	--color-terminal-prompt: #bb99ff;
 	--color-terminal-system: #b0b0b0;
-	--color-terminal-cursor: #ffff00;
 
 	/* ── System Monitor ── */
 	--color-monitor-bg: #000000;
-	--color-monitor-chart-stroke: #bb99ff;
 	--color-monitor-grid: rgba(255, 255, 255, 0.1);
 	--color-monitor-badge-get: rgba(68, 255, 68, 0.25);
-	--color-monitor-badge-post: rgba(187, 153, 255, 0.25);
 	--color-monitor-badge-other: rgba(200, 200, 200, 0.15);
 
 	/* ── Document Viewer ── */
@@ -276,14 +119,16 @@
 	/* ── File Explorer ── */
 	--color-explorer-border: #ffffff;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.12);
-	--color-explorer-item-active: rgba(187, 153, 255, 0.25);
 
 	/* ── Shadows (replaced with solid borders) ── */
 	--shadow-window: none;
-	--shadow-window-focused: none;
+	--shadow-window-focused-depth: none;
 	--shadow-taskbar: none;
 
-	/* ── Radii (sharper for high contrast) ── */
+	/* ── Focus ring always yellow for accessibility ── */
+	--color-focus-ring: #ffff00;
+
+	/* ── Radii (sharper) ── */
 	--radius-window: 2px;
 	--radius-button: 2px;
 
@@ -293,4 +138,120 @@
 	--duration-slow: 0ms;
 	--transition-fast: 0ms ease;
 	--transition-normal: 0ms ease;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCENT: Purple
+   ═══════════════════════════════════════════════════════ */
+
+:root.accent-purple {
+	--color-accent: #7c5cbf;
+	--color-accent-hover: #9070d4;
+	--color-focus-ring: rgba(124, 92, 191, 0.5);
+	--color-window-border-focused: #7c5cbf;
+	--color-terminal-prompt: #7c5cbf;
+	--color-terminal-cursor: #7c5cbf;
+	--color-monitor-badge-post: rgba(124, 92, 191, 0.2);
+	--color-explorer-item-active: rgba(124, 92, 191, 0.15);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(124, 92, 191, 0.15);
+}
+
+/* Brighter purple for high-contrast legibility */
+:root.mode-high-contrast.accent-purple {
+	--color-accent: #bb99ff;
+	--color-accent-hover: #ddbbff;
+	--color-window-border-focused: #bb99ff;
+	--color-terminal-prompt: #bb99ff;
+	--color-terminal-cursor: #ffff00;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCENT: Amber
+   ═══════════════════════════════════════════════════════ */
+
+:root.accent-amber {
+	--color-accent: #d4883a;
+	--color-accent-hover: #e09a4c;
+	--color-focus-ring: rgba(212, 136, 58, 0.5);
+	--color-window-border-focused: #d4883a;
+	--color-terminal-prompt: #d4883a;
+	--color-terminal-cursor: #d4883a;
+	--color-monitor-badge-post: rgba(212, 136, 58, 0.2);
+	--color-explorer-item-active: rgba(212, 136, 58, 0.15);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(212, 136, 58, 0.15);
+}
+
+:root.mode-high-contrast.accent-amber {
+	--color-accent: #ffaa44;
+	--color-accent-hover: #ffcc66;
+	--color-window-border-focused: #ffaa44;
+	--color-terminal-prompt: #ffaa44;
+	--color-terminal-cursor: #ffff00;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACCENT: Slate (cool blue)
+   ═══════════════════════════════════════════════════════ */
+
+:root.accent-slate {
+	--color-accent: #4a9fd4;
+	--color-accent-hover: #5cb8ec;
+	--color-focus-ring: rgba(74, 159, 212, 0.5);
+	--color-window-border-focused: #4a9fd4;
+	--color-terminal-prompt: #4a9fd4;
+	--color-terminal-cursor: #4a9fd4;
+	--color-monitor-badge-post: rgba(74, 159, 212, 0.2);
+	--color-explorer-item-active: rgba(74, 159, 212, 0.15);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(74, 159, 212, 0.15);
+}
+
+:root.mode-high-contrast.accent-slate {
+	--color-accent: #66bbee;
+	--color-accent-hover: #88ddff;
+	--color-window-border-focused: #66bbee;
+	--color-terminal-prompt: #66bbee;
+	--color-terminal-cursor: #ffff00;
+}
+
+/* Brighter teal for high-contrast legibility */
+:root.mode-high-contrast:not(.accent-purple):not(.accent-amber):not(.accent-slate) {
+	--color-accent: #40e0d0;
+	--color-accent-hover: #66ffee;
+	--color-window-border-focused: #40e0d0;
+	--color-terminal-prompt: #40e0d0;
+	--color-terminal-cursor: #ffff00;
+}
+
+/* Light mode accent adjustments — slightly deeper for contrast on white */
+:root.mode-light:not(.accent-purple):not(.accent-amber):not(.accent-slate) {
+	--color-accent: #18a098;
+	--color-accent-hover: #20b2aa;
+	--color-focus-ring: rgba(24, 160, 152, 0.4);
+	--color-window-border-focused: #18a098;
+	--color-terminal-prompt: #18a098;
+	--color-terminal-cursor: #18a098;
+	--color-monitor-badge-post: rgba(24, 160, 152, 0.15);
+	--color-explorer-item-active: rgba(24, 160, 152, 0.1);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(24, 160, 152, 0.12);
+}
+
+:root.mode-light.accent-purple {
+	--color-accent: #6a4aaf;
+	--color-accent-hover: #7c5cbf;
+	--color-focus-ring: rgba(106, 74, 175, 0.4);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(106, 74, 175, 0.12);
+}
+
+:root.mode-light.accent-amber {
+	--color-accent: #c07830;
+	--color-accent-hover: #d4883a;
+	--color-focus-ring: rgba(192, 120, 48, 0.4);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(192, 120, 48, 0.12);
+}
+
+:root.mode-light.accent-slate {
+	--color-accent: #3a88b8;
+	--color-accent-hover: #4a9fd4;
+	--color-focus-ring: rgba(58, 136, 184, 0.4);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(58, 136, 184, 0.12);
 }

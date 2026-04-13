@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { themeStore } from '$lib/os/theme-store.svelte.js';
 	import { t } from '$lib/os/i18n.svelte.js';
+	import type { Mode } from '$lib/os/theme-store.svelte.js';
 
-	const icons = {
+	const icons: Record<Mode, { viewBox: string; path: string }> = {
 		dark: {
 			viewBox: '0 0 24 24',
 			path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
@@ -17,22 +18,22 @@
 		}
 	};
 
-	// Map accent themes to their base mode icon
-	function getBaseMode(theme: string): 'dark' | 'light' | 'high-contrast' {
-		if (theme === 'light') return 'light';
-		if (theme === 'high-contrast') return 'high-contrast';
-		return 'dark';
-	}
+	const labelKeys: Record<Mode, string> = {
+		dark: 'theme.dark',
+		light: 'theme.light',
+		'high-contrast': 'theme.highContrast'
+	};
 
-	const icon = $derived(icons[getBaseMode(themeStore.current)]);
-	const label = $derived(
-		t(
-			`theme.${getBaseMode(themeStore.current) === 'high-contrast' ? 'highContrast' : getBaseMode(themeStore.current)}`
-		)
-	);
+	const icon = $derived(icons[themeStore.mode]);
+	const label = $derived(t(labelKeys[themeStore.mode]));
 </script>
 
-<button class="theme-toggle" onclick={() => themeStore.cycle()} title={label} aria-label={label}>
+<button
+	class="theme-toggle"
+	onclick={() => themeStore.cycleMode()}
+	title={label}
+	aria-label={label}
+>
 	<svg
 		width="14"
 		height="14"

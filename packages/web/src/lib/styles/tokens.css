@@ -1,22 +1,25 @@
 :root {
+	/* ═══════════════════════════════════════════════════════
+	   MODE: Dark (default — no class needed)
+	   ═══════════════════════════════════════════════════════ */
+
 	/* ── Desktop ── */
-	--color-desktop-bg: #121e22;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #0a2a2e 0%, #121e22 50%, #0c1418 100%);
+	--color-desktop-bg: #141820;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #101824 0%, #141820 50%, #0c1018 100%);
 	--opacity-watermark: 0.15;
 	--opacity-watermark-logo: 0.08;
 
 	/* ── Window ── */
-	--color-window-bg: #152024;
-	--color-window-header: #1c2a2e;
-	--color-window-header-focused: #223234;
-	--color-window-border: #2a3a3e;
-	--color-window-border-focused: #2a9d8f;
+	--color-window-bg: #181e26;
+	--color-window-header: #202830;
+	--color-window-header-focused: #263036;
+	--color-window-border: #2c3640;
 	--color-window-highlight: rgba(255, 255, 255, 0.04);
 	--color-window-highlight-focused: rgba(255, 255, 255, 0.08);
 
 	/* ── Taskbar ── */
-	--color-taskbar-bg: #0c181c;
-	--color-taskbar-glass: rgba(10, 20, 24, 0.75);
+	--color-taskbar-bg: #0e141a;
+	--color-taskbar-glass: rgba(12, 16, 22, 0.75);
 	--color-taskbar-entry: transparent;
 	--color-taskbar-entry-hover: rgba(255, 255, 255, 0.08);
 	--color-taskbar-entry-active: rgba(255, 255, 255, 0.12);
@@ -24,14 +27,9 @@
 	--blur-taskbar: blur(12px);
 
 	/* ── Text ── */
-	--color-text-primary: #dce4e8;
-	--color-text-secondary: #7a8a94;
-	--color-text-muted: #4e5e68;
-
-	/* ── Accent ── */
-	--color-accent: #20b2aa;
-	--color-accent-hover: #30d4ca;
-	--color-focus-ring: rgba(32, 178, 170, 0.5);
+	--color-text-primary: #dce0e8;
+	--color-text-secondary: #7a8894;
+	--color-text-muted: #4e5a66;
 
 	/* ── Window controls ── */
 	--color-control-close: #e06060;
@@ -41,28 +39,50 @@
 	--color-control-maximize: #40c060;
 	--color-control-maximize-hover: #50d070;
 
-	/* ── Terminal ── */
-	--color-terminal-bg: #0e151a;
-	--color-terminal-text: #c0ccd4;
-	--color-terminal-prompt: #20b2aa;
-	--color-terminal-system: #4e5e68;
-	--color-terminal-cursor: #20b2aa;
+	/* ── Terminal (canvas) ── */
+	--color-terminal-bg: #0e141a;
+	--color-terminal-text: #c4ccd4;
+	--color-terminal-system: #4e5a66;
 
-	/* ── System Monitor ── */
-	--color-monitor-bg: #0e151a;
+	/* ── System Monitor (canvas) ── */
+	--color-monitor-bg: #0e141a;
 	--color-monitor-chart-stroke: var(--color-accent);
 	--color-monitor-grid: rgba(255, 255, 255, 0.04);
 	--color-monitor-badge-get: rgba(64, 192, 96, 0.2);
-	--color-monitor-badge-post: rgba(32, 178, 170, 0.2);
-	--color-monitor-badge-other: rgba(60, 80, 90, 0.2);
+	--color-monitor-badge-other: rgba(60, 70, 80, 0.2);
 
 	/* ── Document Viewer ── */
-	--color-document-bg: #161e24;
+	--color-document-bg: #161c24;
 
-	/* ── File Explorer ── */
-	--color-explorer-border: #223034;
+	/* ── File Explorer (canvas) ── */
+	--color-explorer-border: #242c36;
 	--color-explorer-item-hover: rgba(255, 255, 255, 0.06);
+
+	/* ── Shadows ── */
+	--shadow-window: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
+	--shadow-window-focused-depth: 0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35);
+	--shadow-taskbar: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -4px 24px rgba(0, 0, 0, 0.3);
+
+	/* ═══════════════════════════════════════════════════════
+	   ACCENT: Teal (default — no class needed)
+	   ═══════════════════════════════════════════════════════ */
+
+	--color-accent: #20b2aa;
+	--color-accent-hover: #30d4ca;
+	--color-focus-ring: rgba(32, 178, 170, 0.5);
+	--color-window-border-focused: #20b2aa;
+	--color-terminal-prompt: #20b2aa;
+	--color-terminal-cursor: #20b2aa;
+	--color-monitor-badge-post: rgba(32, 178, 170, 0.2);
 	--color-explorer-item-active: rgba(32, 178, 170, 0.15);
+	--shadow-window-focused-glow: 0 0 0 1px rgba(32, 178, 170, 0.15);
+
+	/* ── Composed shadow (mode depth + accent glow) ── */
+	--shadow-window-focused: var(--shadow-window-focused-depth), var(--shadow-window-focused-glow);
+
+	/* ═══════════════════════════════════════════════════════
+	   DESIGN TOKENS (invariant across modes and accents)
+	   ═══════════════════════════════════════════════════════ */
 
 	/* ── Spacing scale ── */
 	--space-1: 4px;
@@ -75,13 +95,6 @@
 	/* ── Radii ── */
 	--radius-window: 8px;
 	--radius-button: 4px;
-
-	/* ── Shadows ── */
-	--shadow-window: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.25);
-	--shadow-window-focused:
-		0 2px 8px rgba(0, 0, 0, 0.4), 0 12px 40px rgba(0, 0, 0, 0.35),
-		0 0 0 1px rgba(32, 178, 170, 0.15);
-	--shadow-taskbar: 0 -1px 0 rgba(255, 255, 255, 0.04), 0 -4px 24px rgba(0, 0, 0, 0.3);
 
 	/* ── Z-index layers ── */
 	--z-desktop: 0;

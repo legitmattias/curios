@@ -31,11 +31,11 @@
 			x: e.clientX,
 			y: e.clientY,
 			items: [
-				{ label: t('desktop.ctx.darkTheme'), action: () => themeStore.set('dark') },
-				{ label: t('desktop.ctx.lightTheme'), action: () => themeStore.set('light') },
+				{ label: t('desktop.ctx.darkMode'), action: () => themeStore.setMode('dark') },
+				{ label: t('desktop.ctx.lightMode'), action: () => themeStore.setMode('light') },
 				{
 					label: t('desktop.ctx.highContrast'),
-					action: () => themeStore.set('high-contrast'),
+					action: () => themeStore.setMode('high-contrast'),
 					separator: true
 				},
 				{ label: t('desktop.ctx.openTerminal'), action: () => handleOpenApp('terminal') },
