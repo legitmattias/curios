@@ -9,7 +9,7 @@ describe('ProfileSchema', () => {
       title: 'Full Stack Developer',
       bio: 'Developer based in Stockholm.',
       location: 'Stockholm, Sweden',
-      email: 'hello@mattic.dev',
+      email: 'hello@mattiasubbesen.com',
       github: 'https://github.com/legitmattias',
       linkedin: null,
       website: null,

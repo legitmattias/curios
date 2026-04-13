@@ -79,7 +79,7 @@
 	<div class="watermark">
 		<span class="watermark-name">Mattias Ubbesen</span>
 		<span class="watermark-title">{t('desktop.watermark.title')}</span>
-		<span class="watermark-domain">mattic.dev</span>
+		<span class="watermark-domain">mattiasubbesen.com</span>
 	</div>
 
 	{#if contextMenu}

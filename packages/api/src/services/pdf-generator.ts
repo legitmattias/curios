@@ -386,7 +386,7 @@ export async function generateCvPdf(data: CvData, lang: 'en' | 'sv' = 'en'): Pro
     color: COLORS.line,
   })
   const dateLocale = lang === 'sv' ? 'sv-SE' : 'en-US'
-  page.drawText(`${labels.generatedFrom} mattic.dev  ·  ${new Date().toLocaleDateString(dateLocale, { year: 'numeric', month: 'long' })}`, {
+  page.drawText(`${labels.generatedFrom} mattiasubbesen.com  ·  ${new Date().toLocaleDateString(dateLocale, { year: 'numeric', month: 'long' })}`, {
     x: MARGIN_LEFT,
     y: footerY,
     size: 6,

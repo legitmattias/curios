@@ -8,7 +8,7 @@ const seedProjects = [
     description:
       'Portfolio OS — a browser-based desktop environment showcasing real, backend-powered applications. Features a window manager, file explorer, terminal, and system monitor.',
     tech: ['SvelteKit', 'Hono', 'Bun', 'PostgreSQL', 'WebSockets', 'Docker'],
-    url: 'https://mattic.dev',
+    url: 'https://mattiasubbesen.com',
     repo: 'https://github.com/legitmattias/curios',
   },
   {
@@ -115,10 +115,10 @@ const seedProfile = {
   title: 'Full Stack Developer',
   bio: 'Full stack developer based in Stockholm with a passion for building well-crafted tools and systems. Focused on TypeScript, modern web frameworks, and developer experience. Enjoys turning complex problems into clean, maintainable solutions.',
   location: 'Stockholm, Sweden',
-  email: 'hello@mattic.dev',
+  email: 'hello@mattiasubbesen.com',
   github: 'https://github.com/legitmattias',
   linkedin: 'https://linkedin.com/in/placeholder',
-  website: 'https://mattic.dev',
+  website: 'https://mattiasubbesen.com',
 }
 
 // Swedish translations for placeholder content

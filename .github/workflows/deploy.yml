@@ -102,7 +102,7 @@ jobs:
           file: packages/web/Dockerfile
           push: true
           build-args: |
-            PUBLIC_API_URL=https://api.staging.mattic.dev
+            PUBLIC_API_URL=https://staging.curios.mattic.dev/api
           tags: |
             ${{ env.WEB_IMAGE }}:${{ github.sha }}-staging
             ${{ env.WEB_IMAGE }}:staging
@@ -118,7 +118,7 @@ jobs:
           file: packages/web/Dockerfile
           push: true
           build-args: |
-            PUBLIC_API_URL=https://api.mattic.dev
+            PUBLIC_API_URL=https://curios.mattic.dev/api
           tags: |
             ${{ env.WEB_IMAGE }}:${{ github.sha }}
             ${{ env.WEB_IMAGE }}:latest

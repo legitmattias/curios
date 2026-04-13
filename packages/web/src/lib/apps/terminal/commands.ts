@@ -166,7 +166,7 @@ const COMMANDS: Command[] = [
 				'visitor@curios',
 				'──────────────────',
 				`OS:      CuriOS v0.1.0`,
-				`Host:    mattic.dev`,
+				`Host:    mattiasubbesen.com`,
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
@@ -234,7 +234,7 @@ const COMMANDS: Command[] = [
 			}
 
 			lines.push(
-				system(`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattic.dev'}/cv/pdf`)
+				system(`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattiasubbesen.com'}/cv/pdf`)
 			);
 			return lines;
 		}

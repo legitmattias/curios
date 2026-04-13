@@ -7,7 +7,7 @@
 	let wrapper: HTMLDivElement;
 	let emailMenuEl: HTMLDivElement | undefined = $state();
 
-	const EMAIL = 'hello@mattic.dev';
+	const EMAIL = 'hello@mattiasubbesen.com';
 
 	function toggle() {
 		visible = !visible;

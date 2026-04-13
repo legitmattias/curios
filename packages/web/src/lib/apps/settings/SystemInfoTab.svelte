@@ -4,7 +4,7 @@
 	const info = [
 		{ label: 'OS', value: 'CuriOS v0.1.0' },
 		{ label: 'Owner', value: 'Mattias Ubbesen' },
-		{ label: 'Domain', value: 'mattic.dev' },
+		{ label: 'Domain', value: 'mattiasubbesen.com' },
 		{ label: 'Frontend', value: 'SvelteKit (Svelte 5)' },
 		{ label: 'Backend', value: 'Hono + Bun' },
 		{ label: 'Database', value: 'PostgreSQL 17' },
@@ -15,7 +15,7 @@
 
 	const links = [
 		{ labelKey: 'settings.sourceCode', url: 'https://github.com/legitmattias/curios' },
-		{ labelKey: 'settings.apiDocs', url: 'https://api.mattic.dev/doc' }
+		{ labelKey: 'settings.apiDocs', url: 'https://curios.mattic.dev/api/doc' }
 	];
 </script>
 
