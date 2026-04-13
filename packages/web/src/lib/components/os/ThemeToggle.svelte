@@ -11,17 +11,12 @@
 		light: {
 			viewBox: '0 0 24 24',
 			path: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m12.73-12.73l1.41-1.41M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z'
-		},
-		'high-contrast': {
-			viewBox: '0 0 24 24',
-			path: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2v16a8 8 0 0 0 0-16z'
 		}
 	};
 
 	const labelKeys: Record<Mode, string> = {
 		dark: 'theme.dark',
-		light: 'theme.light',
-		'high-contrast': 'theme.highContrast'
+		light: 'theme.light'
 	};
 
 	const icon = $derived(icons[themeStore.mode]);

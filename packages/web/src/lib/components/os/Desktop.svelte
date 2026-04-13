@@ -31,14 +31,26 @@
 			x: e.clientX,
 			y: e.clientY,
 			items: [
-				{ label: t('desktop.ctx.darkMode'), action: () => themeStore.setMode('dark') },
-				{ label: t('desktop.ctx.lightMode'), action: () => themeStore.setMode('light') },
+				{
+					label: t('desktop.ctx.darkMode'),
+					action: () => themeStore.setMode('dark'),
+					checked: themeStore.mode === 'dark'
+				},
+				{
+					label: t('desktop.ctx.lightMode'),
+					action: () => themeStore.setMode('light'),
+					checked: themeStore.mode === 'light'
+				},
 				{
 					label: t('desktop.ctx.highContrast'),
-					action: () => themeStore.setMode('high-contrast'),
+					action: () => themeStore.toggleHighContrast(),
+					checked: themeStore.highContrast
+				},
+				{
+					label: t('desktop.ctx.openTerminal'),
+					action: () => handleOpenApp('terminal'),
 					separator: true
 				},
-				{ label: t('desktop.ctx.openTerminal'), action: () => handleOpenApp('terminal') },
 				{ label: t('desktop.ctx.openSettings'), action: () => handleOpenApp('settings') }
 			]
 		};

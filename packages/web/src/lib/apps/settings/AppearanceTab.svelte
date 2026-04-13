@@ -14,12 +14,6 @@
 			labelKey: 'settings.mode.light',
 			descKey: 'settings.mode.lightDesc',
 			colors: ['#e8e8f0', '#ffffff', '#1a1a24']
-		},
-		{
-			id: 'high-contrast',
-			labelKey: 'settings.mode.highContrast',
-			descKey: 'settings.mode.highContrastDesc',
-			colors: ['#000000', '#0a0a0a', '#ffffff']
 		}
 	];
 
@@ -72,6 +66,18 @@
 		{/each}
 	</div>
 
+	<button
+		class="hc-toggle"
+		class:active={themeStore.highContrast}
+		onclick={() => themeStore.toggleHighContrast()}
+	>
+		<span class="hc-check">{themeStore.highContrast ? '✓' : ''}</span>
+		<span class="hc-text">
+			<span class="theme-label">{t('settings.mode.highContrast')}</span>
+			<span class="theme-desc">{t('settings.mode.highContrastDesc')}</span>
+		</span>
+	</button>
+
 	<h3 class="section-title accent-title">{t('settings.accent')}</h3>
 	<div class="accent-cards">
 		{#each accents as accent (accent.id)}
@@ -100,6 +106,47 @@
 		letter-spacing: 0.08em;
 		color: var(--color-text-muted);
 		margin-bottom: var(--space-4);
+	}
+
+	.hc-toggle {
+		display: flex;
+		align-items: center;
+		gap: var(--space-3);
+		width: 100%;
+		padding: var(--space-2) var(--space-3);
+		margin-top: var(--space-3);
+		border: 1px solid var(--color-explorer-border);
+		border-radius: var(--radius-button);
+		background: transparent;
+		color: var(--color-text-primary);
+		cursor: pointer;
+		text-align: left;
+		font-family: inherit;
+		transition:
+			border-color var(--transition-fast),
+			background var(--transition-fast);
+	}
+
+	.hc-toggle:hover {
+		background: var(--color-explorer-item-hover);
+	}
+
+	.hc-toggle.active {
+		border-color: var(--color-accent);
+	}
+
+	.hc-check {
+		width: 1.2em;
+		text-align: center;
+		flex-shrink: 0;
+		font-size: var(--text-base);
+		color: var(--color-accent);
+	}
+
+	.hc-text {
+		display: flex;
+		gap: var(--space-3);
+		align-items: center;
 	}
 
 	.accent-title {

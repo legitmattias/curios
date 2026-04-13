@@ -67,7 +67,7 @@
    MODE: High Contrast
    ═══════════════════════════════════════════════════════ */
 
-:root.mode-high-contrast {
+:root.high-contrast {
 	/* ── Desktop ── */
 	--color-desktop-bg: #000000;
 	--gradient-desktop: none;
@@ -159,7 +159,7 @@
 }
 
 /* Brighter purple for high-contrast legibility */
-:root.mode-high-contrast.accent-purple {
+:root.high-contrast.accent-purple {
 	--color-accent: #bb99ff;
 	--color-accent-hover: #ddbbff;
 	--color-window-border-focused: #bb99ff;
@@ -185,7 +185,7 @@
 	--shadow-window-focused-glow: 0 0 0 1px rgba(212, 136, 58, 0.15);
 }
 
-:root.mode-high-contrast.accent-amber {
+:root.high-contrast.accent-amber {
 	--color-accent: #ffaa44;
 	--color-accent-hover: #ffcc66;
 	--color-window-border-focused: #ffaa44;
@@ -211,7 +211,7 @@
 	--shadow-window-focused-glow: 0 0 0 1px rgba(74, 159, 212, 0.15);
 }
 
-:root.mode-high-contrast.accent-slate {
+:root.high-contrast.accent-slate {
 	--color-accent: #66bbee;
 	--color-accent-hover: #88ddff;
 	--color-window-border-focused: #66bbee;
@@ -220,7 +220,7 @@
 }
 
 /* Brighter teal for high-contrast legibility */
-:root.mode-high-contrast:not(.accent-purple):not(.accent-amber):not(.accent-slate) {
+:root.high-contrast:not(.accent-purple):not(.accent-amber):not(.accent-slate) {
 	--color-accent: #40e0d0;
 	--color-accent-hover: #66ffee;
 	--color-window-border-focused: #40e0d0;
@@ -260,4 +260,32 @@
 	--color-accent-hover: #4a9fd4;
 	--color-focus-ring: rgba(58, 136, 184, 0.4);
 	--shadow-window-focused-glow: 0 0 0 1px rgba(58, 136, 184, 0.12);
+}
+
+/* ═══════════════════════════════════════════════════════
+   Light + High Contrast overrides
+   ═══════════════════════════════════════════════════════ */
+
+:root.mode-light.high-contrast {
+	--color-desktop-bg: #ffffff;
+	--gradient-desktop: none;
+	--color-window-bg: #ffffff;
+	--color-window-header: #f0f0f0;
+	--color-window-header-focused: #e8e8e8;
+	--color-window-border: #000000;
+	--color-text-primary: #000000;
+	--color-text-secondary: #1a1a1a;
+	--color-text-muted: #444444;
+	--color-taskbar-bg: #f0f0f0;
+	--color-taskbar-glass: #f0f0f0;
+	--color-taskbar-entry-hover: rgba(0, 0, 0, 0.15);
+	--color-taskbar-entry-active: rgba(0, 0, 0, 0.25);
+	--color-terminal-bg: #ffffff;
+	--color-terminal-text: #000000;
+	--color-terminal-system: #444444;
+	--color-monitor-bg: #ffffff;
+	--color-monitor-grid: rgba(0, 0, 0, 0.1);
+	--color-document-bg: #ffffff;
+	--color-explorer-border: #000000;
+	--color-explorer-item-hover: rgba(0, 0, 0, 0.08);
 }

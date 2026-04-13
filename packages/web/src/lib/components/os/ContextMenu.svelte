@@ -3,6 +3,7 @@
 		label: string;
 		action: () => void;
 		separator?: boolean;
+		checked?: boolean;
 	}
 
 	let {
@@ -55,13 +56,15 @@
 		{/if}
 		<button
 			class="menu-item"
-			role="menuitem"
+			role="menuitemcheckbox"
+			aria-checked={item.checked ?? false}
 			onclick={(e) => {
 				e.stopPropagation();
 				item.action();
 				onclose();
 			}}
 		>
+			<span class="check">{item.checked != null ? (item.checked ? '✓' : '') : ''}</span>
 			{item.label}
 		</button>
 	{/each}
@@ -87,8 +90,16 @@
 		}
 	}
 
+	.check {
+		display: inline-block;
+		width: 1.2em;
+		text-align: center;
+		flex-shrink: 0;
+	}
+
 	.menu-item {
-		display: block;
+		display: flex;
+		align-items: center;
 		width: 100%;
 		padding: var(--space-2) var(--space-3);
 		border: none;

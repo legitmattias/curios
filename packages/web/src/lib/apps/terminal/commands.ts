@@ -170,7 +170,7 @@ const COMMANDS: Command[] = [
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
-				`Theme:   ${themeStore.mode} + ${themeStore.accent}`,
+				`Theme:   ${themeStore.mode} + ${themeStore.accent}${themeStore.highContrast ? ' (high contrast)' : ''}`,
 				`Backend: Hono + Bun`,
 				`DB:      PostgreSQL 17`
 			];
@@ -243,19 +243,27 @@ const COMMANDS: Command[] = [
 	},
 	{
 		name: 'theme',
-		description: 'Switch theme mode or accent',
-		usage: 'theme [mode <dark|light|high-contrast>] [accent <teal|purple|amber|slate>]',
+		description: 'Switch theme mode, accent, or high contrast',
+		usage: 'theme [mode <dark|light>] [accent <teal|purple|amber|slate>] [hc]',
 		handler: async (args) => {
-			const validModes: Mode[] = ['dark', 'light', 'high-contrast'];
+			const validModes: Mode[] = ['dark', 'light'];
 			const validAccents: Accent[] = ['teal', 'purple', 'amber', 'slate'];
 
 			if (args.length === 0) {
 				return [
-					stdout(`${t('terminal.theme.currentMode')} ${themeStore.mode}`),
+					stdout(
+						`${t('terminal.theme.currentMode')} ${themeStore.mode}${themeStore.highContrast ? ' + high contrast' : ''}`
+					),
 					stdout(`${t('terminal.theme.currentAccent')} ${themeStore.accent}`),
 					system(`${t('terminal.theme.availableModes')} ${validModes.join(', ')}`),
-					system(`${t('terminal.theme.availableAccents')} ${validAccents.join(', ')}`)
+					system(`${t('terminal.theme.availableAccents')} ${validAccents.join(', ')}`),
+					system('Toggle high contrast: theme hc')
 				];
+			}
+
+			if (args[0] === 'hc') {
+				themeStore.toggleHighContrast();
+				return [stdout(`High contrast ${themeStore.highContrast ? 'enabled' : 'disabled'}`)];
 			}
 
 			if (args[0] === 'mode' && args[1]) {
@@ -282,7 +290,7 @@ const COMMANDS: Command[] = [
 				return [stdout(`${t('terminal.theme.accentSetTo')} ${requested}`)];
 			}
 
-			// Shorthand: theme dark/light/high-contrast
+			// Shorthand: theme dark/light
 			if (validModes.includes(args[0] as Mode)) {
 				themeStore.setMode(args[0] as Mode);
 				return [stdout(`${t('terminal.theme.modeSetTo')} ${args[0]}`)];
