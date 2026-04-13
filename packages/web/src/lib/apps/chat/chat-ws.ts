@@ -16,42 +16,67 @@ export interface ChatConnection {
 	close(): void;
 }
 
+const RECONNECT_DELAYS = [1000, 2000, 4000, 8000, 16000];
+
 export function createChatConnection(
 	onMessage: (msg: WsChatMessageIn) => void,
 	onStatusChange: (status: 'connecting' | 'connected' | 'disconnected') => void
 ): ChatConnection {
 	const url = getWsUrl();
 	let ws: WebSocket | null = null;
+	let closed = false;
+	let reconnectAttempt = 0;
+	let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
-	onStatusChange('connecting');
-	ws = new WebSocket(url);
+	function connect() {
+		if (closed) return;
 
-	ws.onopen = () => {
-		onStatusChange('connected');
-	};
+		onStatusChange('connecting');
+		ws = new WebSocket(url);
 
-	ws.onmessage = (event) => {
-		try {
-			const msg = JSON.parse(event.data) as WsChatMessageIn;
-			onMessage(msg);
-		} catch {
-			// Ignore malformed messages
-		}
-	};
+		ws.onopen = () => {
+			reconnectAttempt = 0;
+			onStatusChange('connected');
+		};
 
-	ws.onclose = () => {
-		onStatusChange('disconnected');
-	};
+		ws.onmessage = (event) => {
+			try {
+				const msg = JSON.parse(event.data) as WsChatMessageIn;
+				onMessage(msg);
+			} catch {
+				// Ignore malformed messages
+			}
+		};
 
-	ws.onerror = () => {
-		ws?.close();
-	};
+		ws.onclose = () => {
+			ws = null;
+			if (!closed) {
+				onStatusChange('disconnected');
+				scheduleReconnect();
+			}
+		};
+
+		ws.onerror = () => {
+			ws?.close();
+		};
+	}
+
+	function scheduleReconnect() {
+		if (closed) return;
+		const delay = RECONNECT_DELAYS[Math.min(reconnectAttempt, RECONNECT_DELAYS.length - 1)];
+		reconnectAttempt++;
+		reconnectTimer = setTimeout(connect, delay);
+	}
+
+	connect();
 
 	return {
 		send(content: string) {
 			ws?.send(JSON.stringify({ type: 'message', content }));
 		},
 		close() {
+			closed = true;
+			if (reconnectTimer) clearTimeout(reconnectTimer);
 			ws?.close();
 		}
 	};
