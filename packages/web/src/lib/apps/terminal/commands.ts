@@ -234,7 +234,9 @@ const COMMANDS: Command[] = [
 			}
 
 			lines.push(
-				system(`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattiasubbesen.com'}/cv/pdf`)
+				system(
+					`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattiasubbesen.com'}/cv/pdf`
+				)
 			);
 			return lines;
 		}
