@@ -1,4 +1,4 @@
-pnpm --filter @curios/web format
+pnpm lint-staged
 pnpm -r lint
 pnpm --filter @curios/web check
 pnpm -r test

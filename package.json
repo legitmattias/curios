@@ -18,7 +18,13 @@
       "esbuild"
     ]
   },
+  "lint-staged": {
+    "packages/web/**/*.{ts,svelte,js,json,css,html}": "prettier --write",
+    "packages/api/**/*.ts": "prettier --write",
+    "packages/shared/**/*.ts": "prettier --write"
+  },
   "devDependencies": {
-    "husky": "^9.1.7"
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0"
   }
 }
