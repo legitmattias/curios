@@ -4,8 +4,8 @@
 	   ═══════════════════════════════════════════════════════ */
 
 	/* ── Desktop ── */
-	--color-desktop-bg: #141820;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #101824 0%, #141820 50%, #0c1018 100%);
+	--color-desktop-bg: #121e22;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #0a2a2e 0%, #121e22 50%, #0c1418 100%);
 	--opacity-watermark: 0.15;
 	--opacity-watermark-logo: 0.08;
 
