@@ -7,13 +7,31 @@
 			id: 'dark',
 			labelKey: 'settings.theme.dark',
 			descKey: 'settings.theme.darkDesc',
+			colors: ['#141a20', '#1a2028', '#2a9d8f', '#dce4e8']
+		},
+		{
+			id: 'purple',
+			labelKey: 'settings.theme.purple',
+			descKey: 'settings.theme.purpleDesc',
 			colors: ['#1a1a2e', '#1e1e2e', '#7c5cbf', '#e0e0ec']
+		},
+		{
+			id: 'amber',
+			labelKey: 'settings.theme.amber',
+			descKey: 'settings.theme.amberDesc',
+			colors: ['#1a1610', '#201c16', '#d4883a', '#e8e0d4']
+		},
+		{
+			id: 'slate',
+			labelKey: 'settings.theme.slate',
+			descKey: 'settings.theme.slateDesc',
+			colors: ['#161a1e', '#1c2024', '#5488a8', '#d8dce0']
 		},
 		{
 			id: 'light',
 			labelKey: 'settings.theme.light',
 			descKey: 'settings.theme.lightDesc',
-			colors: ['#e8e8f0', '#ffffff', '#6a4aaf', '#1a1a24']
+			colors: ['#e8e8f0', '#ffffff', '#1f8a7e', '#1a1a24']
 		},
 		{
 			id: 'high-contrast',

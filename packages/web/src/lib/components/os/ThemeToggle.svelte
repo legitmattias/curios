@@ -2,11 +2,18 @@
 	import { themeStore } from '$lib/os/theme-store.svelte.js';
 	import { t } from '$lib/os/i18n.svelte.js';
 
-	const icons = {
-		dark: {
-			viewBox: '0 0 24 24',
-			path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
-		},
+	import type { Theme } from '$lib/os/theme-store.svelte.js';
+
+	const moonIcon = {
+		viewBox: '0 0 24 24',
+		path: 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'
+	};
+
+	const icons: Record<Theme, { viewBox: string; path: string }> = {
+		dark: moonIcon,
+		purple: moonIcon,
+		amber: moonIcon,
+		slate: moonIcon,
 		light: {
 			viewBox: '0 0 24 24',
 			path: 'M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m12.73-12.73l1.41-1.41M12 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12z'
@@ -15,13 +22,16 @@
 			viewBox: '0 0 24 24',
 			path: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2v16a8 8 0 0 0 0-16z'
 		}
-	} as const;
+	};
 
-	const labelKeys = {
+	const labelKeys: Record<Theme, string> = {
 		dark: 'theme.dark',
+		purple: 'theme.purple',
+		amber: 'theme.amber',
+		slate: 'theme.slate',
 		light: 'theme.light',
 		'high-contrast': 'theme.highContrast'
-	} as const;
+	};
 
 	const icon = $derived(icons[themeStore.current]);
 	const label = $derived(t(labelKeys[themeStore.current]));

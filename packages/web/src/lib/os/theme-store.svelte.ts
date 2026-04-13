@@ -1,6 +1,6 @@
-export type Theme = 'dark' | 'light' | 'high-contrast';
+export type Theme = 'dark' | 'purple' | 'amber' | 'slate' | 'light' | 'high-contrast';
 
-const THEMES: Theme[] = ['dark', 'light', 'high-contrast'];
+const THEMES: Theme[] = ['dark', 'purple', 'amber', 'slate', 'light', 'high-contrast'];
 const STORAGE_KEY = 'curios-theme';
 
 function getSystemPreference(): Theme {

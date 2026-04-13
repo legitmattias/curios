@@ -19,9 +19,9 @@
     ]
   },
   "lint-staged": {
-    "packages/web/**/*.{ts,svelte,js,json,css,html}": "prettier --write",
-    "packages/api/**/*.ts": "prettier --write",
-    "packages/shared/**/*.ts": "prettier --write"
+    "packages/web/**/*.{ts,svelte,js,json,css,html}": "pnpm --filter @curios/web exec prettier --write",
+    "packages/api/**/*.ts": "pnpm --filter @curios/web exec prettier --write",
+    "packages/shared/**/*.ts": "pnpm --filter @curios/web exec prettier --write"
   },
   "devDependencies": {
     "husky": "^9.1.7",
