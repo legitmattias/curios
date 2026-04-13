@@ -10,12 +10,14 @@
 		{ label: 'Database', value: 'PostgreSQL 17' },
 		{ label: 'Deployment', value: 'Docker + Caddy on Hetzner' },
 		{ label: 'CI/CD', value: 'GitHub Actions' },
-		{ label: 'Monorepo', value: 'pnpm workspaces' }
+		{ label: 'Monorepo', value: 'pnpm workspaces' },
+		{ label: 'AI Data', value: 'Dossier (MCP)' }
 	];
 
 	const links = [
 		{ labelKey: 'settings.sourceCode', url: 'https://github.com/legitmattias/curios' },
-		{ labelKey: 'settings.apiDocs', url: 'https://curios.mattic.dev/api/doc' }
+		{ labelKey: 'settings.apiDocs', url: 'https://curios.mattic.dev/api/doc' },
+		{ labelKey: 'settings.dossier', url: 'https://github.com/legitmattias/dossier' }
 	];
 </script>
 

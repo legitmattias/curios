@@ -145,6 +145,7 @@
 	"settings.aboutText": "CuriOS is a portfolio site that presents as a browser-based operating system. Every app is a real, functional piece of software — the terminal runs commands against a real API, the system monitor shows live metrics, and the file explorer browses actual database content.",
 	"settings.sourceCode": "Source Code",
 	"settings.apiDocs": "API Docs",
+	"settings.dossier": "Dossier (AI data source)",
 
 	"pdf.about": "About",
 	"pdf.experience": "Experience",

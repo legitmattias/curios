@@ -145,6 +145,7 @@
 	"settings.aboutText": "CuriOS är en portfoliosajt som presenteras som ett webbläsarbaserat operativsystem. Varje app är en riktig, fungerande programvara — terminalen kör kommandon mot ett riktigt API, systemövervakaren visar realtidsstatistik och filutforskaren bläddrar i faktiskt databasinnehåll.",
 	"settings.sourceCode": "Källkod",
 	"settings.apiDocs": "API-dokumentation",
+	"settings.dossier": "Dossier (AI-datakälla)",
 
 	"pdf.about": "Om",
 	"pdf.experience": "Erfarenhet",
