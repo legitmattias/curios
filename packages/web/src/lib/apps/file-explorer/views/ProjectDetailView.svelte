@@ -76,7 +76,7 @@
 					{#if project.url}
 						<a href={project.url} target="_blank" rel="noopener external">{project.url}</a>
 					{/if}
-					{#if project.repo}
+					{#if project.repo && project.repo !== project.url}
 						<a href={project.repo} target="_blank" rel="noopener external">{project.repo}</a>
 					{/if}
 				</div>
