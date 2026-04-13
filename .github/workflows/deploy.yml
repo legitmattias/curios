@@ -163,6 +163,8 @@ jobs:
           DOSSIER_MCP_URL: ${{ vars.DOSSIER_MCP_URL }}
           DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
+          DOSSIER_API_URL: ${{ vars.DOSSIER_API_URL }}
+          DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -p staging -f docker-compose.staging.yml pull
@@ -216,6 +218,8 @@ jobs:
           DOSSIER_MCP_URL: ${{ vars.DOSSIER_MCP_URL }}
           DOSSIER_MCP_API_KEY: ${{ secrets.DOSSIER_MCP_API_KEY }}
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
+          DOSSIER_API_URL: ${{ vars.DOSSIER_API_URL }}
+          DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -p production -f docker-compose.production.yml pull
