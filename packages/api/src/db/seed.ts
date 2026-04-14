@@ -80,6 +80,16 @@ const seedExperience = [
     tech: [],
     sortOrder: 2,
   },
+  {
+    company: "BRF Rågstacken",
+    role: "Board Member",
+    description:
+      "Board member of housing cooperative. Responsible for financial oversight, maintenance planning, and resident communications.",
+    startDate: "2020-01-01",
+    endDate: null,
+    tech: [],
+    sortOrder: 3,
+  },
 ];
 
 const seedEducation = [
@@ -128,7 +138,7 @@ const seedEducation = [
 const seedProfile = {
   name: "Mattias Ubbesen",
   title: "Full Stack Developer",
-  bio: "Web developer and computer science student based in Stockholm. Broad technical competence in web production, API design, cloud infrastructure, and AI/LLM integration. Background from process industry with responsibility for safety-critical operations, and experience in teaching and communication.",
+  bio: "Web developer and computer science student based in Stockholm. Broad technical competence in web production, API design, cloud infrastructure, and AI/LLM integration. Background from process industry with responsibility for safety-critical operations, and experience in teaching and communication. Driver's license (B).",
   location: "Stockholm, Sweden",
   email: "hello@mattiasubbesen.com",
   github: "https://github.com/legitmattias",
@@ -175,7 +185,7 @@ const svTranslations: {
     slug: "_profile",
     field: "bio",
     value:
-      "Webbutvecklare och datavetenskapsstudent baserad i Stockholm. Bred teknisk kompetens inom webbproduktion, API-design, molninfrastruktur och AI/LLM-integration. Bakgrund från processindustrin med ansvar för säkerhetskritisk drift, samt erfarenhet av undervisning och kommunikation.",
+      "Webbutvecklare och datavetenskapsstudent baserad i Stockholm. Bred teknisk kompetens inom webbproduktion, API-design, molninfrastruktur och AI/LLM-integration. Bakgrund från processindustrin med ansvar för säkerhetskritisk drift, samt erfarenhet av undervisning och kommunikation. B-körkort.",
     translatedBy: "human",
   },
   // Experience
@@ -222,6 +232,21 @@ const svTranslations: {
     field: "description",
     value:
       "Arbete som lärarvikarie inom grundskola, gymnasiet, vuxenutbildning och språkintroduktion för nyanlända. Inom naturvetenskap, teknik, matematik, språk, samhällsvetenskap m.fl.",
+    translatedBy: "human",
+  },
+  {
+    entityType: "experience",
+    slug: "BRF Rågstacken",
+    field: "role",
+    value: "Styrelseledamot",
+    translatedBy: "human",
+  },
+  {
+    entityType: "experience",
+    slug: "BRF Rågstacken",
+    field: "description",
+    value:
+      "Styrelseledamot i bostadsrättsförening. Ansvar för ekonomisk uppföljning, underhållsplanering och kommunikation med boende.",
     translatedBy: "human",
   },
   // Education
