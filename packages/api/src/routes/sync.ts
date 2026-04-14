@@ -1,5 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { syncProjects } from "../services/project-sync.js";
+import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { db } from "../db/index.js";
 import { projects } from "../db/schema.js";
 import { eq } from "drizzle-orm";
@@ -20,6 +20,27 @@ syncRoute.post("/projects", async (c) => {
     return c.json(result);
   } catch (err) {
     console.error("Sync failed:", err);
+    return c.json(
+      { error: err instanceof Error ? err.message : "Sync failed" },
+      500,
+    );
+  }
+});
+
+// Sync skills from Dossier (proficient+ public skills with mapped categories)
+syncRoute.post("/skills", async (c) => {
+  const auth = c.req.header("Authorization");
+  const expected = process.env.DOSSIER_API_KEY;
+
+  if (!expected || auth !== `Bearer ${expected}`) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  try {
+    const result = await syncSkills();
+    return c.json(result);
+  } catch (err) {
+    console.error("Skills sync failed:", err);
     return c.json(
       { error: err instanceof Error ? err.message : "Sync failed" },
       500,

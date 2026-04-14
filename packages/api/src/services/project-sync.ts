@@ -1,7 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { db } from "../db/index.js";
-import { projects } from "../db/schema.js";
-import { eq, notInArray } from "drizzle-orm";
+import { projects, skills } from "../db/schema.js";
+import { and, eq, notInArray } from "drizzle-orm";
 import { createHash } from "crypto";
 
 interface DossierProject {
@@ -261,6 +261,122 @@ export async function syncProjects(): Promise<SyncResult> {
       );
     }
   }
+
+  return result;
+}
+
+// ── Skills sync ───────────────────────────────────────
+
+interface DossierSkill {
+  name: string;
+  categoryId: string;
+  proficiency: string;
+  visibility: string;
+}
+
+// Map Dossier category IDs to clean display names
+const CATEGORY_MAP: Record<string, string> = {
+  "builtin-category-software-development-languages": "Languages",
+  "builtin-category-software-development-frameworks": "Frameworks",
+  "builtin-category-software-development-tools": "Tools",
+  "builtin-category-software-development-platforms": "Platforms",
+  "builtin-category-software-development-architecture": "Architecture",
+  "builtin-category-software-development-practices": "Practices",
+  "builtin-category-languages-spoken": "Spoken Languages",
+  "builtin-category-professional-communication": "Communication",
+  "builtin-category-professional-leadership": "Leadership",
+  "builtin-category-professional-strategy": "Strategy",
+};
+
+// Minimum proficiency for portfolio display
+const MIN_PROFICIENCY = ["expert", "advanced", "proficient"];
+
+export interface SkillsSyncResult {
+  synced: number;
+  removed: number;
+  errors: string[];
+}
+
+export async function syncSkills(): Promise<SkillsSyncResult> {
+  const result: SkillsSyncResult = { synced: 0, removed: 0, errors: [] };
+
+  const res = await fetch(`${getDossierApiUrl()}/profile/skills`, {
+    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
+  });
+  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const data = (await res.json()) as { skills: DossierSkill[] };
+
+  // Filter: public + minimum proficiency + has a mapped category
+  const filtered = data.skills.filter(
+    (s) =>
+      s.visibility === "public" &&
+      MIN_PROFICIENCY.includes(s.proficiency) &&
+      CATEGORY_MAP[s.categoryId],
+  );
+
+  console.log(
+    `Skills sync: ${filtered.length} qualifying skills from Dossier (${data.skills.length} total)`,
+  );
+
+  // Group by category for sort order
+  const byCategory = new Map<string, DossierSkill[]>();
+  for (const skill of filtered) {
+    const cat = CATEGORY_MAP[skill.categoryId]!;
+    if (!byCategory.has(cat)) byCategory.set(cat, []);
+    byCategory.get(cat)!.push(skill);
+  }
+
+  const syncedKeys: string[] = [];
+
+  for (const [category, categorySkills] of byCategory) {
+    for (let i = 0; i < categorySkills.length; i++) {
+      const skill = categorySkills[i];
+      const key = `${skill.name}::${category}`;
+      syncedKeys.push(key);
+
+      try {
+        const existing = await db
+          .select()
+          .from(skills)
+          .where(
+            and(eq(skills.name, skill.name), eq(skills.category, category)),
+          )
+          .limit(1);
+
+        if (existing.length === 0) {
+          await db.insert(skills).values({
+            name: skill.name,
+            category,
+            sortOrder: i,
+          });
+        } else {
+          await db
+            .update(skills)
+            .set({ sortOrder: i })
+            .where(
+              and(eq(skills.name, skill.name), eq(skills.category, category)),
+            );
+        }
+        result.synced++;
+      } catch (err) {
+        result.errors.push(
+          `${skill.name}: ${err instanceof Error ? err.message : "Unknown error"}`,
+        );
+      }
+    }
+  }
+
+  // Remove skills no longer in Dossier
+  const allSkills = await db.select().from(skills);
+  for (const existing of allSkills) {
+    const key = `${existing.name}::${existing.category}`;
+    if (!syncedKeys.includes(key)) {
+      await db.delete(skills).where(eq(skills.id, existing.id));
+      result.removed++;
+    }
+  }
+
+  console.log(`  Synced: ${result.synced}, Removed: ${result.removed}`);
 
   return result;
 }
