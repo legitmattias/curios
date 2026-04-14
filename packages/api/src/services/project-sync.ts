@@ -272,24 +272,37 @@ interface DossierSkill {
   categoryId: string;
   proficiency: string;
   visibility: string;
+  featured: boolean;
 }
 
-// Map Dossier category IDs to clean display names
-const CATEGORY_MAP: Record<string, string> = {
-  "builtin-category-software-development-languages": "Languages",
-  "builtin-category-software-development-frameworks": "Frameworks",
-  "builtin-category-software-development-tools": "Tools",
-  "builtin-category-software-development-platforms": "Platforms",
-  "builtin-category-software-development-architecture": "Architecture",
-  "builtin-category-software-development-practices": "Practices",
-  "builtin-category-languages-spoken": "Spoken Languages",
-  "builtin-category-professional-communication": "Communication",
-  "builtin-category-professional-leadership": "Leadership",
-  "builtin-category-professional-strategy": "Strategy",
-};
+interface DossierCategory {
+  id: string;
+  name: string;
+}
 
-// Minimum proficiency for portfolio display
-const MIN_PROFICIENCY = ["expert", "advanced", "proficient"];
+interface DossierDomain {
+  categories: DossierCategory[];
+}
+
+interface DossierProfile {
+  domains: DossierDomain[];
+}
+
+async function fetchCategoryMap(): Promise<Map<string, string>> {
+  const res = await fetch(`${getDossierApiUrl()}/profile`, {
+    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
+  });
+  if (!res.ok) throw new Error(`Dossier profile API error: ${res.status}`);
+  const profile = (await res.json()) as DossierProfile;
+
+  const map = new Map<string, string>();
+  for (const domain of profile.domains) {
+    for (const cat of domain.categories) {
+      map.set(cat.id, cat.name);
+    }
+  }
+  return map;
+}
 
 export interface SkillsSyncResult {
   synced: number;
@@ -300,28 +313,29 @@ export interface SkillsSyncResult {
 export async function syncSkills(): Promise<SkillsSyncResult> {
   const result: SkillsSyncResult = { synced: 0, removed: 0, errors: [] };
 
+  // Fetch category names from Dossier profile
+  const categoryMap = await fetchCategoryMap();
+
+  // Fetch skills
   const res = await fetch(`${getDossierApiUrl()}/profile/skills`, {
     headers: { Authorization: `Bearer ${getDossierApiKey()}` },
   });
   if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
   const data = (await res.json()) as { skills: DossierSkill[] };
 
-  // Filter: public + minimum proficiency + has a mapped category
+  // Filter: featured + public
   const filtered = data.skills.filter(
-    (s) =>
-      s.visibility === "public" &&
-      MIN_PROFICIENCY.includes(s.proficiency) &&
-      CATEGORY_MAP[s.categoryId],
+    (s) => s.featured && s.visibility === "public",
   );
 
   console.log(
-    `Skills sync: ${filtered.length} qualifying skills from Dossier (${data.skills.length} total)`,
+    `Skills sync: ${filtered.length} featured+public skills from Dossier (${data.skills.length} total)`,
   );
 
   // Group by category for sort order
   const byCategory = new Map<string, DossierSkill[]>();
   for (const skill of filtered) {
-    const cat = CATEGORY_MAP[skill.categoryId]!;
+    const cat = categoryMap.get(skill.categoryId) ?? skill.categoryId;
     if (!byCategory.has(cat)) byCategory.set(cat, []);
     byCategory.get(cat)!.push(skill);
   }
@@ -366,7 +380,7 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
     }
   }
 
-  // Remove skills no longer in Dossier
+  // Remove skills no longer featured in Dossier
   const allSkills = await db.select().from(skills);
   for (const existing of allSkills) {
     const key = `${existing.name}::${existing.category}`;

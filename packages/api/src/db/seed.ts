@@ -1,35 +1,8 @@
 import { db } from "./index.js";
-import {
-  skills,
-  experience,
-  education,
-  profile,
-  translations,
-} from "./schema.js";
+import { experience, education, profile, translations } from "./schema.js";
 import { eq, and } from "drizzle-orm";
 
-// Projects are synced from Dossier via POST /sync/projects — not seeded here.
-
-const seedSkills = [
-  { name: "Node.js / Bun", category: "Backend", sortOrder: 0 },
-  { name: "Hono / Express", category: "Backend", sortOrder: 1 },
-  { name: "FastAPI", category: "Backend", sortOrder: 2 },
-  { name: "PostgreSQL", category: "Backend", sortOrder: 3 },
-  { name: "REST API Design", category: "Backend", sortOrder: 4 },
-  { name: "SvelteKit", category: "Frontend", sortOrder: 0 },
-  { name: "React", category: "Frontend", sortOrder: 1 },
-  { name: "TypeScript", category: "Frontend", sortOrder: 2 },
-  { name: "CSS Architecture", category: "Frontend", sortOrder: 3 },
-  { name: "Docker", category: "DevOps", sortOrder: 0 },
-  { name: "GitHub Actions", category: "DevOps", sortOrder: 1 },
-  { name: "Terraform / Ansible", category: "DevOps", sortOrder: 2 },
-  { name: "Linux / VPS", category: "DevOps", sortOrder: 3 },
-  { name: "TypeScript", category: "Languages", sortOrder: 0 },
-  { name: "Python", category: "Languages", sortOrder: 1 },
-  { name: "JavaScript", category: "Languages", sortOrder: 2 },
-  { name: "Java", category: "Languages", sortOrder: 3 },
-  { name: "SQL", category: "Languages", sortOrder: 4 },
-];
+// Projects and skills are synced from Dossier — not seeded here.
 
 const seedExperience = [
   {
@@ -335,29 +308,7 @@ async function upsertByKey<T extends Record<string, unknown>>(
 async function seed() {
   console.log("Seeding database...");
 
-  // Projects are synced from Dossier — not seeded.
-
-  // Skills: upsert by name + category
-  for (const skill of seedSkills) {
-    const existing = await db
-      .select()
-      .from(skills)
-      .where(
-        and(eq(skills.name, skill.name), eq(skills.category, skill.category)),
-      )
-      .limit(1);
-    if (existing.length === 0) {
-      await db.insert(skills).values(skill);
-    } else {
-      await db
-        .update(skills)
-        .set({ sortOrder: skill.sortOrder })
-        .where(
-          and(eq(skills.name, skill.name), eq(skills.category, skill.category)),
-        );
-    }
-  }
-  console.log(`  Skills: ${seedSkills.length} upserted`);
+  // Projects and skills are synced from Dossier — not seeded.
 
   // Experience: upsert by company
   await upsertByKey(
