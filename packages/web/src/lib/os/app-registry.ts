@@ -26,7 +26,7 @@ export const APP_REGISTRY: Record<string, AppMeta> = {
 		title: 'app.terminal',
 		icon: IconTerminal,
 		component: Terminal,
-		defaultWidth: 640,
+		defaultWidth: 750,
 		defaultHeight: 420
 	},
 	'system-monitor': {

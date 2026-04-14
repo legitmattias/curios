@@ -6,6 +6,7 @@
 	import ProjectDetailView from './views/ProjectDetailView.svelte';
 	import SkillsView from './views/SkillsView.svelte';
 	import ExperienceView from './views/ExperienceView.svelte';
+	import EducationView from './views/EducationView.svelte';
 	import AboutView from './views/AboutView.svelte';
 	import ContactView from './views/ContactView.svelte';
 
@@ -53,6 +54,8 @@
 			<SkillsView onapimeta={handleApiMeta} />
 		{:else if node.view === 'experience'}
 			<ExperienceView onapimeta={handleApiMeta} />
+		{:else if node.view === 'education'}
+			<EducationView onapimeta={handleApiMeta} />
 		{:else if node.view === 'about'}
 			<AboutView onapimeta={handleApiMeta} />
 		{:else if node.view === 'contact'}

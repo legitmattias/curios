@@ -5,6 +5,7 @@ export type ViewType =
 	| 'skills'
 	| 'experience'
 	| 'about'
+	| 'education'
 	| 'contact';
 
 export interface VirtualNode {
@@ -41,6 +42,12 @@ export const FILESYSTEM: VirtualNode = {
 			path: '/experience',
 			icon: '💼',
 			view: 'experience'
+		},
+		{
+			name: 'education',
+			path: '/education',
+			icon: '🎓',
+			view: 'education'
 		},
 		{
 			name: 'skills',

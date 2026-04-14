@@ -63,9 +63,23 @@ const COMMANDS: Command[] = [
 		handler: async () => {
 			const projects = await fetchProjects();
 			const lines: OutputLine[] = [];
+			const indent = 16;
 			for (const p of projects) {
-				lines.push(stdout(`  ${p.slug.padEnd(14)} ${p.title}`));
-				lines.push(stdout(`  ${''.padEnd(14)} ${p.tech.join(', ')}`));
+				lines.push(stdout(`  ${p.slug.padEnd(indent)} ${p.title}`));
+				// Wrap tech tags to fit ~70 chars per line
+				const prefix = `  ${''.padEnd(indent)} `;
+				const maxWidth = 70 - prefix.length;
+				let techLine = '';
+				for (const tech of p.tech) {
+					const addition = techLine ? `, ${tech}` : tech;
+					if (techLine && (techLine + addition).length > maxWidth) {
+						lines.push(stdout(`${prefix}${techLine},`));
+						techLine = tech;
+					} else {
+						techLine += addition;
+					}
+				}
+				if (techLine) lines.push(stdout(`${prefix}${techLine}`));
 				lines.push(stdout(''));
 			}
 			lines.push(system(`${projects.length} ${t('terminal.projects.count')}`));

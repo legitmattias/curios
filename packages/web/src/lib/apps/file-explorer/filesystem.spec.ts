@@ -16,7 +16,7 @@ describe('findNode', () => {
 	});
 
 	it('finds all top-level folders', () => {
-		const paths = ['/projects', '/about', '/experience', '/skills', '/contact'];
+		const paths = ['/projects', '/about', '/experience', '/education', '/skills', '/contact'];
 		for (const path of paths) {
 			const node = findNode(FILESYSTEM, path);
 			expect(node, `expected node at ${path}`).not.toBeNull();

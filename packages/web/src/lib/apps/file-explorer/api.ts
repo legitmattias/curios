@@ -1,6 +1,13 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import { localeStore } from '$lib/os/locale-store.svelte.js';
-import type { Project, Skill, Experience, Profile, TranslationMeta } from '@curios/shared/types';
+import type {
+	Project,
+	Skill,
+	Experience,
+	Education,
+	Profile,
+	TranslationMeta
+} from '@curios/shared/types';
 
 if (!PUBLIC_API_URL) {
 	throw new Error('PUBLIC_API_URL environment variable is required');
@@ -42,6 +49,10 @@ export async function fetchSkills() {
 
 export async function fetchExperience() {
 	return fetchJson<Experience[]>('/experience');
+}
+
+export async function fetchEducation() {
+	return fetchJson<Education[]>('/education');
 }
 
 export async function fetchProfile() {
