@@ -84,8 +84,8 @@ const seedExperience = [
     company: "BRF Rågstacken",
     role: "Board Member",
     description:
-      "Board member of housing cooperative. Responsible for financial oversight, maintenance planning, and resident communications.",
-    startDate: "2020-01-01",
+      "Board member of housing cooperative. Part of the group responsible for property-related matters.",
+    startDate: "2025-05-01",
     endDate: null,
     tech: [],
     sortOrder: 3,
@@ -246,7 +246,7 @@ const svTranslations: {
     slug: "BRF Rågstacken",
     field: "description",
     value:
-      "Styrelseledamot i bostadsrättsförening. Ansvar för ekonomisk uppföljning, underhållsplanering och kommunikation med boende.",
+      "Styrelseledamot i bostadsrättsförening. Del av gruppen ansvarig för fastighetsfrågor.",
     translatedBy: "human",
   },
   // Education
