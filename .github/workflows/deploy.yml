@@ -91,6 +91,7 @@ jobs:
           tags: |
             ${{ env.API_IMAGE }}:${{ github.sha }}
             ${{ env.API_IMAGE }}:staging
+            ${{ env.API_IMAGE }}:production
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 
@@ -121,7 +122,7 @@ jobs:
             PUBLIC_API_URL=https://curios.mattic.dev/api
           tags: |
             ${{ env.WEB_IMAGE }}:${{ github.sha }}
-            ${{ env.WEB_IMAGE }}:latest
+            ${{ env.WEB_IMAGE }}:production
           cache-from: type=gha,scope=web-prod
           cache-to: type=gha,scope=web-prod,mode=max
 

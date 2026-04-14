@@ -17,7 +17,7 @@ services:
       - curios_prod
 
   api:
-    image: ghcr.io/legitmattias/curios-api:latest
+    image: ghcr.io/legitmattias/curios-api:production
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL}
@@ -37,7 +37,7 @@ services:
       - curios_prod
 
   web:
-    image: ghcr.io/legitmattias/curios-web:latest
+    image: ghcr.io/legitmattias/curios-web:production
     restart: unless-stopped
     environment:
       ORIGIN: ${ORIGIN}
