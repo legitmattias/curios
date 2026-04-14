@@ -7,6 +7,7 @@ import {
   profile,
   translations,
 } from "./schema.js";
+import { eq, and } from "drizzle-orm";
 
 const seedProjects = [
   {
@@ -331,50 +332,105 @@ const svTranslations: {
   },
 ];
 
+async function upsertByKey<T extends Record<string, unknown>>(
+  table: Parameters<typeof db.insert>[0],
+  items: T[],
+  keyField: keyof T & string,
+  tableRef: Record<string, unknown>,
+  label: string,
+) {
+  let inserted = 0;
+  let updated = 0;
+
+  for (const item of items) {
+    const keyCol = (tableRef as Record<string, unknown>)[
+      keyField
+    ] as Parameters<typeof eq>[0];
+    const existing = await db
+      .select()
+      .from(table)
+      .where(eq(keyCol, item[keyField] as string))
+      .limit(1);
+
+    if (existing.length === 0) {
+      await db.insert(table).values(item as Record<string, unknown>);
+      inserted++;
+    } else {
+      const { [keyField]: _, ...updateFields } = item;
+      await db
+        .update(table)
+        .set(updateFields as Record<string, unknown>)
+        .where(eq(keyCol, item[keyField] as string));
+      updated++;
+    }
+  }
+  console.log(`  ${label}: ${inserted} inserted, ${updated} updated`);
+}
+
 async function seed() {
   console.log("Seeding database...");
 
-  // Projects: upsert by slug (unique constraint)
+  // Projects: upsert by slug
   await db
     .insert(projects)
     .values(seedProjects)
     .onConflictDoNothing({ target: projects.slug });
   console.log(`  Projects: ${seedProjects.length} (upsert)`);
 
-  // All other tables: only seed if empty
-  const existingSkills = await db.select().from(skills).limit(1);
-  if (existingSkills.length === 0) {
-    await db.insert(skills).values(seedSkills);
-    console.log(`  Skills: ${seedSkills.length} inserted`);
-  } else {
-    console.log(`  Skills: skipped (already has data)`);
+  // Skills: upsert by name + category
+  for (const skill of seedSkills) {
+    const existing = await db
+      .select()
+      .from(skills)
+      .where(
+        and(eq(skills.name, skill.name), eq(skills.category, skill.category)),
+      )
+      .limit(1);
+    if (existing.length === 0) {
+      await db.insert(skills).values(skill);
+    } else {
+      await db
+        .update(skills)
+        .set({ sortOrder: skill.sortOrder })
+        .where(
+          and(eq(skills.name, skill.name), eq(skills.category, skill.category)),
+        );
+    }
   }
+  console.log(`  Skills: ${seedSkills.length} upserted`);
 
-  const existingExperience = await db.select().from(experience).limit(1);
-  if (existingExperience.length === 0) {
-    await db.insert(experience).values(seedExperience);
-    console.log(`  Experience: ${seedExperience.length} inserted`);
-  } else {
-    console.log(`  Experience: skipped (already has data)`);
-  }
+  // Experience: upsert by company
+  await upsertByKey(
+    experience,
+    seedExperience,
+    "company",
+    experience,
+    "Experience",
+  );
 
-  const existingEducation = await db.select().from(education).limit(1);
-  if (existingEducation.length === 0) {
-    await db.insert(education).values(seedEducation);
-    console.log(`  Education: ${seedEducation.length} inserted`);
-  } else {
-    console.log(`  Education: skipped (already has data)`);
-  }
+  // Education: upsert by institution
+  await upsertByKey(
+    education,
+    seedEducation,
+    "institution",
+    education,
+    "Education",
+  );
 
+  // Profile: upsert (single row)
   const existingProfile = await db.select().from(profile).limit(1);
   if (existingProfile.length === 0) {
     await db.insert(profile).values(seedProfile);
-    console.log(`  Profile: 1 inserted`);
+    console.log("  Profile: inserted");
   } else {
-    console.log(`  Profile: skipped (already has data)`);
+    await db
+      .update(profile)
+      .set(seedProfile)
+      .where(eq(profile.id, existingProfile[0].id));
+    console.log("  Profile: updated");
   }
 
-  // Seed Swedish translations (idempotent via unique constraint upsert)
+  // Swedish translations (idempotent via unique constraint)
   await seedTranslations();
 
   console.log("Done.");
