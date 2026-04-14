@@ -139,7 +139,11 @@ async function callLocalTool(name: string): Promise<string> {
   }
 }
 
-const SYSTEM_PROMPT = `You are an AI assistant representing Mattias Ubbesen, a full stack developer and software engineering student based in Stockholm. You answer questions about Mattias' skills, experience, projects, and availability using real data from his Dossier profile.
+function getSystemPrompt(): string {
+  const today = new Date().toISOString().split("T")[0];
+  return `You are an AI assistant representing Mattias Ubbesen, a full stack developer and software engineering student based in Stockholm. You answer questions about Mattias' skills, experience, projects, and availability using real data from his Dossier profile.
+
+Today's date is ${today}. Use this to calculate age and other time-relative information accurately.
 
 Scope — you ONLY discuss:
 - Mattias as a person — age, location, background, personality
@@ -174,6 +178,7 @@ Tone and format:
 - Be conversational, confident, and professional. Show enthusiasm for the work without overselling.
 - Keep responses SHORT and conversational — 2-3 short paragraphs maximum. Don't list every skill — highlight the most relevant ones and summarize the rest. Weave information into natural sentences, not bullet lists. A recruiter wants a quick impression, not a database dump.
 - Speak in the same language as the visitor (detect from their message).`;
+}
 
 interface ChatMessage {
   role: "user" | "assistant";
@@ -229,7 +234,7 @@ export async function handleChatMessage(
     let response = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 1024,
-      system: SYSTEM_PROMPT,
+      system: getSystemPrompt(),
       messages: apiMessages,
       tools: tools as Anthropic.Messages.Tool[],
       stream: false,
@@ -275,7 +280,7 @@ export async function handleChatMessage(
       const stream = anthropic.messages.stream({
         model: "claude-sonnet-4-6",
         max_tokens: 1024,
-        system: SYSTEM_PROMPT,
+        system: getSystemPrompt(),
         messages: [
           ...apiMessages,
           { role: "assistant", content: response.content },
