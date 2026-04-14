@@ -1,6 +1,5 @@
 import { db } from "./index.js";
 import {
-  projects,
   skills,
   experience,
   education,
@@ -9,25 +8,7 @@ import {
 } from "./schema.js";
 import { eq, and } from "drizzle-orm";
 
-const seedProjects = [
-  {
-    slug: "curios",
-    title: "CuriOS",
-    description:
-      "Portfolio OS — a browser-based desktop environment showcasing real, backend-powered applications. Features a window manager, file explorer, terminal, and system monitor.",
-    tech: ["SvelteKit", "Hono", "Bun", "PostgreSQL", "WebSockets", "Docker"],
-    url: "https://mattiasubbesen.com",
-    repo: "https://github.com/legitmattias/curios",
-  },
-  {
-    slug: "dossier",
-    title: "Dossier",
-    description:
-      "Structured knowledge profile system that powers AI chat agents with accurate, sourced responses. Uses LLM and RAG to turn personal data into conversational knowledge.",
-    tech: ["TypeScript", "LLM", "RAG", "Bun"],
-    repo: "https://github.com/legitmattias/dossier",
-  },
-];
+// Projects are synced from Dossier via POST /sync/projects — not seeded here.
 
 const seedSkills = [
   { name: "Node.js / Bun", category: "Backend", sortOrder: 0 },
@@ -156,23 +137,7 @@ const svTranslations: {
   value: string;
   translatedBy: "human" | "llm";
 }[] = [
-  // Projects
-  {
-    entityType: "project",
-    slug: "curios",
-    field: "description",
-    value:
-      "Portfolio-OS — en webbläsarbaserad skrivbordsmiljö som visar upp riktiga, backend-drivna applikationer. Innehåller fönsterhanterare, filutforskare, terminal och systemövervakning.",
-    translatedBy: "human",
-  },
-  {
-    entityType: "project",
-    slug: "dossier",
-    field: "description",
-    value:
-      "Strukturerat kunskapsprofil-system som driver AI-chatbotar med korrekta, källbaserade svar. Använder LLM och RAG för att omvandla personlig data till konversationsbaserad kunskap.",
-    translatedBy: "human",
-  },
+  // Project translations are handled by the sync — not seeded here.
   // Profile
   {
     entityType: "profile",
@@ -370,12 +335,7 @@ async function upsertByKey<T extends Record<string, unknown>>(
 async function seed() {
   console.log("Seeding database...");
 
-  // Projects: upsert by slug
-  await db
-    .insert(projects)
-    .values(seedProjects)
-    .onConflictDoNothing({ target: projects.slug });
-  console.log(`  Projects: ${seedProjects.length} (upsert)`);
+  // Projects are synced from Dossier — not seeded.
 
   // Skills: upsert by name + category
   for (const skill of seedSkills) {
@@ -439,12 +399,10 @@ async function seed() {
 
 async function seedTranslations() {
   // Build entity ID lookup by querying each table
-  const allProjects = await db.select().from(projects);
   const allExperience = await db.select().from(experience);
   const allEducation = await db.select().from(education);
   const allProfile = await db.select().from(profile).limit(1);
 
-  const projectIdBySlug = new Map(allProjects.map((p) => [p.slug, p.id]));
   const experienceIdByCompany = new Map(
     allExperience.map((e) => [e.company, e.id]),
   );
@@ -459,7 +417,7 @@ async function seedTranslations() {
     let entityId: string | undefined;
 
     if (t.entityType === "project") {
-      entityId = projectIdBySlug.get(t.slug);
+      continue; // Project translations handled by sync
     } else if (t.entityType === "experience") {
       entityId = experienceIdByCompany.get(t.slug);
     } else if (t.entityType === "education") {
