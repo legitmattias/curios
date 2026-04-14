@@ -1,6 +1,6 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import { localeStore } from '$lib/os/locale-store.svelte.js';
-import type { Project, Skill, Experience, Profile, CvData } from '@curios/shared/types';
+import type { Project, Skill, Experience, Education, Profile, CvData } from '@curios/shared/types';
 
 function buildUrl(path: string): string {
 	const lang = localeStore.current;
@@ -35,6 +35,10 @@ export function fetchSkills(): Promise<Skill[]> {
 
 export function fetchExperience(): Promise<Experience[]> {
 	return fetchJson('/experience');
+}
+
+export function fetchEducation(): Promise<Education[]> {
+	return fetchJson('/education');
 }
 
 export function fetchProfile(): Promise<Profile> {

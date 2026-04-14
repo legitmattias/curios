@@ -4,6 +4,7 @@ import {
 	fetchProject,
 	fetchSkills,
 	fetchExperience,
+	fetchEducation,
 	fetchProfile,
 	fetchHealth,
 	fetchCv
@@ -137,6 +138,23 @@ const COMMANDS: Command[] = [
 				lines.push(stdout(`  ${e.role} @ ${e.company}`));
 				lines.push(stdout(`  ${e.startDate} — ${end}`));
 				lines.push(stdout(`  ${e.tech.join(', ')}`));
+				lines.push(stdout(''));
+			}
+			return lines;
+		}
+	},
+	{
+		name: 'education',
+		description: 'Show education background',
+		handler: async () => {
+			const entries = await fetchEducation();
+			const lines: OutputLine[] = [];
+			for (const e of entries) {
+				const end = e.endDate ?? t('cv.present');
+				lines.push(stdout(`  ${e.degree} — ${e.field}`));
+				lines.push(stdout(`  ${e.institution}`));
+				lines.push(stdout(`  ${e.startDate} — ${end}`));
+				if (e.description) lines.push(stdout(`  ${e.description}`));
 				lines.push(stdout(''));
 			}
 			return lines;
