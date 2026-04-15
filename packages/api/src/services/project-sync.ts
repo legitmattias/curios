@@ -273,12 +273,18 @@ interface DossierSkill {
   proficiency: string;
   visibility: string;
   featured: boolean;
+  description?: string;
+  notes?: string;
+}
+
+interface SkillContext {
+  name: string;
+  description?: string;
   notes?: string;
 }
 
 async function generateSkillDescriptions(
-  skillNames: string[],
-  skillNotes: Map<string, string>,
+  skillContexts: SkillContext[],
   projectSummaries: { name: string; description: string; tech: string[] }[],
 ): Promise<Map<string, string>> {
   const anthropic = new Anthropic();
@@ -287,10 +293,14 @@ async function generateSkillDescriptions(
     .map((p) => `${p.name}: ${p.description} [Tech: ${p.tech.join(", ")}]`)
     .join("\n");
 
-  const skillList = skillNames
-    .map((name) => {
-      const notes = skillNotes.get(name);
-      return notes ? `${name} (notes: ${notes})` : name;
+  const skillList = skillContexts
+    .map((s) => {
+      const parts = [s.name];
+      if (s.description) parts.push(`desc: ${s.description}`);
+      if (s.notes) parts.push(`notes: ${s.notes}`);
+      return parts.length > 1
+        ? `${parts[0]} (${parts.slice(1).join("; ")})`
+        : parts[0];
     })
     .join("\n");
 
@@ -444,10 +454,11 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
   // Generate descriptions via LLM
   console.log("  Generating skill descriptions...");
 
-  const skillNames = filtered.map((s) => s.name);
-  const skillNotes = new Map(
-    filtered.filter((s) => s.notes).map((s) => [s.name, s.notes!]),
-  );
+  const skillContexts: SkillContext[] = filtered.map((s) => ({
+    name: s.name,
+    description: s.description,
+    notes: s.notes,
+  }));
 
   // Fetch projects for cross-referencing
   const projectRes = await fetch(
@@ -465,8 +476,7 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
     : [];
 
   const descriptions = await generateSkillDescriptions(
-    skillNames,
-    skillNotes,
+    skillContexts,
     projectData,
   );
 
