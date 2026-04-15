@@ -155,8 +155,13 @@ async function generateProjectSummary(
 Return ONLY the JSON object, no markdown fencing.`,
   });
 
-  const text =
+  let text =
     response.content[0].type === "text" ? response.content[0].text : "";
+  // Strip markdown fencing if present
+  text = text
+    .replace(/^```(?:json)?\s*\n?/i, "")
+    .replace(/\n?```\s*$/i, "")
+    .trim();
   try {
     const parsed = JSON.parse(text) as LlmProjectSummary;
     if (!parsed.summary || !Array.isArray(parsed.tech)) {
@@ -168,7 +173,7 @@ Return ONLY the JSON object, no markdown fencing.`,
     );
     return parsed;
   } catch {
-    console.error("Failed to parse LLM response:", text);
+    console.error("Failed to parse LLM response:", text.slice(0, 300));
     return {
       summary: project.description,
       tech: [],
@@ -355,8 +360,13 @@ Rules:
     ],
   });
 
-  const text =
+  let text =
     response.content[0].type === "text" ? response.content[0].text : "{}";
+  // Strip markdown fencing if present
+  text = text
+    .replace(/^```(?:json)?\s*\n?/i, "")
+    .replace(/\n?```\s*$/i, "")
+    .trim();
   try {
     const parsed = JSON.parse(text) as Record<string, string>;
     return new Map(Object.entries(parsed));
