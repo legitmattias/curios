@@ -143,9 +143,14 @@ async function generateProjectSummary(
 
 1. "summary": A concise, compelling 2-3 sentence description for a portfolio site. Focus on what it does, what makes it interesting, and the technical approach. Write for recruiters and senior developers. No filler, no clichés.
 
-2. "tech": An array of objects, each with "name" and "description". Include 5-12 items. Prioritize technologies that are distinctive or architecturally important for THIS specific project — not just common dependencies. Include technologies that make this project interesting or unique.
-   - "name": Use these EXACT names when the technology matches: ${skillList}. For technologies not in this list, use standard names.
-   - "description": One sentence about the specific role this technology plays in THIS project's architecture. Be concrete — mention what feature or component it powers, how it's configured, or what problem it solves in this context. NEVER mention other projects. NEVER write a generic definition of the technology — the reader already knows what React is. Focus on what's interesting about how it's used HERE.
+2. "tech": An array of objects, each with "name" and "description". Include 6-12 items.
+
+   Prioritization: Lead with technologies that are architecturally significant or make this project distinctive (frameworks, databases, protocols, integrations). Basic web fundamentals (HTML, CSS) should only be included if there is something genuinely interesting about how they are used. Every project uses HTML — that is not interesting.
+
+   Include the full stack: frontend frameworks, backend frameworks, databases, real-time protocols, deployment tools, AI/ML integrations, and notable libraries. Do NOT skip backend or infrastructure tech.
+
+   - "name": You MUST match against this skill list and use the EXACT name when the concept matches: ${skillList}. Examples: use "Real-time Communication" not "WebSocket", use "MCP" not "Model Context Protocol", use "LLM Integration" not "AI", use "Auth & Authorization" not "JWT". Scan the full list carefully. For technologies not in this list, use standard names.
+   - "description": Start with a brief factual explanation of what the technology is (one clause), then describe how it is used specifically in THIS project. Be concrete — mention what feature or component it powers. NEVER mention other projects.
 
 Return ONLY the JSON object, no markdown fencing.`,
   });
