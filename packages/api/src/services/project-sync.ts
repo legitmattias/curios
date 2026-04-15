@@ -338,7 +338,7 @@ async function generateSkillDescriptions(
 
 Rules:
 - First part: what the technology IS (factual, one clause).
-- Second part (only if the provided projects clearly use this skill): how the developer has used it, referencing specific project names.
+- Second part (only if the provided projects clearly use this skill): how the developer has used it, with a couple of project names as examples (use "e.g." to indicate these are examples, not an exhaustive list).
 - If no project connection is evident from the data, STOP after the factual description. No filler, no generic statements.
 - Keep each description to 1-2 sentences maximum.
 - Return ONLY the JSON object, no markdown fencing.`,
