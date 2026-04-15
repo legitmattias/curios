@@ -28,7 +28,7 @@ syncRoute.post("/projects", async (c) => {
   }
 });
 
-// Sync skills from Dossier (proficient+ public skills with mapped categories)
+// Sync skills from Dossier (featured + public skills with mapped categories)
 syncRoute.post("/skills", async (c) => {
   const auth = c.req.header("Authorization");
   const expected = process.env.DOSSIER_API_KEY;
@@ -38,7 +38,8 @@ syncRoute.post("/skills", async (c) => {
   }
 
   try {
-    const result = await syncSkills();
+    const force = c.req.query("force") === "true";
+    const result = await syncSkills(force);
     return c.json(result);
   } catch (err) {
     console.error("Skills sync failed:", err);

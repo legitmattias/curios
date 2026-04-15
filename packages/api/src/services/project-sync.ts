@@ -396,7 +396,10 @@ export interface SkillsSyncResult {
   errors: string[];
 }
 
-export async function syncSkills(): Promise<SkillsSyncResult> {
+// Track last skill description input hash to avoid unnecessary LLM calls
+let lastSkillDescriptionHash: string | null = null;
+
+export async function syncSkills(force = false): Promise<SkillsSyncResult> {
   const result: SkillsSyncResult = { synced: 0, removed: 0, errors: [] };
 
   // Fetch category names from Dossier profile
@@ -478,9 +481,7 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
 
   console.log(`  Synced: ${result.synced}, Removed: ${result.removed}`);
 
-  // Generate descriptions via LLM
-  console.log("  Generating skill descriptions...");
-
+  // Generate descriptions via LLM (with hash-based caching)
   const skillContexts: SkillContext[] = filtered.map((s) => ({
     name: s.name,
     description: s.description,
@@ -502,23 +503,35 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
       }))
     : [];
 
-  const descriptions = await generateSkillDescriptions(
-    skillContexts,
-    projectData,
-  );
+  // Hash all LLM inputs to detect changes
+  const descriptionInputHash = computeHash({
+    skills: skillContexts,
+    projects: projectData,
+  });
 
-  // Update skills with descriptions
-  let descCount = 0;
-  for (const [name, desc] of descriptions) {
-    if (desc) {
-      await db
-        .update(skills)
-        .set({ description: desc })
-        .where(eq(skills.name, name));
-      descCount++;
+  if (!force && descriptionInputHash === lastSkillDescriptionHash) {
+    console.log("  Descriptions: skipped (inputs unchanged)");
+  } else {
+    console.log("  Generating skill descriptions...");
+    const descriptions = await generateSkillDescriptions(
+      skillContexts,
+      projectData,
+    );
+
+    // Update skills with descriptions
+    let descCount = 0;
+    for (const [name, desc] of descriptions) {
+      if (desc) {
+        await db
+          .update(skills)
+          .set({ description: desc })
+          .where(eq(skills.name, name));
+        descCount++;
+      }
     }
+    lastSkillDescriptionHash = descriptionInputHash;
+    console.log(`  Descriptions: ${descCount} generated`);
   }
-  console.log(`  Descriptions: ${descCount} generated`);
 
   return result;
 }
