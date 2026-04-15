@@ -273,6 +273,55 @@ interface DossierSkill {
   proficiency: string;
   visibility: string;
   featured: boolean;
+  notes?: string;
+}
+
+async function generateSkillDescriptions(
+  skillNames: string[],
+  skillNotes: Map<string, string>,
+  projectSummaries: { name: string; description: string; tech: string[] }[],
+): Promise<Map<string, string>> {
+  const anthropic = new Anthropic();
+
+  const projectContext = projectSummaries
+    .map((p) => `${p.name}: ${p.description} [Tech: ${p.tech.join(", ")}]`)
+    .join("\n");
+
+  const skillList = skillNames
+    .map((name) => {
+      const notes = skillNotes.get(name);
+      return notes ? `${name} (notes: ${notes})` : name;
+    })
+    .join("\n");
+
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    system: `You generate short tooltip descriptions for skills on a developer portfolio. Return a JSON object mapping each skill name to its description.
+
+Rules:
+- First part: what the technology IS (factual, one clause).
+- Second part (only if the provided projects clearly use this skill): how the developer has used it, referencing specific project names.
+- If no project connection is evident from the data, STOP after the factual description. No filler, no generic statements.
+- Keep each description to 1-2 sentences maximum.
+- Return ONLY the JSON object, no markdown fencing.`,
+    messages: [
+      {
+        role: "user",
+        content: `Projects:\n${projectContext}\n\nSkills:\n${skillList}`,
+      },
+    ],
+  });
+
+  const text =
+    response.content[0].type === "text" ? response.content[0].text : "{}";
+  try {
+    const parsed = JSON.parse(text) as Record<string, string>;
+    return new Map(Object.entries(parsed));
+  } catch {
+    console.error("Failed to parse skill descriptions:", text.slice(0, 200));
+    return new Map();
+  }
 }
 
 interface DossierCategory {
@@ -391,6 +440,48 @@ export async function syncSkills(): Promise<SkillsSyncResult> {
   }
 
   console.log(`  Synced: ${result.synced}, Removed: ${result.removed}`);
+
+  // Generate descriptions via LLM
+  console.log("  Generating skill descriptions...");
+
+  const skillNames = filtered.map((s) => s.name);
+  const skillNotes = new Map(
+    filtered.filter((s) => s.notes).map((s) => [s.name, s.notes!]),
+  );
+
+  // Fetch projects for cross-referencing
+  const projectRes = await fetch(
+    `${getDossierApiUrl()}/profile/projects?featured=true`,
+    { headers: { Authorization: `Bearer ${getDossierApiKey()}` } },
+  );
+  const projectData = projectRes.ok
+    ? (
+        (await projectRes.json()) as { projects: DossierProject[] }
+      ).projects.map((p) => ({
+        name: p.name,
+        description: p.description,
+        tech: [] as string[],
+      }))
+    : [];
+
+  const descriptions = await generateSkillDescriptions(
+    skillNames,
+    skillNotes,
+    projectData,
+  );
+
+  // Update skills with descriptions
+  let descCount = 0;
+  for (const [name, desc] of descriptions) {
+    if (desc) {
+      await db
+        .update(skills)
+        .set({ description: desc })
+        .where(eq(skills.name, name));
+      descCount++;
+    }
+  }
+  console.log(`  Descriptions: ${descCount} generated`);
 
   return result;
 }

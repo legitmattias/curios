@@ -31,6 +31,7 @@ export const skills = pgTable("skills", {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar({ length: 128 }).notNull(),
   category: varchar({ length: 64 }).notNull(),
+  description: text(),
   sortOrder: integer("sort_order").notNull().default(0),
 });
 

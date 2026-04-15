@@ -62,7 +62,7 @@
 				</h3>
 				<ul class="skill-list">
 					{#each items as skill (skill.id)}
-						<li class="skill-item">{skill.name}</li>
+						<li class="skill-item" title={skill.description ?? ''}>{skill.name}</li>
 					{/each}
 				</ul>
 			</div>
