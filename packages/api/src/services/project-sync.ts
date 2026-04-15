@@ -13,9 +13,14 @@ interface DossierProject {
   featured: boolean;
 }
 
+interface LlmTechItem {
+  name: string;
+  description: string;
+}
+
 interface LlmProjectSummary {
   summary: string;
-  tech: string[];
+  tech: LlmTechItem[];
 }
 
 function getDossierApiUrl(): string {
@@ -138,9 +143,9 @@ async function generateProjectSummary(
 
 1. "summary": A concise, compelling 2-3 sentence description for a portfolio site. Focus on what it does, what makes it interesting, and the technical approach. Write for recruiters and senior developers. No filler, no clichés.
 
-2. "tech": An array of the most important technologies, frameworks, and tools used. Include 3-8 items, ordered by importance. Only include tech that is actually used — infer from the README, dependencies, and description.
-
-IMPORTANT for the "tech" array: Use these EXACT names when the technology matches: ${skillList}. For technologies not in this list, use standard names. This ensures tech tags link to skill descriptions on the portfolio.
+2. "tech": An array of objects, each with "name" and "description". Include 3-8 items, ordered by importance. Only include tech that is actually used in THIS project.
+   - "name": Use these EXACT names when the technology matches: ${skillList}. For technologies not in this list, use standard names.
+   - "description": One sentence describing what this technology IS and how it is used specifically in THIS project. Focus on the role it plays in this project's architecture. Do NOT reference other projects.
 
 Return ONLY the JSON object, no markdown fencing.`,
   });
@@ -152,6 +157,10 @@ Return ONLY the JSON object, no markdown fencing.`,
     if (!parsed.summary || !Array.isArray(parsed.tech)) {
       throw new Error("Invalid LLM response structure");
     }
+    // Ensure each tech item has name and description
+    parsed.tech = parsed.tech.map((t) =>
+      typeof t === "string" ? { name: t, description: "" } : t,
+    );
     return parsed;
   } catch {
     console.error("Failed to parse LLM response:", text);
@@ -222,6 +231,12 @@ export async function syncProjects(force = false): Promise<SyncResult> {
         knownSkillNames,
       );
 
+      const techNames = tech.map((t) => t.name);
+      const techDescriptions: Record<string, string> = {};
+      for (const t of tech) {
+        if (t.description) techDescriptions[t.name] = t.description;
+      }
+
       // Upsert into database
       await db
         .insert(projects)
@@ -229,7 +244,8 @@ export async function syncProjects(force = false): Promise<SyncResult> {
           slug: project.slug,
           title: project.name,
           description: summary,
-          tech,
+          tech: techNames,
+          techDescriptions,
           url: project.url ?? null,
           repo: project.url ?? null,
           contentHash: hash,
@@ -240,7 +256,8 @@ export async function syncProjects(force = false): Promise<SyncResult> {
           set: {
             title: project.name,
             description: summary,
-            tech,
+            tech: techNames,
+            techDescriptions,
             url: project.url ?? null,
             repo: project.url ?? null,
             contentHash: hash,

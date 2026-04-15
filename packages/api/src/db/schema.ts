@@ -7,6 +7,7 @@ import {
   integer,
   date,
   unique,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 export const projects = pgTable("projects", {
@@ -15,6 +16,7 @@ export const projects = pgTable("projects", {
   title: varchar({ length: 256 }).notNull(),
   description: text().notNull(),
   tech: text().array().notNull(),
+  techDescriptions: jsonb("tech_descriptions").$type<Record<string, string>>(),
   url: varchar({ length: 512 }),
   repo: varchar({ length: 512 }),
   sortOrder: integer("sort_order").notNull().default(0),

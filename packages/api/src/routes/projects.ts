@@ -1,8 +1,8 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { ProjectSchema } from "@curios/shared/schemas";
 import { db } from "../db/index.js";
-import { projects, skills } from "../db/schema.js";
-import { asc, eq, inArray } from "drizzle-orm";
+import { projects } from "../db/schema.js";
+import { asc, eq } from "drizzle-orm";
 import {
   applyTranslations,
   applyTranslationsSingle,
@@ -10,24 +10,14 @@ import {
 
 const PROJECT_TRANSLATABLE = ["title", "description"];
 
-/** Look up skill descriptions for tech tag names */
-async function enrichTech(
+/** Build enriched tech array from DB tech names + stored descriptions */
+function buildTech(
   techNames: string[],
-): Promise<{ name: string; description: string | null }[]> {
-  if (techNames.length === 0) return [];
-
-  const matchingSkills = await db
-    .select({ name: skills.name, description: skills.description })
-    .from(skills)
-    .where(inArray(skills.name, techNames));
-
-  const descByName = new Map(
-    matchingSkills.map((s) => [s.name, s.description]),
-  );
-
+  techDescriptions: Record<string, string> | null,
+): { name: string; description: string | null }[] {
   return techNames.map((name) => ({
     name,
-    description: descByName.get(name) ?? null,
+    description: techDescriptions?.[name] ?? null,
   }));
 }
 
@@ -57,16 +47,14 @@ projectsRoute.openapi(listRoute, async (c) => {
     .from(projects)
     .orderBy(asc(projects.sortOrder));
 
-  const mapped = await Promise.all(
-    rows.map(async (row) => ({
-      ...row,
-      tech: await enrichTech(row.tech),
-      url: row.url ?? undefined,
-      repo: row.repo ?? undefined,
-      createdAt: row.createdAt.toISOString(),
-      updatedAt: row.updatedAt.toISOString(),
-    })),
-  );
+  const mapped = rows.map((row) => ({
+    ...row,
+    tech: buildTech(row.tech, row.techDescriptions),
+    url: row.url ?? undefined,
+    repo: row.repo ?? undefined,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  }));
 
   const result = await applyTranslations(
     "project",
@@ -130,7 +118,7 @@ projectsRoute.openapi(getBySlugRoute, async (c) => {
   const row = rows[0];
   const mapped = {
     ...row,
-    tech: await enrichTech(row.tech),
+    tech: buildTech(row.tech, row.techDescriptions),
     url: row.url ?? undefined,
     repo: row.repo ?? undefined,
     createdAt: row.createdAt.toISOString(),
