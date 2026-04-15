@@ -132,7 +132,7 @@ async function generateProjectSummary(
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 512,
+    max_tokens: 1024,
     messages: [
       {
         role: "user",
@@ -143,9 +143,9 @@ async function generateProjectSummary(
 
 1. "summary": A concise, compelling 2-3 sentence description for a portfolio site. Focus on what it does, what makes it interesting, and the technical approach. Write for recruiters and senior developers. No filler, no clichés.
 
-2. "tech": An array of objects, each with "name" and "description". Include 3-8 items, ordered by importance. Only include tech that is actually used in THIS project.
+2. "tech": An array of objects, each with "name" and "description". Include 5-12 items. Prioritize technologies that are distinctive or architecturally important for THIS specific project — not just common dependencies. Include technologies that make this project interesting or unique.
    - "name": Use these EXACT names when the technology matches: ${skillList}. For technologies not in this list, use standard names.
-   - "description": One sentence describing what this technology IS and how it is used specifically in THIS project. Focus on the role it plays in this project's architecture. Do NOT reference other projects.
+   - "description": One sentence about the specific role this technology plays in THIS project's architecture. Be concrete — mention what feature or component it powers, how it's configured, or what problem it solves in this context. NEVER mention other projects. NEVER write a generic definition of the technology — the reader already knows what React is. Focus on what's interesting about how it's used HERE.
 
 Return ONLY the JSON object, no markdown fencing.`,
   });
