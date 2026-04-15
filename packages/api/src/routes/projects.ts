@@ -1,14 +1,35 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { ProjectSchema } from "@curios/shared/schemas";
 import { db } from "../db/index.js";
-import { projects } from "../db/schema.js";
-import { asc, eq } from "drizzle-orm";
+import { projects, skills } from "../db/schema.js";
+import { asc, eq, inArray } from "drizzle-orm";
 import {
   applyTranslations,
   applyTranslationsSingle,
 } from "../services/translation-helper.js";
 
 const PROJECT_TRANSLATABLE = ["title", "description"];
+
+/** Look up skill descriptions for tech tag names */
+async function enrichTech(
+  techNames: string[],
+): Promise<{ name: string; description: string | null }[]> {
+  if (techNames.length === 0) return [];
+
+  const matchingSkills = await db
+    .select({ name: skills.name, description: skills.description })
+    .from(skills)
+    .where(inArray(skills.name, techNames));
+
+  const descByName = new Map(
+    matchingSkills.map((s) => [s.name, s.description]),
+  );
+
+  return techNames.map((name) => ({
+    name,
+    description: descByName.get(name) ?? null,
+  }));
+}
 
 const projectsRoute = new OpenAPIHono();
 
@@ -36,13 +57,16 @@ projectsRoute.openapi(listRoute, async (c) => {
     .from(projects)
     .orderBy(asc(projects.sortOrder));
 
-  const mapped = rows.map((row) => ({
-    ...row,
-    url: row.url ?? undefined,
-    repo: row.repo ?? undefined,
-    createdAt: row.createdAt.toISOString(),
-    updatedAt: row.updatedAt.toISOString(),
-  }));
+  const mapped = await Promise.all(
+    rows.map(async (row) => ({
+      ...row,
+      tech: await enrichTech(row.tech),
+      url: row.url ?? undefined,
+      repo: row.repo ?? undefined,
+      createdAt: row.createdAt.toISOString(),
+      updatedAt: row.updatedAt.toISOString(),
+    })),
+  );
 
   const result = await applyTranslations(
     "project",
@@ -106,6 +130,7 @@ projectsRoute.openapi(getBySlugRoute, async (c) => {
   const row = rows[0];
   const mapped = {
     ...row,
+    tech: await enrichTech(row.tech),
     url: row.url ?? undefined,
     repo: row.repo ?? undefined,
     createdAt: row.createdAt.toISOString(),

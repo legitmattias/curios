@@ -407,7 +407,9 @@ export async function generateCvPdf(
         10,
       );
 
-      const techLine = project.tech.join("  ·  ");
+      const techLine = project.tech
+        .map((t) => (typeof t === "string" ? t : t.name))
+        .join("  ·  ");
       main.page.drawText(techLine, {
         x: MAIN_X,
         y: main.y,

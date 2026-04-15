@@ -110,6 +110,7 @@ async function generateProjectSummary(
   project: DossierProject,
   readme: string | null,
   manifest: Record<string, unknown> | null,
+  knownSkillNames: string[],
 ): Promise<LlmProjectSummary> {
   const anthropic = new Anthropic();
 
@@ -121,6 +122,8 @@ async function generateProjectSummary(
   ]
     .filter(Boolean)
     .join("\n");
+
+  const skillList = knownSkillNames.join(", ");
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
@@ -135,7 +138,9 @@ async function generateProjectSummary(
 
 1. "summary": A concise, compelling 2-3 sentence description for a portfolio site. Focus on what it does, what makes it interesting, and the technical approach. Write for recruiters and senior developers. No filler, no clichés.
 
-2. "tech": An array of the most important technologies, frameworks, and tools used. Be specific (e.g. "SvelteKit" not "JavaScript", "Drizzle ORM" not "ORM"). Include 3-8 items, ordered by importance. Only include tech that is actually used — infer from the README, dependencies, and description.
+2. "tech": An array of the most important technologies, frameworks, and tools used. Include 3-8 items, ordered by importance. Only include tech that is actually used — infer from the README, dependencies, and description.
+
+IMPORTANT for the "tech" array: Use these EXACT names when the technology matches: ${skillList}. For technologies not in this list, use standard names. This ensures tech tags link to skill descriptions on the portfolio.
 
 Return ONLY the JSON object, no markdown fencing.`,
   });
@@ -170,6 +175,10 @@ export async function syncProjects(): Promise<SyncResult> {
   // Fetch featured projects from Dossier
   const dossierProjects = await fetchDossierProjects();
   console.log(`Sync: ${dossierProjects.length} featured projects from Dossier`);
+
+  // Fetch known skill names for tech tag alignment
+  const allSkills = await db.select({ name: skills.name }).from(skills);
+  const knownSkillNames = allSkills.map((s) => s.name);
 
   const syncedSlugs: string[] = [];
 
@@ -210,6 +219,7 @@ export async function syncProjects(): Promise<SyncResult> {
         project,
         readme,
         manifest,
+        knownSkillNames,
       );
 
       // Upsert into database

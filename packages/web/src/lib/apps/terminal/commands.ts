@@ -72,10 +72,11 @@ const COMMANDS: Command[] = [
 				const maxWidth = 70 - prefix.length;
 				let techLine = '';
 				for (const tech of p.tech) {
-					const addition = techLine ? `, ${tech}` : tech;
+					const name = typeof tech === 'string' ? tech : tech.name;
+					const addition = techLine ? `, ${name}` : name;
 					if (techLine && (techLine + addition).length > maxWidth) {
 						lines.push(stdout(`${prefix}${techLine},`));
-						techLine = tech;
+						techLine = name;
 					} else {
 						techLine += addition;
 					}
@@ -101,7 +102,7 @@ const COMMANDS: Command[] = [
 				stdout(`${'─'.repeat(p.title.length)}`),
 				stdout(p.description),
 				stdout(''),
-				stdout(`Tech:  ${p.tech.join(', ')}`)
+				stdout(`Tech:  ${p.tech.map((t) => (typeof t === 'string' ? t : t.name)).join(', ')}`)
 			];
 			if (p.url) lines.push(stdout(`URL:   ${p.url}`));
 			if (p.repo) lines.push(stdout(`Repo:  ${p.repo}`));
