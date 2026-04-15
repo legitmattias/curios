@@ -16,7 +16,8 @@ syncRoute.post("/projects", async (c) => {
   }
 
   try {
-    const result = await syncProjects();
+    const force = c.req.query("force") === "true";
+    const result = await syncProjects(force);
     return c.json(result);
   } catch (err) {
     console.error("Sync failed:", err);

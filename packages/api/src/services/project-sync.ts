@@ -169,7 +169,7 @@ export interface SyncResult {
   errors: string[];
 }
 
-export async function syncProjects(): Promise<SyncResult> {
+export async function syncProjects(force = false): Promise<SyncResult> {
   const result: SyncResult = { synced: 0, skipped: 0, removed: 0, errors: [] };
 
   // Fetch featured projects from Dossier
@@ -206,7 +206,7 @@ export async function syncProjects(): Promise<SyncResult> {
         .where(eq(projects.slug, project.slug))
         .limit(1);
 
-      if (existing.length > 0 && existing[0].contentHash === hash) {
+      if (!force && existing.length > 0 && existing[0].contentHash === hash) {
         result.skipped++;
         syncedSlugs.push(project.slug);
         console.log(`  [skip] ${project.slug} (unchanged)`);
