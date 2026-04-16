@@ -16,7 +16,11 @@ async function translateToSwedish(
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
     max_tokens: 4096,
-    system: `Translate the provided JSON values from English to Swedish. Keep technical terms (framework names, tool names, etc.) in English. Return the same JSON structure with translated values. Return ONLY the JSON object, no markdown fencing.`,
+    system: `Translate the provided JSON values from English to Swedish. Rules:
+- Keep ALL technical terms in English: framework names, tool names, programming concepts, architecture terms, protocol names, API terminology, etc. Swedish developers use these terms in English.
+- Only translate natural language parts — verbs, prepositions, general descriptions.
+- Example: "A reactive web framework used to build the desktop environment" → "Ett reaktivt webbramverk som används för att bygga skrivbordsmiljön" (keep "web" concepts but translate the sentence structure)
+- Return the same JSON structure with translated values. Return ONLY the JSON object, no markdown fencing.`,
     messages: [{ role: "user", content: JSON.stringify(texts) }],
   });
 
@@ -200,7 +204,7 @@ async function generateProjectSummary(
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1024,
+    max_tokens: 2048,
     messages: [
       {
         role: "user",
