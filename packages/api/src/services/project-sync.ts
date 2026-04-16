@@ -1,8 +1,76 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { db } from "../db/index.js";
-import { projects, skills } from "../db/schema.js";
+import { projects, skills, translations } from "../db/schema.js";
 import { and, eq, notInArray } from "drizzle-orm";
 import { createHash } from "crypto";
+
+// ── Translation helper ────────────────────────────────
+
+async function translateToSwedish(
+  texts: Record<string, string>,
+): Promise<Record<string, string>> {
+  const entries = Object.entries(texts);
+  if (entries.length === 0) return {};
+
+  const anthropic = new Anthropic();
+  const response = await anthropic.messages.create({
+    model: "claude-sonnet-4-6",
+    max_tokens: 4096,
+    system: `Translate the provided JSON values from English to Swedish. Keep technical terms (framework names, tool names, etc.) in English. Return the same JSON structure with translated values. Return ONLY the JSON object, no markdown fencing.`,
+    messages: [{ role: "user", content: JSON.stringify(texts) }],
+  });
+
+  let text =
+    response.content[0].type === "text" ? response.content[0].text : "{}";
+  text = text
+    .replace(/^```(?:json)?\s*\n?/i, "")
+    .replace(/\n?```\s*$/i, "")
+    .trim();
+  try {
+    return JSON.parse(text) as Record<string, string>;
+  } catch {
+    console.error("Failed to parse Swedish translations:", text.slice(0, 200));
+    return {};
+  }
+}
+
+async function upsertTranslations(
+  entityType: string,
+  entityId: string,
+  locale: string,
+  fields: Record<string, string>,
+): Promise<number> {
+  let count = 0;
+  for (const [field, value] of Object.entries(fields)) {
+    if (!value) continue;
+    await db
+      .insert(translations)
+      .values({
+        entityType,
+        entityId,
+        locale,
+        field,
+        value,
+        translatedBy: "llm",
+      })
+      .onConflictDoNothing();
+
+    // Update if exists (onConflictDoNothing means we need a separate update)
+    await db
+      .update(translations)
+      .set({ value, translatedBy: "llm", translatedAt: new Date() })
+      .where(
+        and(
+          eq(translations.entityType, entityType),
+          eq(translations.entityId, entityId),
+          eq(translations.locale, locale),
+          eq(translations.field, field),
+        ),
+      );
+    count++;
+  }
+  return count;
+}
 
 interface DossierProject {
   slug: string;
@@ -275,9 +343,35 @@ export async function syncProjects(force = false): Promise<SyncResult> {
           },
         });
 
+      // Translate to Swedish
+      const textsToTranslate: Record<string, string> = {
+        description: summary,
+      };
+      for (const [name, desc] of Object.entries(techDescriptions)) {
+        textsToTranslate[`tech_desc:${name}`] = desc;
+      }
+
+      const svTranslations = await translateToSwedish(textsToTranslate);
+
+      // Get the project ID for translation storage
+      const [projectRow] = await db
+        .select({ id: projects.id })
+        .from(projects)
+        .where(eq(projects.slug, project.slug))
+        .limit(1);
+
+      if (projectRow) {
+        await upsertTranslations(
+          "project",
+          projectRow.id,
+          "sv",
+          svTranslations,
+        );
+      }
+
       result.synced++;
       syncedSlugs.push(project.slug);
-      console.log(`  [done] ${project.slug} — tech: ${tech.join(", ")}`);
+      console.log(`  [done] ${project.slug} — tech: ${techNames.join(", ")}`);
     } catch (err) {
       const msg = `${project.slug}: ${err instanceof Error ? err.message : "Unknown error"}`;
       result.errors.push(msg);
@@ -544,6 +638,31 @@ export async function syncSkills(force = false): Promise<SkillsSyncResult> {
         descCount++;
       }
     }
+    // Translate skill descriptions to Swedish
+    console.log("  Translating skill descriptions to Swedish...");
+    const skillTexts: Record<string, string> = {};
+    for (const [name, desc] of descriptions) {
+      if (desc) skillTexts[name] = desc;
+    }
+    const svSkillDescs = await translateToSwedish(skillTexts);
+
+    // Store translations
+    const allDbSkills = await db
+      .select({ id: skills.id, name: skills.name })
+      .from(skills);
+    const skillIdByName = new Map(allDbSkills.map((s) => [s.name, s.id]));
+    let svCount = 0;
+    for (const [name, svDesc] of Object.entries(svSkillDescs)) {
+      const skillId = skillIdByName.get(name);
+      if (skillId && svDesc) {
+        await upsertTranslations("skill", skillId, "sv", {
+          description: svDesc,
+        });
+        svCount++;
+      }
+    }
+    console.log(`  Swedish translations: ${svCount}`);
+
     lastSkillDescriptionHash = descriptionInputHash;
     console.log(`  Descriptions: ${descCount} generated`);
   }

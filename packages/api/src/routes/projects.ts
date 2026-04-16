@@ -1,8 +1,8 @@
 import { OpenAPIHono, createRoute, z } from "@hono/zod-openapi";
 import { ProjectSchema } from "@curios/shared/schemas";
 import { db } from "../db/index.js";
-import { projects } from "../db/schema.js";
-import { asc, eq } from "drizzle-orm";
+import { projects, translations } from "../db/schema.js";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import {
   applyTranslations,
   applyTranslationsSingle,
@@ -10,15 +10,45 @@ import {
 
 const PROJECT_TRANSLATABLE = ["title", "description"];
 
-/** Build enriched tech array from DB tech names + stored descriptions */
+/** Build enriched tech array from DB tech names + descriptions, with locale overlay */
 function buildTech(
   techNames: string[],
   techDescriptions: Record<string, string> | null,
+  techTranslations?: Map<string, string>,
 ): { name: string; description: string | null }[] {
   return techNames.map((name) => ({
     name,
-    description: techDescriptions?.[name] ?? null,
+    description:
+      techTranslations?.get(name) ?? techDescriptions?.[name] ?? null,
   }));
+}
+
+/** Fetch tech_desc:* translations for given project IDs */
+async function fetchTechTranslations(
+  projectIds: string[],
+  locale: string,
+): Promise<Map<string, Map<string, string>>> {
+  if (locale === "en" || projectIds.length === 0) return new Map();
+
+  const rows = await db
+    .select()
+    .from(translations)
+    .where(
+      and(
+        eq(translations.entityType, "project"),
+        inArray(translations.entityId, projectIds),
+        eq(translations.locale, locale),
+      ),
+    );
+
+  const result = new Map<string, Map<string, string>>();
+  for (const row of rows) {
+    if (!row.field.startsWith("tech_desc:")) continue;
+    const techName = row.field.slice("tech_desc:".length);
+    if (!result.has(row.entityId)) result.set(row.entityId, new Map());
+    result.get(row.entityId)!.set(techName, row.value);
+  }
+  return result;
 }
 
 const projectsRoute = new OpenAPIHono();
@@ -47,9 +77,14 @@ projectsRoute.openapi(listRoute, async (c) => {
     .from(projects)
     .orderBy(asc(projects.sortOrder));
 
+  const techTrans = await fetchTechTranslations(
+    rows.map((r) => r.id),
+    lang,
+  );
+
   const mapped = rows.map((row) => ({
     ...row,
-    tech: buildTech(row.tech, row.techDescriptions),
+    tech: buildTech(row.tech, row.techDescriptions, techTrans.get(row.id)),
     url: row.url ?? undefined,
     repo: row.repo ?? undefined,
     createdAt: row.createdAt.toISOString(),
@@ -116,9 +151,10 @@ projectsRoute.openapi(getBySlugRoute, async (c) => {
   }
 
   const row = rows[0];
+  const techTrans = await fetchTechTranslations([row.id], lang);
   const mapped = {
     ...row,
-    tech: buildTech(row.tech, row.techDescriptions),
+    tech: buildTech(row.tech, row.techDescriptions, techTrans.get(row.id)),
     url: row.url ?? undefined,
     repo: row.repo ?? undefined,
     createdAt: row.createdAt.toISOString(),
