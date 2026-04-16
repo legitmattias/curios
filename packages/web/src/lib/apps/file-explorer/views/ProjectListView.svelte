@@ -57,7 +57,9 @@
 									show={localeStore.current !== 'en' && isLlmTranslated(project.id, 'title')}
 								/>
 							</span>
-							<span class="file-meta">{project.tech.map((t) => t.name).join(', ')}</span>
+							<span class="file-meta"
+								>{project.tech.map((t) => (typeof t === 'string' ? t : t.name)).join(', ')}</span
+							>
 						</div>
 					</button>
 				</li>

@@ -63,8 +63,10 @@
 		<div class="section">
 			<h3 class="section-title">{t('explorer.detail.techStack')}</h3>
 			<div class="tags">
-				{#each project.tech as tech (tech.name)}
-					<span class="tag" title={tech.description ?? ''}>{tech.name}</span>
+				{#each project.tech as tech (typeof tech === 'string' ? tech : tech.name)}
+					<span class="tag" title={(typeof tech === 'string' ? '' : tech.description) ?? ''}
+						>{typeof tech === 'string' ? tech : tech.name}</span
+					>
 				{/each}
 			</div>
 		</div>
