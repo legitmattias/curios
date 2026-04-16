@@ -7,6 +7,7 @@ const ALLOWED_TOOLS = new Set([
   "dossier_list_goals",
   "dossier_list_interests",
   "dossier_list_projects",
+  "dossier_search",
   "dossier_export",
 ]);
 
