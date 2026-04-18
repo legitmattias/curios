@@ -127,6 +127,13 @@
 
 		return () => connection?.close();
 	});
+
+	// Keep the input focused whenever it's active (on connect, after each reply)
+	$effect(() => {
+		if (!isWaiting && connectionStatus === 'connected') {
+			inputEl?.focus();
+		}
+	});
 </script>
 
 <div class="chat">
