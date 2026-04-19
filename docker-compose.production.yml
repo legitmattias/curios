@@ -1,3 +1,5 @@
+name: curios-production
+
 services:
   postgres:
     image: postgres:17-alpine
@@ -29,7 +31,8 @@ services:
       DOSSIER_API_URL: ${DOSSIER_API_URL}
       DOSSIER_API_KEY: ${DOSSIER_API_KEY}
     ports:
-      - '4000:4000'
+      # Bound to loopback only — Caddy (api.mattic.dev) is the public entry point.
+      - '127.0.0.1:4000:4000'
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,7 +45,8 @@ services:
     environment:
       ORIGIN: ${ORIGIN}
     ports:
-      - '3000:3000'
+      # Bound to loopback only — Caddy (mattiasubbesen.com) is the public entry point.
+      - '127.0.0.1:3000:3000'
     depends_on:
       - api
     networks:

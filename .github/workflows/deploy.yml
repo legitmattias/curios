@@ -168,19 +168,19 @@ jobs:
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker compose -p staging -f docker-compose.staging.yml pull
-          docker compose -p staging -f docker-compose.staging.yml up -d
-          docker compose -p staging -f docker-compose.staging.yml exec -T api bunx drizzle-kit migrate
-          docker compose -p staging -f docker-compose.staging.yml exec -T api bun run src/db/seed.ts
+          docker compose -f docker-compose.staging.yml pull
+          docker compose -f docker-compose.staging.yml up -d
+          docker compose -f docker-compose.staging.yml exec -T api bunx drizzle-kit migrate
+          docker compose -f docker-compose.staging.yml exec -T api bun run src/db/seed.ts
 
       - name: Health check
         run: |
           echo "Waiting for services..."
           sleep 5
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
-            'curl -sf http://localhost:4010/health || (echo "API health check failed" && exit 1)'
+            'curl -sf http://127.0.0.1:4010/health || (echo "API health check failed" && exit 1)'
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
-            'curl -sf http://localhost:3010 || (echo "Web health check failed" && exit 1)'
+            'curl -sf http://127.0.0.1:3010 || (echo "Web health check failed" && exit 1)'
           echo "Staging deploy complete."
 
   # ── Deploy to production ──────────────────────────────────
@@ -223,17 +223,17 @@ jobs:
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-          docker compose -p production -f docker-compose.production.yml pull
-          docker compose -p production -f docker-compose.production.yml up -d
-          docker compose -p production -f docker-compose.production.yml exec -T api bunx drizzle-kit migrate
-          docker compose -p production -f docker-compose.production.yml exec -T api bun run src/db/seed.ts
+          docker compose -f docker-compose.production.yml pull
+          docker compose -f docker-compose.production.yml up -d
+          docker compose -f docker-compose.production.yml exec -T api bunx drizzle-kit migrate
+          docker compose -f docker-compose.production.yml exec -T api bun run src/db/seed.ts
 
       - name: Health check
         run: |
           echo "Waiting for services..."
           sleep 5
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
-            'curl -sf http://localhost:4000/health || (echo "API health check failed" && exit 1)'
+            'curl -sf http://127.0.0.1:4000/health || (echo "API health check failed" && exit 1)'
           ssh ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} \
-            'curl -sf http://localhost:3000 || (echo "Web health check failed" && exit 1)'
+            'curl -sf http://127.0.0.1:3000 || (echo "Web health check failed" && exit 1)'
           echo "Production deploy complete."
