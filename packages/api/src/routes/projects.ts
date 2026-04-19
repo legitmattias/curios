@@ -10,17 +10,26 @@ import {
 
 const PROJECT_TRANSLATABLE = ["title", "description"];
 
-/** Build enriched tech array from DB tech names + descriptions, with locale overlay */
+/** Build enriched tech array from DB tech names + descriptions, with locale overlay.
+ * Dedupes by name to protect the client's keyed {#each} blocks from legacy data
+ * where the LLM returned the same tech name twice. */
 function buildTech(
   techNames: string[],
   techDescriptions: Record<string, string> | null,
   techTranslations?: Map<string, string>,
 ): { name: string; description: string | null }[] {
-  return techNames.map((name) => ({
-    name,
-    description:
-      techTranslations?.get(name) ?? techDescriptions?.[name] ?? null,
-  }));
+  const seen = new Set<string>();
+  const out: { name: string; description: string | null }[] = [];
+  for (const name of techNames) {
+    if (seen.has(name)) continue;
+    seen.add(name);
+    out.push({
+      name,
+      description:
+        techTranslations?.get(name) ?? techDescriptions?.[name] ?? null,
+    });
+  }
+  return out;
 }
 
 /** Fetch tech_desc:* translations for given project IDs */

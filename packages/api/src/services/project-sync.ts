@@ -313,10 +313,17 @@ export async function syncProjects(force = false): Promise<SyncResult> {
         knownSkillNames,
       );
 
-      const techNames = tech.map((t) => t.name);
+      // Dedupe tech by name (LLM occasionally returns the same name twice,
+      // which crashes keyed {#each} blocks on the client).
+      const techNames: string[] = [];
       const techDescriptions: Record<string, string> = {};
       for (const t of tech) {
-        if (t.description) techDescriptions[t.name] = t.description;
+        if (!techDescriptions[t.name] && !techNames.includes(t.name)) {
+          techNames.push(t.name);
+        }
+        if (t.description && !techDescriptions[t.name]) {
+          techDescriptions[t.name] = t.description;
+        }
       }
 
       // Upsert into database

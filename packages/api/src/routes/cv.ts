@@ -53,6 +53,8 @@ async function getCvData(
   }));
   const mappedProjects = projectRows.map((row) => ({
     ...row,
+    // Dedupe tech — defensive layer in case legacy DB data has duplicates.
+    tech: [...new Set(row.tech)],
     url: row.url ?? undefined,
     repo: row.repo ?? undefined,
     createdAt: row.createdAt.toISOString(),
