@@ -91,11 +91,19 @@ async function getCvData(
     ...tProjects.translationMeta,
   };
 
+  const cvSkillsAll = profileData.cvSkills ?? null;
+  const cvSkillsForLang = cvSkillsAll
+    ? lang === "sv"
+      ? cvSkillsAll.sv
+      : cvSkillsAll.en
+    : null;
+
   return {
     data: {
       profile: tProfile.data,
       experience: tExperience.data,
       skills: tSkills.data,
+      cvSkills: cvSkillsForLang,
       education: tEducation.data,
       projects: tProjects.data,
     },

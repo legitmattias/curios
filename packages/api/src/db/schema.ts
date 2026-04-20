@@ -93,4 +93,8 @@ export const profile = pgTable("profile", {
   github: varchar({ length: 512 }).notNull(),
   linkedin: varchar({ length: 512 }),
   website: varchar({ length: 512 }),
+  cvSkills: jsonb("cv_skills").$type<{
+    en: Array<{ category: string; summary: string }>;
+    sv: Array<{ category: string; summary: string }>;
+  }>(),
 });

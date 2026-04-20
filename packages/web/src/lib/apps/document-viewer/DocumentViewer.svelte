@@ -160,7 +160,16 @@
 			{/if}
 
 			<!-- Skills -->
-			{#if cv.skills.length > 0}
+			{#if cv.cvSkills && cv.cvSkills.length > 0}
+				<CvSection title={t('cv.skills')}>
+					{#each cv.cvSkills as cluster (cluster.category)}
+						<div class="skill-row">
+							<span class="skill-category">{cluster.category}</span>
+							<span class="skill-list">{cluster.summary}</span>
+						</div>
+					{/each}
+				</CvSection>
+			{:else if cv.skills.length > 0}
 				<CvSection title={t('cv.skills')}>
 					{@const groups = cv.skills.reduce(
 						(acc, s) => {

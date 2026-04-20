@@ -57,6 +57,13 @@
       "when": 1776255975530,
       "tag": "0007_youthful_sersi",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1776687753535,
+      "tag": "0008_legal_harpoon",
+      "breakpoints": true
     }
   ]
 }

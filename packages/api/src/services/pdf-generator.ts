@@ -234,7 +234,35 @@ export async function generateCvPdf(
   const sidebar: DrawContext = { page, fonts, y: columnsStartY };
 
   // ── Skills ──
-  if (data.skills.length > 0) {
+  // Prefer the LLM-summarized cluster form (cvSkills) when available; fall
+  // back to the full category-grouped list otherwise.
+  if (data.cvSkills && data.cvSkills.length > 0) {
+    drawSectionTitle(sidebar, labels.skills, MARGIN_LEFT, SIDEBAR_WIDTH);
+
+    for (const cluster of data.cvSkills) {
+      drawWrappedText(
+        sidebar,
+        cluster.category,
+        MARGIN_LEFT,
+        7,
+        bold,
+        COLORS.dark,
+        SIDEBAR_WIDTH,
+        9,
+      );
+      drawWrappedText(
+        sidebar,
+        cluster.summary,
+        MARGIN_LEFT,
+        6.5,
+        regular,
+        COLORS.body,
+        SIDEBAR_WIDTH,
+        9,
+      );
+      sidebar.y -= 4;
+    }
+  } else if (data.skills.length > 0) {
     drawSectionTitle(sidebar, labels.skills, MARGIN_LEFT, SIDEBAR_WIDTH);
 
     const groups: Record<string, string[]> = {};
@@ -254,7 +282,6 @@ export async function generateCvPdf(
       sidebar.y -= 9;
 
       for (const name of names) {
-        // Wrap long skill names so they don't overflow the sidebar.
         drawWrappedText(
           sidebar,
           name,
