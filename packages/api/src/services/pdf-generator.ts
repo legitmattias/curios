@@ -115,10 +115,20 @@ function drawSectionTitle(
 function formatDate(
   date: string | null,
   presentLabel: string = "Present",
+  lang: "en" | "sv" = "en",
 ): string {
   if (!date) return presentLabel;
+  const [yearStr, monthStr, dayStr] = date.split("-");
+  const year = yearStr;
+  const monthNum = parseInt(monthStr ?? "1", 10);
+  const dayNum = parseInt(dayStr ?? "1", 10);
+
+  // Convention: YYYY-01-01 = year precision only; YYYY-MM-01 (M != 1) = month precision.
+  if (dayNum === 1 && monthNum === 1) return year;
+
+  const locale = lang === "sv" ? "sv-SE" : "en-US";
   const d = new Date(date);
-  return d.toLocaleDateString("en-US", { year: "numeric", month: "short" });
+  return d.toLocaleDateString(locale, { year: "numeric", month: "short" });
 }
 
 export async function generateCvPdf(
@@ -244,60 +254,19 @@ export async function generateCvPdf(
       sidebar.y -= 9;
 
       for (const name of names) {
-        sidebar.page.drawText(name, {
-          x: MARGIN_LEFT + 3,
-          y: sidebar.y,
-          size: 7,
-          font: regular,
-          color: COLORS.body,
-        });
-        sidebar.y -= 9;
+        // Wrap long skill names so they don't overflow the sidebar.
+        drawWrappedText(
+          sidebar,
+          name,
+          MARGIN_LEFT + 3,
+          7,
+          regular,
+          COLORS.body,
+          SIDEBAR_WIDTH - 3,
+          9,
+        );
       }
       sidebar.y -= 3;
-    }
-  }
-
-  // ── Education ──
-  if (data.education.length > 0) {
-    drawSectionTitle(sidebar, labels.education, MARGIN_LEFT, SIDEBAR_WIDTH);
-
-    for (const edu of data.education) {
-      sidebar.page.drawText(edu.degree, {
-        x: MARGIN_LEFT,
-        y: sidebar.y,
-        size: 7.5,
-        font: bold,
-        color: COLORS.dark,
-      });
-      sidebar.y -= 9;
-
-      sidebar.page.drawText(edu.field, {
-        x: MARGIN_LEFT,
-        y: sidebar.y,
-        size: 7,
-        font: regular,
-        color: COLORS.body,
-      });
-      sidebar.y -= 9;
-
-      sidebar.page.drawText(edu.institution, {
-        x: MARGIN_LEFT,
-        y: sidebar.y,
-        size: 6.5,
-        font: regular,
-        color: COLORS.gray,
-      });
-      sidebar.y -= 8;
-
-      const period = `${formatDate(edu.startDate, labels.present)} — ${formatDate(edu.endDate, labels.present)}`;
-      sidebar.page.drawText(period, {
-        x: MARGIN_LEFT,
-        y: sidebar.y,
-        size: 6.5,
-        font: regular,
-        color: COLORS.light,
-      });
-      sidebar.y -= 12;
     }
   }
 
@@ -368,16 +337,70 @@ export async function generateCvPdf(
         10,
       );
 
-      // Tech
-      const techLine = exp.tech.join("  ·  ");
-      main.page.drawText(techLine, {
+      // Tech — wrap to avoid overflow beyond the main column.
+      if (exp.tech.length > 0) {
+        drawWrappedText(
+          main,
+          exp.tech.join("  ·  "),
+          MAIN_X,
+          6.5,
+          regular,
+          COLORS.muted,
+          MAIN_WIDTH,
+          9,
+        );
+      }
+      main.y -= 5;
+    }
+  }
+
+  // ── Education ──
+  if (data.education.length > 0) {
+    drawSectionTitle(main, labels.education, MAIN_X, MAIN_WIDTH);
+
+    for (const edu of data.education) {
+      const degreeField = `${edu.degree} — ${edu.field}`;
+      main.page.drawText(degreeField, {
         x: MAIN_X,
         y: main.y,
-        size: 6.5,
-        font: regular,
-        color: COLORS.muted,
+        size: 8.5,
+        font: bold,
+        color: COLORS.black,
       });
-      main.y -= 14;
+
+      const period = `${formatDate(edu.startDate, labels.present)} — ${formatDate(edu.endDate, labels.present)}`;
+      const periodWidth = regular.widthOfTextAtSize(period, 7);
+      main.page.drawText(period, {
+        x: MAIN_X + MAIN_WIDTH - periodWidth,
+        y: main.y + 1,
+        size: 7,
+        font: regular,
+        color: COLORS.light,
+      });
+      main.y -= 11;
+
+      main.page.drawText(edu.institution, {
+        x: MAIN_X,
+        y: main.y,
+        size: 7.5,
+        font: boldOblique,
+        color: COLORS.accent,
+      });
+      main.y -= 10;
+
+      if (edu.description) {
+        drawWrappedText(
+          main,
+          edu.description,
+          MAIN_X,
+          7,
+          regular,
+          COLORS.body,
+          MAIN_WIDTH,
+          10,
+        );
+      }
+      main.y -= 4;
     }
   }
 
@@ -407,17 +430,22 @@ export async function generateCvPdf(
         10,
       );
 
-      const techLine = project.tech
-        .map((t) => (typeof t === "string" ? t : t.name))
-        .join("  ·  ");
-      main.page.drawText(techLine, {
-        x: MAIN_X,
-        y: main.y,
-        size: 6.5,
-        font: regular,
-        color: COLORS.muted,
-      });
-      main.y -= 13;
+      const techNames = project.tech.map((t) =>
+        typeof t === "string" ? t : t.name,
+      );
+      if (techNames.length > 0) {
+        drawWrappedText(
+          main,
+          techNames.join("  ·  "),
+          MAIN_X,
+          6.5,
+          regular,
+          COLORS.muted,
+          MAIN_WIDTH,
+          9,
+        );
+      }
+      main.y -= 5;
     }
   }
 

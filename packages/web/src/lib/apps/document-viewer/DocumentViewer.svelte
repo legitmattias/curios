@@ -6,6 +6,7 @@
 	import { fetchCv, getPdfUrl } from './api.js';
 	import CvSection from './CvSection.svelte';
 	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
+	import { formatCvDate } from '$lib/utils/format-date.js';
 
 	let cv = $state<CvData | null>(null);
 	let translationMeta = $state<TranslationMeta | undefined>(undefined);
@@ -34,9 +35,7 @@
 	});
 
 	function formatDate(date: string | null): string {
-		if (!date) return t('cv.present');
-		const d = new Date(date);
-		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+		return formatCvDate(date, localeStore.current, t('cv.present'));
 	}
 
 	function downloadPdf() {

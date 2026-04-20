@@ -4,6 +4,7 @@
 	import type { Education, TranslationMeta } from '@curios/shared/types';
 	import { fetchEducation } from '../api.js';
 	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
+	import { formatCvDate } from '$lib/utils/format-date.js';
 
 	let {
 		onapimeta
@@ -21,9 +22,7 @@
 	}
 
 	function formatDate(date: string | null): string {
-		if (!date) return t('cv.present');
-		const d = new Date(date);
-		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+		return formatCvDate(date, localeStore.current, t('cv.present'));
 	}
 
 	$effect(() => {
