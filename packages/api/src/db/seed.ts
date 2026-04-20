@@ -9,11 +9,26 @@ const seedExperience = [
     company: "Linde Gas",
     role: "Process Technician",
     description:
-      "Operation and monitoring of gas production facilities. Planned maintenance with budget responsibility. Part of safety organization handling risk assessments, fire protection, and systematic work environment management. Safety representative 2019–2023. Extensive customer contact. On leave since 2023.",
+      "Operation and monitoring of gas production facilities, including varied gas analysis work and quality control. Planned maintenance with budget responsibility. Part of safety organization handling risk assessments, fire protection, and systematic work environment management. Safety representative 2019–2023. Extensive customer contact. On leave since 2023.",
     startDate: "2005-01-01",
     endDate: null,
-    tech: ["Process Control", "SCADA", "Safety Systems"],
+    tech: ["Process Control", "SCADA", "Safety Systems", "Quality Assurance"],
     sortOrder: 0,
+  },
+  {
+    company: "Alcontrol Laboratories",
+    role: "Laboratory Assistant",
+    description:
+      "Analytical laboratory work in Nyköping and Linköping handling water, soil, and food samples with focus on environmental contaminants. Sample reception, preparation, instrument-based analysis, and documentation of results under regulated procedures.",
+    startDate: "2002-01-01",
+    endDate: "2003-12-01",
+    tech: [
+      "Laboratory Analysis",
+      "Environmental Monitoring",
+      "Quality Control",
+      "Scientific Documentation",
+    ],
+    sortOrder: 1,
   },
   {
     company: "Amnesty International",
@@ -23,7 +38,7 @@ const seedExperience = [
     startDate: "2013-01-01",
     endDate: "2014-01-01",
     tech: [],
-    sortOrder: 1,
+    sortOrder: 2,
   },
   {
     company: "Lärarjouren",
@@ -33,7 +48,7 @@ const seedExperience = [
     startDate: "2013-09-01",
     endDate: "2014-07-01",
     tech: [],
-    sortOrder: 2,
+    sortOrder: 3,
   },
   {
     company: "BRF Rågstacken",
@@ -43,7 +58,7 @@ const seedExperience = [
     startDate: "2025-05-01",
     endDate: null,
     tech: [],
-    sortOrder: 3,
+    sortOrder: 4,
   },
 ];
 
@@ -140,7 +155,22 @@ const svTranslations: {
     slug: "Linde Gas",
     field: "description",
     value:
-      "Drift och övervakning av gasproduktionsanläggningar. Planerat underhåll med budget- och kostnadsansvar. Del av skyddsorganisation med ansvar för riskbedömningar, brandskydd och systematiskt arbetsmiljöarbete. Skyddsombud 2019–2023. Omfattande kundkontakt. Tjänstledig sedan 2023.",
+      "Drift och övervakning av gasproduktionsanläggningar, inklusive mångsidigt gasanalysarbete och kvalitetskontroll. Planerat underhåll med budget- och kostnadsansvar. Del av skyddsorganisation med ansvar för riskbedömningar, brandskydd och systematiskt arbetsmiljöarbete. Skyddsombud 2019–2023. Omfattande kundkontakt. Tjänstledig sedan 2023.",
+    translatedBy: "human",
+  },
+  {
+    entityType: "experience",
+    slug: "Alcontrol Laboratories",
+    field: "role",
+    value: "Laboratoriebiträde",
+    translatedBy: "human",
+  },
+  {
+    entityType: "experience",
+    slug: "Alcontrol Laboratories",
+    field: "description",
+    value:
+      "Laboratoriearbete inom miljöanalys i Nyköping och Linköping med hantering av vatten-, jord- och livsmedelsprover med fokus på miljöföroreningar. Provmottagning, preparering, analys och dokumentation enligt standardiserade rutiner.",
     translatedBy: "human",
   },
   {
