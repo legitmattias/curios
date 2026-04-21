@@ -1,6 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { syncCvSkills } from "../services/cv-skills-sync.js";
+import { syncCvProjects } from "../services/cv-projects-sync.js";
 import { db } from "../db/index.js";
 import { projects } from "../db/schema.js";
 import { eq } from "drizzle-orm";
@@ -66,6 +67,28 @@ syncRoute.post("/cv-skills", async (c) => {
     return c.json(result);
   } catch (err) {
     console.error("CV skills sync failed:", err);
+    return c.json(
+      { error: err instanceof Error ? err.message : "Sync failed" },
+      500,
+    );
+  }
+});
+
+// Condense each project into a one-sentence CV summary + pared-down tech (EN + SE).
+// Stored on profile.cvProjects; CV route prefers this when present.
+syncRoute.post("/cv-projects", async (c) => {
+  const auth = c.req.header("Authorization");
+  const expected = process.env.DOSSIER_API_KEY;
+
+  if (!expected || auth !== `Bearer ${expected}`) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  try {
+    const result = await syncCvProjects();
+    return c.json(result);
+  } catch (err) {
+    console.error("CV projects sync failed:", err);
     return c.json(
       { error: err instanceof Error ? err.message : "Sync failed" },
       500,

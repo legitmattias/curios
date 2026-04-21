@@ -97,4 +97,18 @@ export const profile = pgTable("profile", {
     en: Array<{ category: string; summary: string }>;
     sv: Array<{ category: string; summary: string }>;
   }>(),
+  cvProjects: jsonb("cv_projects").$type<{
+    en: Array<{
+      slug: string;
+      title: string;
+      summary: string;
+      tech: string[];
+    }>;
+    sv: Array<{
+      slug: string;
+      title: string;
+      summary: string;
+      tech: string[];
+    }>;
+  }>(),
 });

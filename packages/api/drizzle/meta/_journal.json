@@ -64,6 +64,13 @@
       "when": 1776687753535,
       "tag": "0008_legal_harpoon",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1776781944632,
+      "tag": "0009_foamy_red_ghost",
+      "breakpoints": true
     }
   ]
 }

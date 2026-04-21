@@ -432,7 +432,46 @@ export async function generateCvPdf(
   }
 
   // ── Projects ──
-  if (data.projects.length > 0) {
+  // Prefer the LLM-condensed CV form (cvProjects) so all projects fit on one page.
+  if (data.cvProjects && data.cvProjects.length > 0) {
+    drawSectionTitle(main, labels.projects, MAIN_X, MAIN_WIDTH);
+
+    for (const project of data.cvProjects) {
+      main.page.drawText(project.title, {
+        x: MAIN_X,
+        y: main.y,
+        size: 8,
+        font: bold,
+        color: COLORS.black,
+      });
+      main.y -= 10;
+
+      drawWrappedText(
+        main,
+        project.summary,
+        MAIN_X,
+        7,
+        regular,
+        COLORS.body,
+        MAIN_WIDTH,
+        10,
+      );
+
+      if (project.tech.length > 0) {
+        drawWrappedText(
+          main,
+          project.tech.join("  ·  "),
+          MAIN_X,
+          6.5,
+          regular,
+          COLORS.muted,
+          MAIN_WIDTH,
+          9,
+        );
+      }
+      main.y -= 4;
+    }
+  } else if (data.projects.length > 0) {
     drawSectionTitle(main, labels.projects, MAIN_X, MAIN_WIDTH);
 
     const topProjects = data.projects.slice(0, 3);

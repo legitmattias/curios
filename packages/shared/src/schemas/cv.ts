@@ -10,6 +10,13 @@ export const CvSkillClusterSchema = z.object({
   summary: z.string(),
 });
 
+export const CvProjectItemSchema = z.object({
+  slug: z.string(),
+  title: z.string(),
+  summary: z.string(),
+  tech: z.array(z.string()),
+});
+
 export const CvDataSchema = z.object({
   profile: ProfileSchema,
   experience: z.array(ExperienceSchema),
@@ -17,7 +24,9 @@ export const CvDataSchema = z.object({
   cvSkills: z.array(CvSkillClusterSchema).nullable().optional(),
   education: z.array(EducationSchema),
   projects: z.array(ProjectSchema),
+  cvProjects: z.array(CvProjectItemSchema).nullable().optional(),
 });
 
 export type CvSkillCluster = z.infer<typeof CvSkillClusterSchema>;
+export type CvProjectItem = z.infer<typeof CvProjectItemSchema>;
 export type CvData = z.infer<typeof CvDataSchema>;

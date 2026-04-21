@@ -189,7 +189,23 @@
 			{/if}
 
 			<!-- Projects -->
-			{#if cv.projects.length > 0}
+			{#if cv.cvProjects && cv.cvProjects.length > 0}
+				<CvSection title={t('cv.projects')}>
+					{#each cv.cvProjects as project (project.slug)}
+						<div class="cv-entry">
+							<div class="entry-header">
+								<span class="entry-role">{project.title}</span>
+							</div>
+							<p class="entry-desc">{project.summary}</p>
+							<div class="entry-tags">
+								{#each project.tech as tech (tech)}
+									<span class="tag">{tech}</span>
+								{/each}
+							</div>
+						</div>
+					{/each}
+				</CvSection>
+			{:else if cv.projects.length > 0}
 				<CvSection title={t('cv.projects')}>
 					{#each cv.projects as project (project.slug)}
 						<div class="cv-entry">
@@ -209,7 +225,7 @@
 							</p>
 							<div class="entry-tags">
 								{#each project.tech as tech (tech)}
-									<span class="tag">{tech}</span>
+									<span class="tag">{typeof tech === 'string' ? tech : tech.name}</span>
 								{/each}
 							</div>
 						</div>
