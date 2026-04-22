@@ -188,10 +188,10 @@
 				</CvSection>
 			{/if}
 
-			<!-- Projects -->
+			<!-- Projects — top 3 for CV; full list lives in File Explorer -->
 			{#if cv.cvProjects && cv.cvProjects.length > 0}
 				<CvSection title={t('cv.projects')}>
-					{#each cv.cvProjects as project (project.slug)}
+					{#each cv.cvProjects.slice(0, 3) as project (project.slug)}
 						<div class="cv-entry">
 							<div class="entry-header">
 								<span class="entry-role">{project.title}</span>

@@ -432,11 +432,12 @@ export async function generateCvPdf(
   }
 
   // ── Projects ──
-  // Prefer the LLM-condensed CV form (cvProjects) so all projects fit on one page.
+  // Prefer the LLM-condensed CV form (cvProjects). Limit to the top 3 so the
+  // page breathes — the full portfolio lives on the site.
   if (data.cvProjects && data.cvProjects.length > 0) {
     drawSectionTitle(main, labels.projects, MAIN_X, MAIN_WIDTH);
 
-    for (const project of data.cvProjects) {
+    for (const project of data.cvProjects.slice(0, 3)) {
       main.page.drawText(project.title, {
         x: MAIN_X,
         y: main.y,
