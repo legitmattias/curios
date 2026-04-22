@@ -18,6 +18,14 @@ interface DossierCategory {
   name: string;
 }
 
+interface DossierDomain {
+  categories: DossierCategory[];
+}
+
+interface DossierProfile {
+  domains: DossierDomain[];
+}
+
 interface LanguageSyncResult {
   languages: number;
   skipped: number;
@@ -43,8 +51,14 @@ async function fetchCategoryMap(): Promise<Map<string, string>> {
     headers: { Authorization: `Bearer ${getDossierApiKey()}` },
   });
   if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
-  const data = (await res.json()) as { categories: DossierCategory[] };
-  return new Map(data.categories.map((c) => [c.id, c.name]));
+  const data = (await res.json()) as DossierProfile;
+  const map = new Map<string, string>();
+  for (const domain of data.domains) {
+    for (const cat of domain.categories) {
+      map.set(cat.id, cat.name);
+    }
+  }
+  return map;
 }
 
 /**
