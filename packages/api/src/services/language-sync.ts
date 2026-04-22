@@ -7,6 +7,7 @@ interface DossierSkill {
   name: string;
   categoryId: string;
   proficiency: string;
+  customProficiencyLabel?: string | null;
   visibility: string;
   featured: boolean;
   description?: string;
@@ -91,15 +92,21 @@ export async function syncLanguages(): Promise<LanguageSyncResult> {
     );
   }).length;
 
+  // Prefer the user's custom proficiency label (e.g. "native" overriding
+  // the default "expert") when set in Dossier.
+  const resolveProficiency = (s: DossierSkill): string =>
+    (s.customProficiencyLabel ?? s.proficiency).toLowerCase();
+
   // Sort by proficiency rank (lower rank = more proficient)
   const sorted = [...featuredSpoken].sort(
     (a, b) =>
-      getProficiencyRank(a.proficiency) - getProficiencyRank(b.proficiency),
+      getProficiencyRank(resolveProficiency(a)) -
+      getProficiencyRank(resolveProficiency(b)),
   );
 
   const toStore = sorted.map((s) => ({
     name: s.name,
-    proficiency: s.proficiency.toLowerCase(),
+    proficiency: resolveProficiency(s),
   }));
 
   const profileRows = await db.select().from(profile).limit(1);
