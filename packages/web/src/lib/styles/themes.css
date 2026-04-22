@@ -65,9 +65,9 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.high-contrast {
-	/* ── Desktop ── */
-	--color-desktop-bg: #000000;
-	--gradient-desktop: none;
+	/* Desktop bg stays accent-driven (same as dark/light modes). HC only
+	   changes window/text styling, per: "Mode is about windows, not the
+	   background." Watermark remains legible against the dark accent bg. */
 
 	/* ── Window ── */
 	--color-window-bg: #0a0a0a;

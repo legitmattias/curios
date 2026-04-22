@@ -21,6 +21,8 @@
 </button>
 
 <style>
+	/* Desktop icons sit on the dark accent bg regardless of Mode, so color
+	   is pinned to white-alpha (not --color-text-*) to stay legible. */
 	.desktop-icon {
 		display: flex;
 		flex-direction: column;
@@ -32,7 +34,7 @@
 		border: 2px solid transparent;
 		border-radius: var(--radius-button);
 		background: transparent;
-		color: var(--color-text-secondary);
+		color: rgba(255, 255, 255, 0.78);
 		cursor: pointer;
 		user-select: none;
 		transition:
@@ -46,7 +48,7 @@
 	.desktop-icon:hover {
 		background: rgba(255, 255, 255, 0.05);
 		border-color: rgba(255, 255, 255, 0.08);
-		color: var(--color-text-primary);
+		color: #ffffff;
 	}
 
 	.desktop-icon:active {
