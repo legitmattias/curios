@@ -19,7 +19,7 @@ const seedExperience = [
     company: "Alcontrol Laboratories",
     role: "Laboratory Assistant",
     description:
-      "Laboratory work in environmental analysis in Nyköping and Linköping handling water, soil, and food samples with focus on environmental contaminants. Sample reception, preparation, analysis, and documentation of results following standardized routines.",
+      "Laboratory work in environmental analysis, handling water, soil, and food samples with focus on environmental contaminants. Sample reception, preparation, analysis, and documentation of results following standardized routines.",
     startDate: "2002-01-01",
     endDate: "2003-01-01",
     tech: [
@@ -174,7 +174,7 @@ const svTranslations: {
     slug: "Alcontrol Laboratories",
     field: "description",
     value:
-      "Laboratoriearbete inom miljöanalys i Nyköping och Linköping med hantering av vatten-, jord- och livsmedelsprover med fokus på miljöföroreningar. Provmottagning, preparering, analys och dokumentation enligt standardiserade rutiner.",
+      "Laboratoriearbete inom miljöanalys med hantering av vatten-, jord- och livsmedelsprover med fokus på miljöföroreningar. Provmottagning, preparering, analys och dokumentation enligt standardiserade rutiner.",
     translatedBy: "human",
   },
   {
