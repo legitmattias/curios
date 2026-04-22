@@ -124,13 +124,16 @@
 		height: calc(100% - var(--taskbar-height));
 	}
 
+	/* Watermarks always render against the desktop bg (dark-ish accent gradient, or
+	   black under high-contrast). Use a fixed light color so they remain legible
+	   regardless of Mode — which only affects windows/text. */
 	.watermark-logo {
 		position: absolute;
 		top: var(--space-5);
 		right: var(--space-6);
 		font-size: 2.5rem;
 		font-weight: var(--font-weight-semibold);
-		color: var(--color-text-primary);
+		color: #ffffff;
 		opacity: var(--opacity-watermark-logo);
 		pointer-events: none;
 		user-select: none;
@@ -153,18 +156,18 @@
 	.watermark-name {
 		font-size: 1rem;
 		font-weight: var(--font-weight-medium);
-		color: var(--color-text-primary);
+		color: #ffffff;
 		letter-spacing: 0.03em;
 	}
 
 	.watermark-title {
 		font-size: var(--text-xs);
-		color: var(--color-text-primary);
+		color: #ffffff;
 	}
 
 	.watermark-domain {
 		font-size: var(--text-xs);
 		font-family: var(--font-mono);
-		color: var(--color-text-primary);
+		color: #ffffff;
 	}
 </style>

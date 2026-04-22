@@ -3,11 +3,8 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.mode-light {
-	/* ── Desktop ── */
-	--color-desktop-bg: #e8e8f0;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #dde0ee 0%, #e8e8f0 50%, #dee4ec 100%);
-	--opacity-watermark: 0.4;
-	--opacity-watermark-logo: 0.2;
+	/* Desktop background stays accent-driven — mode only affects windows, text, etc.
+	   See accent blocks below for --color-desktop-bg and --gradient-desktop. */
 
 	/* ── Window ── */
 	--color-window-bg: #ffffff;
@@ -145,8 +142,8 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.accent-purple {
-	--color-desktop-bg: #1a1a2e;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #2a1845 0%, #1a1a2e 50%, #0c1018 100%);
+	--color-desktop-bg: #2a2442;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #3e2a66 0%, #2a2442 50%, #1c1c2e 100%);
 	--color-accent: #7c5cbf;
 	--color-accent-hover: #9070d4;
 	--color-focus-ring: rgba(124, 92, 191, 0.5);
@@ -172,8 +169,8 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.accent-amber {
-	--color-desktop-bg: #1a1610;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #28200c 0%, #1a1610 50%, #141008 100%);
+	--color-desktop-bg: #2a2316;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #423218 0%, #2a2316 50%, #1c1810 100%);
 	--color-accent: #d4883a;
 	--color-accent-hover: #e09a4c;
 	--color-focus-ring: rgba(212, 136, 58, 0.5);
@@ -198,8 +195,8 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.accent-slate {
-	--color-desktop-bg: #141820;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #101e2e 0%, #141820 50%, #0c1018 100%);
+	--color-desktop-bg: #202a38;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #1e3850 0%, #202a38 50%, #161c2a 100%);
 	--color-accent: #4a9fd4;
 	--color-accent-hover: #5cb8ec;
 	--color-focus-ring: rgba(74, 159, 212, 0.5);
@@ -267,8 +264,7 @@
    ═══════════════════════════════════════════════════════ */
 
 :root.mode-light.high-contrast {
-	--color-desktop-bg: #ffffff;
-	--gradient-desktop: none;
+	/* HC overrides desktop bg to black (from .high-contrast); we don't re-override here. */
 	--color-window-bg: #ffffff;
 	--color-window-header: #f0f0f0;
 	--color-window-header-focused: #e8e8e8;

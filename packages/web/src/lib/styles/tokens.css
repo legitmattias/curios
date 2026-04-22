@@ -4,10 +4,10 @@
 	   ═══════════════════════════════════════════════════════ */
 
 	/* ── Desktop ── */
-	--color-desktop-bg: #121e22;
-	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #0a2a2e 0%, #121e22 50%, #0c1418 100%);
-	--opacity-watermark: 0.15;
-	--opacity-watermark-logo: 0.08;
+	--color-desktop-bg: #1f3036;
+	--gradient-desktop: radial-gradient(ellipse at 20% 80%, #22444b 0%, #1f3036 50%, #182830 100%);
+	--opacity-watermark: 0.22;
+	--opacity-watermark-logo: 0.12;
 
 	/* ── Window ── */
 	--color-window-bg: #181e26;
