@@ -105,7 +105,7 @@ const COMMANDS: Command[] = [
 				stdout(`Tech:  ${p.tech.map((t) => (typeof t === 'string' ? t : t.name)).join(', ')}`)
 			];
 			if (p.url) lines.push(stdout(`URL:   ${p.url}`));
-			if (p.repo) lines.push(stdout(`Repo:  ${p.repo}`));
+			if (p.repo && p.repo !== p.url) lines.push(stdout(`Repo:  ${p.repo}`));
 			return lines;
 		}
 	},
