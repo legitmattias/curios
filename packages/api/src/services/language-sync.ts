@@ -84,6 +84,13 @@ export async function syncLanguages(): Promise<LanguageSyncResult> {
     return cat === SPOKEN_LANGUAGES_CATEGORY;
   });
 
+  // TEMP: log raw Dossier response for one spoken language so we can see
+  // which field name carries the custom proficiency label. Remove once wired.
+  const swedish = featuredSpoken.find((s) => s.name === "Swedish");
+  if (swedish) {
+    console.log("[debug] Swedish skill raw:", JSON.stringify(swedish));
+  }
+
   const skipped = data.skills.filter((s) => {
     const cat = categoryMap.get(s.categoryId);
     return (
