@@ -532,10 +532,12 @@ export async function syncSkills(force = false): Promise<SkillsSyncResult> {
   if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
   const data = (await res.json()) as { skills: DossierSkill[] };
 
-  // Filter: featured + public
-  const filtered = data.skills.filter(
-    (s) => s.featured && s.visibility === "public",
-  );
+  // Filter: featured + public + exclude Spoken Languages (handled by language sync).
+  const filtered = data.skills.filter((s) => {
+    if (!s.featured || s.visibility !== "public") return false;
+    const cat = categoryMap.get(s.categoryId);
+    return cat !== "Spoken Languages";
+  });
 
   console.log(
     `Skills sync: ${filtered.length} featured+public skills from Dossier (${data.skills.length} total)`,

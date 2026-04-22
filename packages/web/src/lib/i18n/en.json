@@ -121,6 +121,8 @@
 	"cv.education": "Education",
 	"cv.skills": "Skills",
 	"cv.projects": "Featured Projects",
+	"cv.languages": "Languages",
+	"cv.other": "Other",
 	"cv.present": "Present",
 
 	"settings.appearance": "Appearance",

@@ -1,0 +1,107 @@
+import { db } from "../db/index.js";
+import { profile } from "../db/schema.js";
+import { eq } from "drizzle-orm";
+import { getProficiencyRank } from "@curios/shared/i18n";
+
+interface DossierSkill {
+  name: string;
+  categoryId: string;
+  proficiency: string;
+  visibility: string;
+  featured: boolean;
+  description?: string;
+  notes?: string;
+}
+
+interface DossierCategory {
+  id: string;
+  name: string;
+}
+
+interface LanguageSyncResult {
+  languages: number;
+  skipped: number;
+  errors: string[];
+}
+
+const SPOKEN_LANGUAGES_CATEGORY = "Spoken Languages";
+
+function getDossierApiUrl(): string {
+  const url = process.env.DOSSIER_API_URL;
+  if (!url) throw new Error("DOSSIER_API_URL is required");
+  return url;
+}
+
+function getDossierApiKey(): string {
+  const key = process.env.DOSSIER_API_KEY;
+  if (!key) throw new Error("DOSSIER_API_KEY is required");
+  return key;
+}
+
+async function fetchCategoryMap(): Promise<Map<string, string>> {
+  const res = await fetch(`${getDossierApiUrl()}/profile`, {
+    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
+  });
+  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const data = (await res.json()) as { categories: DossierCategory[] };
+  return new Map(data.categories.map((c) => [c.id, c.name]));
+}
+
+/**
+ * Fetch featured spoken languages from Dossier and store them on
+ * `profile.languages`, sorted by proficiency rank (most proficient first).
+ * Unfeaturing a language in Dossier removes it from the CV on the next sync.
+ */
+export async function syncLanguages(): Promise<LanguageSyncResult> {
+  const errors: string[] = [];
+
+  const categoryMap = await fetchCategoryMap();
+
+  const res = await fetch(`${getDossierApiUrl()}/profile/skills`, {
+    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
+  });
+  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const data = (await res.json()) as { skills: DossierSkill[] };
+
+  const featuredSpoken = data.skills.filter((s) => {
+    if (!s.featured || s.visibility !== "public") return false;
+    const cat = categoryMap.get(s.categoryId);
+    return cat === SPOKEN_LANGUAGES_CATEGORY;
+  });
+
+  const skipped = data.skills.filter((s) => {
+    const cat = categoryMap.get(s.categoryId);
+    return (
+      cat === SPOKEN_LANGUAGES_CATEGORY &&
+      (!s.featured || s.visibility !== "public")
+    );
+  }).length;
+
+  // Sort by proficiency rank (lower rank = more proficient)
+  const sorted = [...featuredSpoken].sort(
+    (a, b) =>
+      getProficiencyRank(a.proficiency) - getProficiencyRank(b.proficiency),
+  );
+
+  const toStore = sorted.map((s) => ({
+    name: s.name,
+    proficiency: s.proficiency.toLowerCase(),
+  }));
+
+  const profileRows = await db.select().from(profile).limit(1);
+  const profileId = profileRows[0]?.id;
+  if (!profileId) {
+    throw new Error("Profile row not found — seed must run first");
+  }
+
+  await db
+    .update(profile)
+    .set({ languages: toStore })
+    .where(eq(profile.id, profileId));
+
+  console.log(
+    `  Languages: ${toStore.length} featured stored${skipped > 0 ? ` (${skipped} non-featured skipped)` : ""}`,
+  );
+
+  return { languages: toStore.length, skipped, errors };
+}

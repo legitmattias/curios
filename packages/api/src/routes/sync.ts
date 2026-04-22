@@ -2,21 +2,25 @@ import { OpenAPIHono } from "@hono/zod-openapi";
 import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { syncCvSkills } from "../services/cv-skills-sync.js";
 import { syncCvProjects } from "../services/cv-projects-sync.js";
+import { syncLanguages } from "../services/language-sync.js";
 import { db } from "../db/index.js";
 import { projects } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 
 const syncRoute = new OpenAPIHono();
 
-// Protected sync endpoint — requires DOSSIER_API_KEY as bearer token
-syncRoute.post("/projects", async (c) => {
+// All /api/sync/* endpoints require DOSSIER_API_KEY as bearer token.
+syncRoute.use("*", async (c, next) => {
   const auth = c.req.header("Authorization");
   const expected = process.env.DOSSIER_API_KEY;
-
   if (!expected || auth !== `Bearer ${expected}`) {
     return c.json({ error: "Unauthorized" }, 401);
   }
+  await next();
+});
 
+// Sync projects from Dossier (featured + public, enriched with LLM tech descriptions).
+syncRoute.post("/projects", async (c) => {
   try {
     const force = c.req.query("force") === "true";
     const result = await syncProjects(force);
@@ -30,15 +34,8 @@ syncRoute.post("/projects", async (c) => {
   }
 });
 
-// Sync skills from Dossier (featured + public skills with mapped categories)
+// Sync skills from Dossier (featured + public skills with mapped categories).
 syncRoute.post("/skills", async (c) => {
-  const auth = c.req.header("Authorization");
-  const expected = process.env.DOSSIER_API_KEY;
-
-  if (!expected || auth !== `Bearer ${expected}`) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
   try {
     const force = c.req.query("force") === "true";
     const result = await syncSkills(force);
@@ -55,13 +52,6 @@ syncRoute.post("/skills", async (c) => {
 // Summarize the featured skills into ~10–14 CV clusters via LLM (EN + SE).
 // Stored on profile.cvSkills; CV route prefers this when present.
 syncRoute.post("/cv-skills", async (c) => {
-  const auth = c.req.header("Authorization");
-  const expected = process.env.DOSSIER_API_KEY;
-
-  if (!expected || auth !== `Bearer ${expected}`) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
   try {
     const result = await syncCvSkills();
     return c.json(result);
@@ -74,16 +64,23 @@ syncRoute.post("/cv-skills", async (c) => {
   }
 });
 
+// Fetch featured spoken languages from Dossier; store on profile.languages.
+syncRoute.post("/languages", async (c) => {
+  try {
+    const result = await syncLanguages();
+    return c.json(result);
+  } catch (err) {
+    console.error("Languages sync failed:", err);
+    return c.json(
+      { error: err instanceof Error ? err.message : "Sync failed" },
+      500,
+    );
+  }
+});
+
 // Condense each project into a one-sentence CV summary + pared-down tech (EN + SE).
 // Stored on profile.cvProjects; CV route prefers this when present.
 syncRoute.post("/cv-projects", async (c) => {
-  const auth = c.req.header("Authorization");
-  const expected = process.env.DOSSIER_API_KEY;
-
-  if (!expected || auth !== `Bearer ${expected}`) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
   try {
     const result = await syncCvProjects();
     return c.json(result);
@@ -96,15 +93,8 @@ syncRoute.post("/cv-projects", async (c) => {
   }
 });
 
-// Set project display order — slugs not listed get pushed to end
+// Set project display order — slugs not listed get pushed to end.
 syncRoute.patch("/projects/order", async (c) => {
-  const auth = c.req.header("Authorization");
-  const expected = process.env.DOSSIER_API_KEY;
-
-  if (!expected || auth !== `Bearer ${expected}`) {
-    return c.json({ error: "Unauthorized" }, 401);
-  }
-
   try {
     const slugOrder = (await c.req.json()) as string[];
     if (

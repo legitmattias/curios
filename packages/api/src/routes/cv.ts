@@ -105,6 +105,15 @@ async function getCvData(
       : cvProjectsAll.en
     : null;
 
+  const otherInfoAll = profileData.otherInfo ?? null;
+  const otherInfoForLang = otherInfoAll
+    ? lang === "sv"
+      ? otherInfoAll.sv
+      : otherInfoAll.en
+    : null;
+
+  const languagesRaw = profileData.languages ?? null;
+
   return {
     data: {
       profile: tProfile.data,
@@ -114,6 +123,8 @@ async function getCvData(
       education: tEducation.data,
       projects: tProjects.data,
       cvProjects: cvProjectsForLang,
+      otherInfo: otherInfoForLang,
+      languages: languagesRaw,
     },
     translationMeta:
       Object.keys(translationMeta).length > 0 ? translationMeta : undefined,

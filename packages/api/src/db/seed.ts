@@ -108,12 +108,16 @@ const seedEducation = [
 const seedProfile = {
   name: "Mattias Ubbesen",
   title: "Full Stack Developer",
-  bio: "Web developer and computer science student based in Stockholm. Broad technical competence in web production, API design, cloud infrastructure, and AI/LLM integration. Background from process industry with responsibility for safety-critical operations, and experience in teaching and communication. Driver's license (B).",
+  bio: "Web developer and computer science student based in Stockholm. Broad technical competence in frontend and backend development, distributed systems, cloud infrastructure, and AI/LLM integration. Background from process industry with responsibility for safety-critical operations, and experience in teaching and communication.",
   location: "Stockholm, Sweden",
   email: "hello@mattiasubbesen.com",
   github: "https://github.com/legitmattias",
   linkedin: "https://linkedin.com/in/mattias-ubbesen",
   website: "https://mattiasubbesen.com",
+  otherInfo: {
+    en: ["Driver's license (B)"],
+    sv: ["B-körkort"],
+  },
 };
 
 // Swedish translations for placeholder content
@@ -139,7 +143,7 @@ const svTranslations: {
     slug: "_profile",
     field: "bio",
     value:
-      "Webbutvecklare och datavetenskapsstudent baserad i Stockholm. Bred teknisk kompetens inom webbproduktion, API-design, molninfrastruktur och AI/LLM-integration. Bakgrund från processindustrin med ansvar för säkerhetskritisk drift, samt erfarenhet av undervisning och kommunikation. B-körkort.",
+      "Webbutvecklare och datavetenskapsstudent baserad i Stockholm. Bred teknisk kompetens inom frontend- och backend-utveckling, distribuerade system, molninfrastruktur och AI/LLM-integration. Bakgrund från processindustrin med ansvar för säkerhetskritisk drift, samt erfarenhet av undervisning och kommunikation.",
     translatedBy: "human",
   },
   // Experience

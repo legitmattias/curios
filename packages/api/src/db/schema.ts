@@ -111,4 +111,10 @@ export const profile = pgTable("profile", {
       tech: string[];
     }>;
   }>(),
+  otherInfo: jsonb("other_info").$type<{
+    en: string[];
+    sv: string[];
+  }>(),
+  languages:
+    jsonb("languages").$type<Array<{ name: string; proficiency: string }>>(),
 });

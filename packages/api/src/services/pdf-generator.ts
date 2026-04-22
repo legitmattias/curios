@@ -1,5 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import type { CvData } from "@curios/shared/types";
+import { getLanguageName, getProficiencyLabel } from "@curios/shared/i18n";
 
 const PDF_LABELS = {
   en: {
@@ -8,6 +9,8 @@ const PDF_LABELS = {
     education: "Education",
     skills: "Skills",
     projects: "Featured Projects",
+    other: "Other",
+    languages: "Languages",
     present: "Present",
     generatedFrom: "Generated from",
   },
@@ -17,6 +20,8 @@ const PDF_LABELS = {
     education: "Utbildning",
     skills: "Kompetenser",
     projects: "Utvalda projekt",
+    other: "Övrigt",
+    languages: "Språk",
     present: "Pågående",
     generatedFrom: "Genererad från",
   },
@@ -295,6 +300,47 @@ export async function generateCvPdf(
       }
       sidebar.y -= 3;
     }
+  }
+
+  // ── Languages ──
+  if (data.languages && data.languages.length > 0) {
+    drawSectionTitle(sidebar, labels.languages, MARGIN_LEFT, SIDEBAR_WIDTH);
+
+    for (const l of data.languages) {
+      const name = getLanguageName(l.name, lang);
+      const prof = getProficiencyLabel(l.proficiency, lang);
+      const line = `${name} (${prof})`;
+      drawWrappedText(
+        sidebar,
+        line,
+        MARGIN_LEFT,
+        7,
+        regular,
+        COLORS.body,
+        SIDEBAR_WIDTH,
+        9,
+      );
+    }
+    sidebar.y -= 3;
+  }
+
+  // ── Other ──
+  if (data.otherInfo && data.otherInfo.length > 0) {
+    drawSectionTitle(sidebar, labels.other, MARGIN_LEFT, SIDEBAR_WIDTH);
+
+    for (const item of data.otherInfo) {
+      drawWrappedText(
+        sidebar,
+        item,
+        MARGIN_LEFT,
+        7,
+        regular,
+        COLORS.body,
+        SIDEBAR_WIDTH,
+        9,
+      );
+    }
+    sidebar.y -= 3;
   }
 
   // ═══════════════════════════════════════════════════════

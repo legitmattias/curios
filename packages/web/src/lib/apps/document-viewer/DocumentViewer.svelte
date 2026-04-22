@@ -7,6 +7,7 @@
 	import CvSection from './CvSection.svelte';
 	import TranslationBadge from '$lib/components/os/TranslationBadge.svelte';
 	import { formatCvDate } from '$lib/utils/format-date.js';
+	import { getLanguageName, getProficiencyLabel } from '@curios/shared/i18n';
 
 	let cv = $state<CvData | null>(null);
 	let translationMeta = $state<TranslationMeta | undefined>(undefined);
@@ -232,6 +233,29 @@
 					{/each}
 				</CvSection>
 			{/if}
+
+			<!-- Languages -->
+			{#if cv.languages && cv.languages.length > 0}
+				<CvSection title={t('cv.languages')}>
+					{#each cv.languages as l (l.name)}
+						<div class="skill-row">
+							<span class="skill-category">{getLanguageName(l.name, localeStore.current)}</span>
+							<span class="skill-list"
+								>{getProficiencyLabel(l.proficiency, localeStore.current)}</span
+							>
+						</div>
+					{/each}
+				</CvSection>
+			{/if}
+
+			<!-- Other -->
+			{#if cv.otherInfo && cv.otherInfo.length > 0}
+				<CvSection title={t('cv.other')}>
+					{#each cv.otherInfo as item (item)}
+						<p class="other-item">{item}</p>
+					{/each}
+				</CvSection>
+			{/if}
 		{/if}
 	</div>
 </div>
@@ -377,6 +401,12 @@
 		font-size: var(--text-sm);
 		color: var(--color-text-secondary);
 		line-height: 1.6;
+	}
+
+	.other-item {
+		font-size: var(--text-sm);
+		color: var(--color-text-secondary);
+		line-height: 1.5;
 	}
 
 	.entry-tags {

@@ -121,6 +121,8 @@
 	"cv.education": "Utbildning",
 	"cv.skills": "Kompetenser",
 	"cv.projects": "Utvalda projekt",
+	"cv.languages": "Språk",
+	"cv.other": "Övrigt",
 	"cv.present": "Pågående",
 
 	"settings.appearance": "Utseende",
