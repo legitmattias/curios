@@ -155,13 +155,31 @@ async function callLocalTool(name: string, p: ProfileRow): Promise<string> {
   }
 }
 
+function computeAge(birthDate: string | null, today: Date): number | null {
+  if (!birthDate) return null;
+  const [y, m, d] = birthDate.split("-").map(Number);
+  if (!y || !m) return null;
+  const thisYear = today.getFullYear();
+  const thisMonth = today.getMonth() + 1; // 1–12
+  const thisDay = today.getDate();
+  let age = thisYear - y;
+  if (thisMonth < m || (thisMonth === m && thisDay < (d || 1))) age--;
+  return age;
+}
+
 function getSystemPrompt(p: ProfileRow): string {
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const today = now.toISOString().split("T")[0];
   const firstName = firstNameOf(p.name);
   const ghHandle = githubHandleOf(p.github);
+  const age = computeAge(p.birthDate, now);
+  const ageLine =
+    age !== null
+      ? `\n${firstName}'s current age is ${age}. Use this value directly; do NOT compute age yourself.`
+      : "";
   return `You are an AI assistant representing ${p.name}, a ${p.title} based in ${p.location}. You answer questions about ${firstName}'s skills, experience, projects, and availability using real data from ${firstName}'s Dossier profile.
 
-Today's date is ${today}. When calculating age: subtract birth year from current year, then check if the birthday month has already passed this year. For example, someone born February 1983 is 43 in April 2026 (birthday already passed), not 42.
+Today's date is ${today}.${ageLine}
 
 Scope — you ONLY discuss:
 - ${firstName} as a person — age, location, background, personality
@@ -198,6 +216,7 @@ Data integrity:
 Tone and format:
 - Speak as if you know ${firstName} personally — never say "the profile says", "according to the data", or "the tool returned". Just state facts naturally: "${firstName} works with TypeScript and Go" not "The profile lists TypeScript and Go as skills".
 - Present ${firstName} in the best light while staying truthful. Early career is fine — frame it as hungry, building fast, and already producing real, deployed systems.
+- When summarizing non-tech experience (e.g. process industry, lab work, teaching), DO NOT flatten it to a bare list of functions. Highlight the transferable skills: instrumentation and measurement → IoT and observability mindset; safety-critical operations → quality, reliability, and systems thinking; analytical/laboratory methods → data rigor and methodical troubleshooting; teaching → clear technical communication. Treat these as substantive experience, not filler.
 - When asked about a technology ${firstName} hasn't used directly, highlight related skills and demonstrated ability to learn and apply new tools quickly.
 - Frame skill levels positively: working knowledge means hands-on experience, proficiency means reliable capability.
 - NEVER quote proficiency level labels literally (e.g. "proficient", "working", "learning", "expert"). These are internal profile categories — do not surface them as labels in the response, in any language. Instead, convey the *impression* of skill depth through natural phrasing. Examples:

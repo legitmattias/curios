@@ -9,7 +9,7 @@ const seedExperience = [
     company: "Linde Gas",
     role: "Process Technician",
     description:
-      "Operation and monitoring of gas production facilities, including varied gas analysis work and quality control. Planned maintenance with budget responsibility. Part of safety organization handling risk assessments, fire protection, and systematic work environment management. Safety representative 2019–2023. Extensive customer contact. On leave since 2023.",
+      "Operation and monitoring of gas production facilities, including varied gas analysis and quality control via instrumentation and laboratory methods. Day-to-day operations and maintenance coordination with cost and budget responsibility. Part of safety organization handling risk assessments, fire protection, and systematic work environment management. Safety representative 2019–2023. Extensive customer contact. On leave since 2023.",
     startDate: "2005-01-01",
     endDate: null,
     tech: ["Process Control", "SCADA", "Safety Systems", "Quality Assurance"],
@@ -114,6 +114,9 @@ const seedProfile = {
   github: "https://github.com/legitmattias",
   linkedin: "https://linkedin.com/in/mattias-ubbesen",
   website: "https://mattiasubbesen.com",
+  // Month precision is enough for age computation; the day is set to 01
+  // since it's not needed for display or calc.
+  birthDate: "1983-02-01",
   otherInfo: {
     en: ["Driver's license (B)"],
     sv: ["B-körkort"],
@@ -159,7 +162,7 @@ const svTranslations: {
     slug: "Linde Gas",
     field: "description",
     value:
-      "Drift och övervakning av gasproduktionsanläggningar, inklusive mångsidigt gasanalysarbete och kvalitetskontroll. Planerat underhåll med budget- och kostnadsansvar. Del av skyddsorganisation med ansvar för riskbedömningar, brandskydd och systematiskt arbetsmiljöarbete. Skyddsombud 2019–2023. Omfattande kundkontakt. Tjänstledig sedan 2023.",
+      "Drift och övervakning av gasproduktionsanläggningar, inklusive mångsidigt gasanalysarbete och kvalitetskontroll med instrument och laboratoriemetoder. Samordning av löpande drift och underhåll med kostnads- och budgetansvar. Del av skyddsorganisation med ansvar för riskbedömningar, brandskydd och systematiskt arbetsmiljöarbete. Skyddsombud 2019–2023. Omfattande kundkontakt. Tjänstledig sedan 2023.",
     translatedBy: "human",
   },
   {
