@@ -191,7 +191,19 @@ async function seedTranslations(content: SeedContent) {
         value: t.value,
         translatedBy: t.translatedBy,
       })
-      .onConflictDoNothing();
+      .onConflictDoUpdate({
+        target: [
+          translations.entityType,
+          translations.entityId,
+          translations.locale,
+          translations.field,
+        ],
+        set: {
+          value: t.value,
+          translatedBy: t.translatedBy,
+          translatedAt: new Date(),
+        },
+      });
 
     count++;
   }
