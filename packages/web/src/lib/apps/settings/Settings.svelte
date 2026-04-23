@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
 	import AppearanceTab from './AppearanceTab.svelte';
+	import LanguageTab from './LanguageTab.svelte';
 	import SystemInfoTab from './SystemInfoTab.svelte';
 
-	type Tab = 'appearance' | 'system';
+	type Tab = 'appearance' | 'language' | 'system';
 	let activeTab = $state<Tab>('appearance');
 
 	const tabs: { id: Tab; key: string }[] = [
 		{ id: 'appearance', key: 'settings.appearance' },
+		{ id: 'language', key: 'settings.language' },
 		{ id: 'system', key: 'settings.systemInfo' }
 	];
 </script>
@@ -28,6 +30,8 @@
 	<main class="content">
 		{#if activeTab === 'appearance'}
 			<AppearanceTab />
+		{:else if activeTab === 'language'}
+			<LanguageTab />
 		{:else if activeTab === 'system'}
 			<SystemInfoTab />
 		{/if}
