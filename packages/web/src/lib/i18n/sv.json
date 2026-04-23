@@ -134,6 +134,7 @@
 	"settings.mode.lightDesc": "Ljusa bakgrunder för upplysta miljöer",
 	"settings.mode.highContrast": "Hög kontrast",
 	"settings.mode.highContrastDesc": "Maximal läsbarhet med tydliga kanter",
+	"settings.language": "Språk",
 	"settings.accent": "Accent",
 	"settings.accent.teal": "Blågrön",
 	"settings.accent.tealDesc": "Standardaccent i blågrön",

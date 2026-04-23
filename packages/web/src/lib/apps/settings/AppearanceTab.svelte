@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { themeStore, type Mode, type Accent } from '$lib/os/theme-store.svelte.js';
+	import { localeStore, type Locale } from '$lib/os/locale-store.svelte.js';
+
+	// Native names — always shown in each language's own spelling so a visitor
+	// currently seeing the "wrong" locale can still find their option.
+	const locales: { id: Locale; native: string }[] = [
+		{ id: 'en', native: 'English' },
+		{ id: 'sv', native: 'Svenska' }
+	];
 
 	const modes: { id: Mode; labelKey: string; descKey: string; colors: string[] }[] = [
 		{
@@ -89,6 +97,20 @@
 			>
 				<div class="accent-swatch" style="background: {accent.color}"></div>
 				<span class="accent-label">{t(accent.labelKey)}</span>
+			</button>
+		{/each}
+	</div>
+
+	<h3 class="section-title accent-title">{t('settings.language')}</h3>
+	<div class="accent-cards">
+		{#each locales as locale (locale.id)}
+			<button
+				class="accent-card"
+				class:active={localeStore.current === locale.id}
+				onclick={() => localeStore.set(locale.id)}
+				aria-label={locale.native}
+			>
+				<span class="accent-label">{locale.native}</span>
 			</button>
 		{/each}
 	</div>

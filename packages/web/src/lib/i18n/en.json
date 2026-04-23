@@ -134,6 +134,7 @@
 	"settings.mode.lightDesc": "Bright backgrounds for well-lit environments",
 	"settings.mode.highContrast": "High Contrast",
 	"settings.mode.highContrastDesc": "Maximum readability with bold borders",
+	"settings.language": "Language",
 	"settings.accent": "Accent",
 	"settings.accent.teal": "Teal",
 	"settings.accent.tealDesc": "Default teal accent",
