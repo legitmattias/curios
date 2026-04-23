@@ -166,12 +166,14 @@ jobs:
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
           DOSSIER_API_URL: ${{ vars.DOSSIER_API_URL }}
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
+          # Seed content (private JSON from curios-dev — see update-secret.sh)
+          CURIOS_SEED_CONTENT: ${{ secrets.CURIOS_SEED_CONTENT }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -f docker-compose.staging.yml pull
           docker compose -f docker-compose.staging.yml up -d
           docker compose -f docker-compose.staging.yml exec -T api bunx drizzle-kit migrate
-          docker compose -f docker-compose.staging.yml exec -T api bun run src/db/seed.ts
+          docker compose -f docker-compose.staging.yml exec -T -e SEED_CONTENT_JSON="$CURIOS_SEED_CONTENT" api bun run src/db/seed.ts
 
       - name: Health check
         run: |
@@ -221,12 +223,14 @@ jobs:
           CHAT_MAX_MESSAGES: ${{ vars.CHAT_MAX_MESSAGES }}
           DOSSIER_API_URL: ${{ vars.DOSSIER_API_URL }}
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
+          # Seed content (private JSON from curios-dev — see update-secret.sh)
+          CURIOS_SEED_CONTENT: ${{ secrets.CURIOS_SEED_CONTENT }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -f docker-compose.production.yml pull
           docker compose -f docker-compose.production.yml up -d
           docker compose -f docker-compose.production.yml exec -T api bunx drizzle-kit migrate
-          docker compose -f docker-compose.production.yml exec -T api bun run src/db/seed.ts
+          docker compose -f docker-compose.production.yml exec -T -e SEED_CONTENT_JSON="$CURIOS_SEED_CONTENT" api bun run src/db/seed.ts
 
       - name: Health check
         run: |
