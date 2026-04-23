@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
+	import { CURIOS_VERSION } from '$lib/os/version.js';
 
 	const info = [
-		{ label: 'OS', value: 'CuriOS v0.1.0' },
+		{ label: 'OS', value: `CuriOS v${CURIOS_VERSION}` },
 		{ label: 'Owner', value: 'Mattias Ubbesen' },
 		{ label: 'Domain', value: 'mattiasubbesen.com' },
 		{ label: 'Frontend', value: 'SvelteKit (Svelte 5)' },

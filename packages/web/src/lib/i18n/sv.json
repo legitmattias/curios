@@ -35,7 +35,7 @@
 	"app.documents": "Dokument",
 	"app.settings": "Inställningar",
 
-	"terminal.welcome": "Välkommen till CuriOS Terminal v0.1.0",
+	"terminal.welcome": "Välkommen till CuriOS Terminal",
 	"terminal.helpHint": "Skriv \"help\" för att se tillgängliga kommandon.",
 	"terminal.cmdNotFound": "kommandot hittades inte:",
 	"terminal.typeHelp": "Skriv \"help\" för tillgängliga kommandon.",

@@ -11,6 +11,7 @@ import {
 } from './api.js';
 import { themeStore, type Mode, type Accent } from '$lib/os/theme-store.svelte.js';
 import { t } from '$lib/os/i18n.svelte.js';
+import { CURIOS_VERSION } from '$lib/os/version.js';
 
 export interface Command {
 	name: string;
@@ -198,7 +199,7 @@ const COMMANDS: Command[] = [
 			const info = [
 				'visitor@curios',
 				'──────────────────',
-				`OS:      CuriOS v0.1.0`,
+				`OS:      CuriOS v${CURIOS_VERSION}`,
 				`Host:    mattiasubbesen.com`,
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,

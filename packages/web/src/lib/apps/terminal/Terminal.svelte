@@ -3,6 +3,7 @@
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { command, error, system, type OutputLine } from './output.js';
 	import { getCommand, findCompletions } from './commands.js';
+	import { CURIOS_VERSION } from '$lib/os/version.js';
 
 	const PROMPT = 'visitor@curios:~$ ';
 
@@ -106,7 +107,11 @@
 	// Welcome banner + focus on mount (untrack prevents re-triggering)
 	$effect(() => {
 		untrack(() => {
-			appendLines([system(t('terminal.welcome')), system(t('terminal.helpHint')), system('')]);
+			appendLines([
+				system(`${t('terminal.welcome')} v${CURIOS_VERSION}`),
+				system(t('terminal.helpHint')),
+				system('')
+			]);
 			focusInput();
 		});
 	});
