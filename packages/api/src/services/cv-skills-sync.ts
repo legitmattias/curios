@@ -60,7 +60,11 @@ export async function syncCvSkills(): Promise<CvSkillsResult> {
     };
   });
 
-  const prompt = `You are shaping a CV skills section for Mattias Ubbesen, a full stack developer and computer science student. Below is the full featured skills list (${allSkills.length} entries). Group them into 10–14 higher-level clusters suitable for the CV — denser signal than a long flat list, but still concrete enough to show real capability.
+  const profileRows = await db.select().from(profile).limit(1);
+  const subject = profileRows[0];
+  if (!subject) throw new Error("Profile not seeded");
+
+  const prompt = `You are shaping a CV skills section for ${subject.name}, a ${subject.title}. Below is the full featured skills list (${allSkills.length} entries). Group them into 10–14 higher-level clusters suitable for the CV — denser signal than a long flat list, but still concrete enough to show real capability.
 
 For each cluster return:
 - "category": the cluster name (e.g. "Frontend frameworks & UI", "Cloud infrastructure & deployment")
@@ -134,16 +138,10 @@ ${skillLines
     );
   }
 
-  const profileRows = await db.select().from(profile).limit(1);
-  const profileId = profileRows[0]?.id;
-  if (!profileId) {
-    throw new Error("Profile row not found — seed must run first");
-  }
-
   await db
     .update(profile)
     .set({ cvSkills: { en: parsed.en, sv: parsed.sv } })
-    .where(eq(profile.id, profileId));
+    .where(eq(profile.id, subject.id));
 
   console.log(
     `  CV skills: ${parsed.en.length} clusters generated (EN+SE stored)`,

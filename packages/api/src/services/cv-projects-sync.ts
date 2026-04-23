@@ -60,12 +60,17 @@ export async function syncCvProjects(): Promise<CvProjectsResult> {
     url: p.url ?? "",
   }));
 
-  const prompt = `You are writing the CV "Featured Projects" section for Mattias Ubbesen, a full stack developer and computer science student. Below are his portfolio projects in the display order he has chosen.
+  const profileRows = await db.select().from(profile).limit(1);
+  const subject = profileRows[0];
+  if (!subject) throw new Error("Profile not seeded");
+
+  const prompt = `You are writing the CV "Featured Projects" section for ${subject.name}, a ${subject.title}. Below are the portfolio projects in the display order already chosen.
 
 For each project, produce:
 - "slug": keep exactly as given
-- "title": keep title as-is (most are proper nouns — CuriOS, Dossier, etc.). If the Swedish output has an established Swedish name, use it; otherwise reuse the English title.
-- "summary": ONE sentence (≤ 22 words) written in CV voice — what it is + what it demonstrates technically. No first-person ("I built…"), no marketing fluff.
+- "title": keep the title EXACTLY as given. Project titles are proper nouns (brand names like CuriOS, Dossier, MeterStream Platform) — never translate them, never localize them. The "title" value must be identical in the "en" and "sv" arrays.
+- "summary": ONE sentence (≤ 22 words) in CV voice. Lead with WHAT the project is and WHAT problem it solves for users. Put outcomes or impact up front, not architecture. Avoid leading with organisational framing ("Monorepo", "Microservices app", "Monorepo of N packages") — that detail belongs in the tech list, not the opening. Architecture words are OK only when the architecture itself is the product (e.g. a platform whose selling point IS microservices). No first-person ("I built…"), no marketing fluff.
+- Grammar — subject-verb attribution must be unambiguous. Ensure the *project itself* is the grammatical subject of any capability verbs, not a sub-component. Example: instead of "X exposing data via A, B, C to eliminate Y" (reads as A/B/C doing the elimination), write "X that eliminates Y by exposing data via A, B, C" (clearly the project as a whole).
 - "tech": an array of 4–7 most representative tech from the input — prefer named frameworks/tools over broad categories. Drop redundant or low-signal entries.
 
 Output JSON with "en" and "sv" arrays aligned — same slugs, same order. Only summary (and optionally title) differ per language.
@@ -135,16 +140,10 @@ ${projectLines
     );
   }
 
-  const profileRows = await db.select().from(profile).limit(1);
-  const profileId = profileRows[0]?.id;
-  if (!profileId) {
-    throw new Error("Profile row not found — seed must run first");
-  }
-
   await db
     .update(profile)
     .set({ cvProjects: { en: parsed.en, sv: parsed.sv } })
-    .where(eq(profile.id, profileId));
+    .where(eq(profile.id, subject.id));
 
   console.log(
     `  CV projects: ${parsed.en.length} items generated (EN+SE stored)`,
