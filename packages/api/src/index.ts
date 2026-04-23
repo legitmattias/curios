@@ -53,7 +53,7 @@ app.doc("/doc", {
   info: {
     title: "CuriOS API",
     version: "0.1.0",
-    description: "API powering CuriOS — the portfolio OS at mattiasubbesen.com",
+    description: "API powering CuriOS — the portfolio OS.",
   },
 });
 

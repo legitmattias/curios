@@ -574,16 +574,21 @@ export async function generateCvPdf(
     color: COLORS.line,
   });
   const dateLocale = lang === "sv" ? "sv-SE" : "en-US";
-  page.drawText(
-    `${labels.generatedFrom} mattiasubbesen.com  ·  ${new Date().toLocaleDateString(dateLocale, { year: "numeric", month: "long" })}`,
-    {
-      x: MARGIN_LEFT,
-      y: footerY,
-      size: 6,
-      font: regular,
-      color: COLORS.muted,
-    },
-  );
+  const siteDomain = data.profile.website?.replace(/^https?:\/\//, "") ?? "";
+  const footerDate = new Date().toLocaleDateString(dateLocale, {
+    year: "numeric",
+    month: "long",
+  });
+  const footerText = siteDomain
+    ? `${labels.generatedFrom} ${siteDomain}  ·  ${footerDate}`
+    : footerDate;
+  page.drawText(footerText, {
+    x: MARGIN_LEFT,
+    y: footerY,
+    size: 6,
+    font: regular,
+    color: COLORS.muted,
+  });
 
   return doc.save();
 }

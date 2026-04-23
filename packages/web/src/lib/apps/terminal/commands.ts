@@ -200,7 +200,7 @@ const COMMANDS: Command[] = [
 				'visitor@curios',
 				'──────────────────',
 				`OS:      CuriOS v${CURIOS_VERSION}`,
-				`Host:    mattiasubbesen.com`,
+				`Host:    ${(profile.website ?? '').replace(/^https?:\/\//, '') || '—'}`,
 				`Owner:   ${profile.name}`,
 				`Uptime:  ${formatUptime(health.uptime)}`,
 				`Shell:   curios-terminal`,
@@ -267,11 +267,9 @@ const COMMANDS: Command[] = [
 				lines.push(stdout(''));
 			}
 
-			lines.push(
-				system(
-					`${t('terminal.cv.downloadPdf')} ${cv.profile.website ?? 'mattiasubbesen.com'}/cv/pdf`
-				)
-			);
+			if (cv.profile.website) {
+				lines.push(system(`${t('terminal.cv.downloadPdf')} ${cv.profile.website}/cv/pdf`));
+			}
 			return lines;
 		}
 	},

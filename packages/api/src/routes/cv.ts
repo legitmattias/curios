@@ -174,10 +174,18 @@ cvRoute.openapi(pdfRoute, async (c) => {
   const result = await getCvData(lang);
   const pdfBytes = await generateCvPdf(result.data, lang);
 
+  const nameSlug = result.data.profile.name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const filename = `${nameSlug || "cv"}-cv.pdf`;
+
   return new Response(pdfBytes, {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'inline; filename="mattias-ubbesen-cv.pdf"',
+      "Content-Disposition": `inline; filename="${filename}"`,
     },
   });
 });

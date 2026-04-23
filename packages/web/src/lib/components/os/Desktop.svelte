@@ -7,6 +7,7 @@
 	import Window from './Window.svelte';
 	import ContextMenu, { type MenuItem } from './ContextMenu.svelte';
 	import { t } from '$lib/os/i18n.svelte.js';
+	import { profileStore, displayDomain } from '$lib/os/profile-store.svelte.js';
 
 	const apps = getAllApps();
 
@@ -88,11 +89,13 @@
 
 	<div class="watermark-logo">CuriOS</div>
 
-	<div class="watermark">
-		<span class="watermark-name">Mattias Ubbesen</span>
-		<span class="watermark-title">{t('desktop.watermark.title')}</span>
-		<span class="watermark-domain">mattiasubbesen.com</span>
-	</div>
+	{#if profileStore.data}
+		<div class="watermark">
+			<span class="watermark-name">{profileStore.data.name}</span>
+			<span class="watermark-title">{t('desktop.watermark.title')}</span>
+			<span class="watermark-domain">{displayDomain(profileStore.data.website)}</span>
+		</div>
+	{/if}
 
 	{#if contextMenu}
 		<ContextMenu

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { t } from '$lib/os/i18n.svelte.js';
+	import { profileStore, githubHandle } from '$lib/os/profile-store.svelte.js';
 
 	let visible = $state(false);
 	let emailMenu = $state(false);
@@ -7,7 +8,11 @@
 	let wrapper: HTMLDivElement;
 	let emailMenuEl: HTMLDivElement | undefined = $state();
 
-	const EMAIL = 'hello@mattiasubbesen.com';
+	const email = $derived(profileStore.data?.email ?? '');
+	const name = $derived(profileStore.data?.name ?? '');
+	const githubUrl = $derived(profileStore.data?.github ?? '');
+	const githubLabel = $derived(githubHandle(profileStore.data?.github));
+	const linkedinUrl = $derived(profileStore.data?.linkedin ?? '');
 
 	function toggle() {
 		visible = !visible;
@@ -43,7 +48,8 @@
 	}
 
 	async function copyEmail() {
-		await navigator.clipboard.writeText(EMAIL);
+		if (!email) return;
+		await navigator.clipboard.writeText(email);
 		copied = true;
 		setTimeout(() => {
 			copied = false;
@@ -52,7 +58,8 @@
 	}
 
 	function openMailClient() {
-		window.location.href = `mailto:${EMAIL}`;
+		if (!email) return;
+		window.location.href = `mailto:${email}`;
 		emailMenu = false;
 	}
 </script>
@@ -76,49 +83,55 @@
 		</svg>
 	</button>
 
-	{#if visible}
+	{#if visible && profileStore.data}
 		<div class="card">
 			<div class="card-header">
-				<span class="card-name">Mattias Ubbesen</span>
+				<span class="card-name">{name}</span>
 				<span class="card-title">{t('contact.title')}</span>
 			</div>
 			<div class="card-links">
-				<button class="card-link" onclick={showEmailMenu}>
-					<span class="link-label">{t('contact.email')}</span>
-					<span class="link-value">{EMAIL}</span>
-				</button>
+				{#if email}
+					<button class="card-link" onclick={showEmailMenu}>
+						<span class="link-label">{t('contact.email')}</span>
+						<span class="link-value">{email}</span>
+					</button>
 
-				{#if emailMenu}
-					<div class="email-menu" bind:this={emailMenuEl}>
-						<button class="email-option" onclick={copyEmail}>
-							{copied ? t('contact.copied') : t('contact.copy')}
-						</button>
-						<button class="email-option" onclick={openMailClient}>
-							{t('contact.openClient')}
-						</button>
-					</div>
+					{#if emailMenu}
+						<div class="email-menu" bind:this={emailMenuEl}>
+							<button class="email-option" onclick={copyEmail}>
+								{copied ? t('contact.copied') : t('contact.copy')}
+							</button>
+							<button class="email-option" onclick={openMailClient}>
+								{t('contact.openClient')}
+							</button>
+						</div>
+					{/if}
 				{/if}
 
-				<a
-					href="https://github.com/legitmattias"
-					target="_blank"
-					rel="noopener external"
-					class="card-link"
-					class:disabled={emailMenu}
-				>
-					<span class="link-label">{t('contact.github')}</span>
-					<span class="link-value">legitmattias</span>
-				</a>
-				<a
-					href="https://linkedin.com/in/placeholder"
-					target="_blank"
-					rel="noopener external"
-					class="card-link"
-					class:disabled={emailMenu}
-				>
-					<span class="link-label">{t('contact.linkedin')}</span>
-					<span class="link-value">Mattias Ubbesen</span>
-				</a>
+				{#if githubUrl}
+					<a
+						href={githubUrl}
+						target="_blank"
+						rel="noopener external"
+						class="card-link"
+						class:disabled={emailMenu}
+					>
+						<span class="link-label">{t('contact.github')}</span>
+						<span class="link-value">{githubLabel}</span>
+					</a>
+				{/if}
+				{#if linkedinUrl}
+					<a
+						href={linkedinUrl}
+						target="_blank"
+						rel="noopener external"
+						class="card-link"
+						class:disabled={emailMenu}
+					>
+						<span class="link-label">{t('contact.linkedin')}</span>
+						<span class="link-value">{name}</span>
+					</a>
+				{/if}
 			</div>
 		</div>
 	{/if}

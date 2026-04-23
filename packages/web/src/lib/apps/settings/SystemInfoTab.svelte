@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { PUBLIC_API_URL } from '$env/static/public';
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { CURIOS_VERSION } from '$lib/os/version.js';
+	import { profileStore, displayDomain } from '$lib/os/profile-store.svelte.js';
 
-	const info = [
+	const info = $derived([
 		{ label: 'OS', value: `CuriOS v${CURIOS_VERSION}` },
-		{ label: 'Owner', value: 'Mattias Ubbesen' },
-		{ label: 'Domain', value: 'mattiasubbesen.com' },
+		{ label: 'Owner', value: profileStore.data?.name ?? '—' },
+		{ label: 'Domain', value: displayDomain(profileStore.data?.website) || '—' },
 		{ label: 'Frontend', value: 'SvelteKit (Svelte 5)' },
 		{ label: 'Backend', value: 'Hono + Bun' },
 		{ label: 'Database', value: 'PostgreSQL 17' },
@@ -13,13 +15,18 @@
 		{ label: 'CI/CD', value: 'GitHub Actions' },
 		{ label: 'Monorepo', value: 'pnpm workspaces' },
 		{ label: 'AI Data', value: 'Dossier (MCP)' }
-	];
+	]);
 
-	const links = [
-		{ labelKey: 'settings.sourceCode', url: 'https://github.com/legitmattias/curios' },
-		{ labelKey: 'settings.apiDocs', url: 'https://curios.mattic.dev/api/doc' },
-		{ labelKey: 'settings.dossier', url: 'https://github.com/legitmattias/dossier' }
-	];
+	// Site-specific repo names (not personal info) combined with the profile's
+	// github URL (which is the identity) produce the link targets.
+	const links = $derived.by(() => {
+		const gh = profileStore.data?.github;
+		return [
+			{ labelKey: 'settings.sourceCode', url: gh ? `${gh}/curios` : null },
+			{ labelKey: 'settings.apiDocs', url: `${PUBLIC_API_URL}/doc` },
+			{ labelKey: 'settings.dossier', url: gh ? `${gh}/dossier` : null }
+		].filter((l): l is { labelKey: string; url: string } => l.url !== null);
+	});
 </script>
 
 <div class="system-info">
