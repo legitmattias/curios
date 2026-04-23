@@ -163,15 +163,15 @@
 	"translation.tooltip": "Automatiskt översatt. Byt till engelska (EN) i aktivitetsfältet för originalet.",
 
 	"app.chat": "Chatt",
-	"chat.welcome": "Hej! Jag är en AI-agent med tillgång till Mattias professionella profil. Fråga mig om hans kompetenser, erfarenhet eller projekt.",
+	"chat.welcome": "Hej! Jag är en AI-agent som representerar {name}. Fråga mig om kompetenser, erfarenhet eller projekt.",
 	"chat.inputPlaceholder": "Skriv ett meddelande...",
 	"chat.thinking": "Tänker...",
 	"chat.fetchingData": "Hämtar data",
 	"chat.rateLimit": "Du har nått meddelandegränsen för den här sessionen. Öppna gärna ett nytt chattfönster!",
 	"chat.error": "Något gick fel. Försök igen.",
 	"chat.tooLong": "Meddelandet är för långt. Förkorta det.",
-	"chat.prompt.skills": "Vilka teknologier arbetar Mattias med?",
-	"chat.prompt.projects": "Berätta om hans projekt",
-	"chat.prompt.available": "Är han tillgänglig för arbete?",
-	"chat.prompt.learning": "Vad lär han sig just nu?"
+	"chat.prompt.skills": "Vilka teknologier arbetar {name} med?",
+	"chat.prompt.projects": "Berätta om projekten",
+	"chat.prompt.available": "Är {name} tillgänglig för arbete?",
+	"chat.prompt.learning": "Vad lär sig {name} just nu?"
 }

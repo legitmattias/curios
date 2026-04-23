@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { untrack } from 'svelte';
 	import { t } from '$lib/os/i18n.svelte.js';
+	import { profileStore } from '$lib/os/profile-store.svelte.js';
 	import { createChatConnection, type ChatConnection, type WsChatMessageIn } from './chat-ws.js';
 	import ChatMessage from './ChatMessage.svelte';
 	import SuggestedPrompts from './SuggestedPrompts.svelte';
+
+	// Chat copy uses the owner's first name — loaded from the profile API.
+	const firstName = $derived(profileStore.data?.name.split(' ')[0] ?? '');
 
 	interface Message {
 		id: string;
@@ -140,8 +144,8 @@
 	<div class="messages" bind:this={messagesEl}>
 		{#if showPrompts}
 			<div class="welcome">
-				<p class="welcome-text">{t('chat.welcome')}</p>
-				<SuggestedPrompts onsend={sendMessage} />
+				<p class="welcome-text">{t('chat.welcome', { name: firstName })}</p>
+				<SuggestedPrompts {firstName} onsend={sendMessage} />
 			</div>
 		{/if}
 

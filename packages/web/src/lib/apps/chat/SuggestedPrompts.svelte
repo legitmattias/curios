@@ -2,8 +2,10 @@
 	import { t } from '$lib/os/i18n.svelte.js';
 
 	let {
+		firstName,
 		onsend
 	}: {
+		firstName: string;
 		onsend: (content: string) => void;
 	} = $props();
 
@@ -13,12 +15,14 @@
 		'chat.prompt.available',
 		'chat.prompt.learning'
 	];
+
+	const params = $derived({ name: firstName });
 </script>
 
 <div class="suggested-prompts">
 	{#each promptKeys as key (key)}
-		<button class="prompt-chip" onclick={() => onsend(t(key))}>
-			{t(key)}
+		<button class="prompt-chip" onclick={() => onsend(t(key, params))}>
+			{t(key, params)}
 		</button>
 	{/each}
 </div>
