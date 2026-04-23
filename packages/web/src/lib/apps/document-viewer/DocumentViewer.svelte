@@ -136,7 +136,7 @@
 						<div class="cv-entry">
 							<div class="entry-header">
 								<span class="entry-role">
-									{edu.degree} in {edu.field}
+									{edu.degree} — {edu.field}
 									<TranslationBadge
 										show={localeStore.current !== 'en' &&
 											(isLlmTranslated(edu.id, 'degree') || isLlmTranslated(edu.id, 'field'))}
@@ -425,21 +425,28 @@
 		font-family: var(--font-mono);
 	}
 
-	/* ── Skills ── */
+	/* ── Skills ── two-column grid, category column clearly differentiated */
 	.skill-row {
-		display: flex;
-		gap: var(--space-3);
+		display: grid;
+		grid-template-columns: minmax(170px, 28%) 1fr;
+		gap: var(--space-4);
 		font-size: var(--text-sm);
+		padding: var(--space-2) 0;
+		border-bottom: 1px solid var(--color-explorer-border);
+		align-items: baseline;
+	}
+
+	.skill-row:last-child {
+		border-bottom: none;
 	}
 
 	.skill-category {
-		font-weight: var(--font-weight-medium);
-		color: var(--color-text-primary);
-		min-width: 80px;
-		flex-shrink: 0;
+		font-weight: var(--font-weight-semibold);
+		color: var(--color-accent);
 	}
 
 	.skill-list {
 		color: var(--color-text-secondary);
+		line-height: 1.6;
 	}
 </style>
