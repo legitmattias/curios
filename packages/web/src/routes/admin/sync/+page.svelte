@@ -4,6 +4,8 @@
 	import ConfirmModal from '$lib/admin/components/ConfirmModal.svelte';
 	import RelativeTime from '$lib/admin/components/RelativeTime.svelte';
 
+	let { data } = $props();
+
 	type OpKey = 'projects' | 'skills' | 'languages' | 'cv-skills' | 'cv-projects';
 
 	interface SyncOp {
@@ -12,24 +14,33 @@
 		description: string;
 		cost: 'free' | 'llm';
 		supportsForce: boolean;
+		// Position in the typical fresh-DB sync order; operations with the same
+		// order value are interchangeable. Pure ordering hint — nothing enforces it.
+		order: number;
+		// Short note explaining why the position matters / dependencies.
+		orderNote: string;
 	}
 
 	const ops: SyncOp[] = [
+		{
+			key: 'skills',
+			title: 'Skills',
+			description:
+				'Pulls featured + public skills from Dossier (excluding Spoken Languages). LLM generates skill descriptions with project cross-references. Hash cache skips unchanged skills unless force is on.',
+			cost: 'llm',
+			supportsForce: true,
+			order: 1,
+			orderNote: 'Run first so Projects can align tech names against the skill list.'
+		},
 		{
 			key: 'projects',
 			title: 'Projects',
 			description:
 				'Pulls featured projects from Dossier. LLM generates tech descriptions per project. Hash cache skips unchanged projects unless force is on.',
 			cost: 'llm',
-			supportsForce: true
-		},
-		{
-			key: 'skills',
-			title: 'Skills',
-			description:
-				'Pulls featured + public skills from Dossier (excluding Spoken Languages). LLM generates skill descriptions with project cross-references. Hash cache like projects.',
-			cost: 'llm',
-			supportsForce: true
+			supportsForce: true,
+			order: 2,
+			orderNote: 'Uses the skill catalog for tech-name alignment.'
 		},
 		{
 			key: 'languages',
@@ -37,7 +48,9 @@
 			description:
 				'Pulls featured spoken languages from Dossier and stores them on the profile, sorted by proficiency. No LLM call.',
 			cost: 'free',
-			supportsForce: false
+			supportsForce: false,
+			order: 3,
+			orderNote: 'Independent — can run at any time.'
 		},
 		{
 			key: 'cv-skills',
@@ -45,7 +58,9 @@
 			description:
 				'LLM condenses the ~50 featured skills into ~10–14 thematic clusters for the CV sidebar. Always regenerates.',
 			cost: 'llm',
-			supportsForce: false
+			supportsForce: false,
+			order: 4,
+			orderNote: 'Requires skills to be synced first.'
 		},
 		{
 			key: 'cv-projects',
@@ -53,7 +68,9 @@
 			description:
 				'LLM writes a one-sentence CV summary + pared-down tech for each project. Always regenerates.',
 			cost: 'llm',
-			supportsForce: false
+			supportsForce: false,
+			order: 5,
+			orderNote: 'Requires projects to be synced first.'
 		}
 	];
 
@@ -66,12 +83,26 @@
 		lastError: string | null;
 	}
 
+	function fromServerRow(op: OpKey): OpState {
+		const row = data.syncState[op];
+		if (!row) return blank();
+		return {
+			// Preserve the last outcome visually but always start inactive —
+			// this is historical data, not a currently-running operation.
+			status: row.lastStatus === 'error' ? 'error' : 'idle',
+			lastRunAt: row.lastRunAt,
+			lastDuration: row.lastDurationMs,
+			lastResult: row.lastResult,
+			lastError: row.lastError
+		};
+	}
+
 	const initial: Record<OpKey, OpState> = {
-		projects: blank(),
-		skills: blank(),
-		languages: blank(),
-		'cv-skills': blank(),
-		'cv-projects': blank()
+		projects: fromServerRow('projects'),
+		skills: fromServerRow('skills'),
+		languages: fromServerRow('languages'),
+		'cv-skills': fromServerRow('cv-skills'),
+		'cv-projects': fromServerRow('cv-projects')
 	};
 
 	let runState = $state<Record<OpKey, OpState>>(initial);
@@ -123,6 +154,20 @@
 		}
 	}
 
+	// Auto-fade success state back to idle after this many ms.
+	const SUCCESS_FADE_MS = 15_000;
+	const fadeTimers: Partial<Record<OpKey, ReturnType<typeof setTimeout>>> = {};
+
+	function scheduleFade(key: OpKey) {
+		const existing = fadeTimers[key];
+		if (existing) clearTimeout(existing);
+		fadeTimers[key] = setTimeout(() => {
+			if (runState[key].status === 'success') {
+				runState[key] = { ...runState[key], status: 'idle' };
+			}
+		}, SUCCESS_FADE_MS);
+	}
+
 	async function run(op: SyncOp, doForce: boolean) {
 		runState[op.key] = { ...runState[op.key], status: 'running', lastError: null };
 		const start = performance.now();
@@ -164,6 +209,7 @@
 				lastResult: body.data,
 				lastError: null
 			};
+			scheduleFade(op.key);
 			showToast(`${op.title}: done (${Math.round(duration / 100) / 10}s)`, 'success');
 		} catch (err) {
 			runState[op.key] = {
@@ -177,12 +223,14 @@
 		}
 	}
 
-	async function confirmAndRun() {
+	function confirmAndRun() {
 		if (!pendingOp) return;
 		const op = pendingOp;
 		const f = pendingForce;
 		pendingOp = null;
-		await run(op, f);
+		// Fire-and-forget so the modal closes immediately while the sync runs
+		// in the background. Row's status pill handles the running/success state.
+		void run(op, f);
 	}
 
 	function confirmBodyMessage(op: SyncOp | null, f: boolean): string {
@@ -228,6 +276,17 @@
 			Each operation writes to the CuriOS database. Operations tagged
 			<span class="cost-tag llm">LLM</span> spend Anthropic credits. Force re-runs always prompt for confirmation.
 		</p>
+		<p class="meta-line">
+			Typical order on a fresh database: <strong>1. Skills</strong> → <strong>2. Projects</strong>
+			→ <strong>3. Languages</strong> → <strong>4. CV skills</strong>
+			→ <strong>5. CV projects</strong>. Day-to-day, run only what changed — hover the number badge
+			on a row to see its dependency.
+		</p>
+		<p class="meta-line quiet">
+			<em>Last run</em> reflects the last recorded run across any session (stored in the database).
+			<em>Status</em> shows the outcome of the most recent run from this browser session — it resets on
+			reload.
+		</p>
 	</header>
 
 	<div class="ops">
@@ -243,6 +302,9 @@
 			<div class="op-row">
 				<div class="op-meta">
 					<div class="op-title">
+						<Tooltip label={op.orderNote} side="right">
+							<span class="order-badge" aria-label="Order position {op.order}">{op.order}</span>
+						</Tooltip>
 						<span>{op.title}</span>
 						{#if op.cost === 'llm'}
 							<Tooltip label="Spends Anthropic LLM credits">
@@ -270,7 +332,7 @@
 				</div>
 
 				<div class="op-last">
-					<RelativeTime iso={s.lastRunAt} placeholder="never this session" />
+					<RelativeTime iso={s.lastRunAt} placeholder="—" />
 					{#if s.lastDuration !== null}
 						<span class="dim">· {formatDuration(s.lastDuration)}</span>
 					{/if}
@@ -347,6 +409,42 @@
 		line-height: 1.5;
 		color: var(--color-text-secondary);
 		max-width: 70ch;
+	}
+
+	.meta-line {
+		margin: 8px 0 0;
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--color-text-secondary);
+		max-width: 78ch;
+	}
+
+	.meta-line.quiet {
+		color: var(--color-text-muted);
+		font-size: 11.5px;
+	}
+
+	.meta-line strong {
+		font-weight: 600;
+		color: var(--color-text-primary);
+	}
+
+	.order-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 18px;
+		height: 18px;
+		padding: 0 5px;
+		font-family:
+			ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+		font-size: 10.5px;
+		font-weight: 600;
+		color: var(--color-text-muted);
+		background: var(--color-explorer-item-hover);
+		border: 1px solid var(--color-explorer-border);
+		border-radius: 2px;
+		cursor: help;
 	}
 
 	.ops {

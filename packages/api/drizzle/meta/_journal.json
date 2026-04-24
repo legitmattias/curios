@@ -85,6 +85,13 @@
       "when": 1776951012758,
       "tag": "0011_sloppy_emma_frost",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1777027835204,
+      "tag": "0012_red_golden_guardian",
+      "breakpoints": true
     }
   ]
 }

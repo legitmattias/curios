@@ -3,6 +3,12 @@ import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { syncCvSkills } from "../services/cv-skills-sync.js";
 import { syncCvProjects } from "../services/cv-projects-sync.js";
 import { syncLanguages } from "../services/language-sync.js";
+import {
+  recordSyncSuccess,
+  recordSyncError,
+  listSyncState,
+  type SyncOperation,
+} from "../services/sync-state.js";
 import { db } from "../db/index.js";
 import { projects } from "../db/schema.js";
 import { eq } from "drizzle-orm";
@@ -19,78 +25,67 @@ syncRoute.use("*", async (c, next) => {
   await next();
 });
 
-// Sync projects from Dossier (featured + public, enriched with LLM tech descriptions).
+// Runs a sync function and records the outcome in sync_state so the admin
+// panel's "Last run" column survives page reloads / server restarts.
+async function runAndRecord<T>(
+  operation: SyncOperation,
+  fn: () => Promise<T>,
+): Promise<{ ok: true; result: T } | { ok: false; error: string }> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const durationMs = performance.now() - start;
+    await recordSyncSuccess({ operation, durationMs, result }).catch((err) =>
+      console.error("Failed to record sync success:", err),
+    );
+    return { ok: true, result };
+  } catch (err) {
+    const durationMs = performance.now() - start;
+    const message = err instanceof Error ? err.message : String(err);
+    await recordSyncError({ operation, durationMs, message }).catch((logErr) =>
+      console.error("Failed to record sync error:", logErr),
+    );
+    return { ok: false, error: message };
+  }
+}
+
 syncRoute.post("/projects", async (c) => {
-  try {
-    const force = c.req.query("force") === "true";
-    const result = await syncProjects(force);
-    return c.json(result);
-  } catch (err) {
-    console.error("Sync failed:", err);
-    return c.json(
-      { error: err instanceof Error ? err.message : "Sync failed" },
-      500,
-    );
-  }
+  const force = c.req.query("force") === "true";
+  const outcome = await runAndRecord("projects", () => syncProjects(force));
+  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
+  return c.json(outcome.result);
 });
 
-// Sync skills from Dossier (featured + public skills with mapped categories).
 syncRoute.post("/skills", async (c) => {
-  try {
-    const force = c.req.query("force") === "true";
-    const result = await syncSkills(force);
-    return c.json(result);
-  } catch (err) {
-    console.error("Skills sync failed:", err);
-    return c.json(
-      { error: err instanceof Error ? err.message : "Sync failed" },
-      500,
-    );
-  }
+  const force = c.req.query("force") === "true";
+  const outcome = await runAndRecord("skills", () => syncSkills(force));
+  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
+  return c.json(outcome.result);
 });
 
-// Summarize the featured skills into ~10–14 CV clusters via LLM (EN + SE).
-// Stored on profile.cvSkills; CV route prefers this when present.
 syncRoute.post("/cv-skills", async (c) => {
-  try {
-    const result = await syncCvSkills();
-    return c.json(result);
-  } catch (err) {
-    console.error("CV skills sync failed:", err);
-    return c.json(
-      { error: err instanceof Error ? err.message : "Sync failed" },
-      500,
-    );
-  }
+  const outcome = await runAndRecord("cv-skills", () => syncCvSkills());
+  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
+  return c.json(outcome.result);
 });
 
-// Fetch featured spoken languages from Dossier; store on profile.languages.
 syncRoute.post("/languages", async (c) => {
-  try {
-    const result = await syncLanguages();
-    return c.json(result);
-  } catch (err) {
-    console.error("Languages sync failed:", err);
-    return c.json(
-      { error: err instanceof Error ? err.message : "Sync failed" },
-      500,
-    );
-  }
+  const outcome = await runAndRecord("languages", () => syncLanguages());
+  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
+  return c.json(outcome.result);
 });
 
-// Condense each project into a one-sentence CV summary + pared-down tech (EN + SE).
-// Stored on profile.cvProjects; CV route prefers this when present.
 syncRoute.post("/cv-projects", async (c) => {
-  try {
-    const result = await syncCvProjects();
-    return c.json(result);
-  } catch (err) {
-    console.error("CV projects sync failed:", err);
-    return c.json(
-      { error: err instanceof Error ? err.message : "Sync failed" },
-      500,
-    );
-  }
+  const outcome = await runAndRecord("cv-projects", () => syncCvProjects());
+  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
+  return c.json(outcome.result);
+});
+
+// Returns the latest recorded state of every sync operation. Admin panel
+// hydrates its row list from this so timestamps persist across reloads.
+syncRoute.get("/state", async (c) => {
+  const rows = await listSyncState();
+  return c.json({ data: rows });
 });
 
 // Set project display order — slugs not listed get pushed to end.
@@ -104,7 +99,6 @@ syncRoute.patch("/projects/order", async (c) => {
       return c.json({ error: "Body must be an array of slug strings" }, 400);
     }
 
-    // Set sortOrder for listed slugs
     for (let i = 0; i < slugOrder.length; i++) {
       await db
         .update(projects)
@@ -112,7 +106,6 @@ syncRoute.patch("/projects/order", async (c) => {
         .where(eq(projects.slug, slugOrder[i]));
     }
 
-    // Push unlisted projects to end
     const allRows = await db.select({ slug: projects.slug }).from(projects);
     const unlisted = allRows
       .filter((r) => !slugOrder.includes(r.slug))

@@ -83,6 +83,18 @@ export const translations = pgTable(
   ],
 );
 
+// Tracks the most recent run of each sync operation (admin panel reads this).
+export const syncState = pgTable("sync_state", {
+  operation: varchar({ length: 64 }).primaryKey(),
+  lastRunAt: timestamp("last_run_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  lastDurationMs: integer("last_duration_ms"),
+  lastStatus: varchar("last_status", { length: 16 }).notNull(),
+  lastResult: jsonb("last_result"),
+  lastError: text("last_error"),
+});
+
 export const profile = pgTable("profile", {
   id: uuid().defaultRandom().primaryKey(),
   name: varchar({ length: 128 }).notNull(),
