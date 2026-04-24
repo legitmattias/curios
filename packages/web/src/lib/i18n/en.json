@@ -186,5 +186,7 @@
 	"mobile.about.website": "Website",
 	"mobile.about.contact": "Contact",
 	"mobile.built.empty": "No projects to show yet.",
-	"mobile.growing.empty": "No current goals to show yet."
+	"mobile.built.intro": "A selection of my work.",
+	"mobile.growing.empty": "No current goals to show yet.",
+	"mobile.growing.intro": "Skills and topics I'm currently developing."
 }

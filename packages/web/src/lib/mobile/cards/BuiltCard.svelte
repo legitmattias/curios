@@ -46,6 +46,7 @@
 {:else if projects.length === 0}
 	<p class="state">{t('mobile.built.empty')}</p>
 {:else}
+	<p class="lede">{t('mobile.built.intro')}</p>
 	<ul class="list">
 		{#each projects as p (p.slug)}
 			{@const link = primaryLink(p)}
@@ -74,6 +75,13 @@
 {/if}
 
 <style>
+	.lede {
+		margin: 0 0 16px;
+		font-size: 13px;
+		line-height: 1.5;
+		color: var(--color-text-muted);
+	}
+
 	.state {
 		color: var(--color-text-muted);
 		font-size: 13px;

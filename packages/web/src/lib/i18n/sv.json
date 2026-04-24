@@ -186,5 +186,7 @@
 	"mobile.about.website": "Webbplats",
 	"mobile.about.contact": "Kontakt",
 	"mobile.built.empty": "Inga projekt att visa ännu.",
-	"mobile.growing.empty": "Inga aktuella mål att visa ännu."
+	"mobile.built.intro": "Ett urval av mina projekt.",
+	"mobile.growing.empty": "Inga aktuella mål att visa ännu.",
+	"mobile.growing.intro": "Färdigheter och områden jag utvecklar just nu."
 }

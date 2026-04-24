@@ -29,6 +29,7 @@
 {:else if goals.length === 0}
 	<p class="state">{t('mobile.growing.empty')}</p>
 {:else}
+	<p class="lede">{t('mobile.growing.intro')}</p>
 	<ul class="list">
 		{#each goals as g (g.id)}
 			<li class="goal">
@@ -53,6 +54,13 @@
 {/if}
 
 <style>
+	.lede {
+		margin: 0 0 16px;
+		font-size: 13px;
+		line-height: 1.5;
+		color: var(--color-text-muted);
+	}
+
 	.state {
 		color: var(--color-text-muted);
 		font-size: 13px;
