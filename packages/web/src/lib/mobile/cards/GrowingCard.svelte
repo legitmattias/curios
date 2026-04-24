@@ -27,7 +27,7 @@
 {:else if error}
 	<p class="state error">{error}</p>
 {:else if goals.length === 0}
-	<p class="state">{t('mobile.building.empty')}</p>
+	<p class="state">{t('mobile.growing.empty')}</p>
 {:else}
 	<ul class="list">
 		{#each goals as g (g.id)}
@@ -41,7 +41,9 @@
 				{/if}
 				{#if g.progress !== null && g.progress > 0}
 					<div class="progress" aria-label="Progress {g.progress}%">
-						<div class="bar" style:width="{g.progress}%"></div>
+						<div class="track">
+							<div class="fill" style:width="{g.progress}%"></div>
+						</div>
 						<span class="pct">{g.progress}%</span>
 					</div>
 				{/if}
@@ -131,12 +133,18 @@
 		margin-top: 4px;
 	}
 
-	.bar {
-		height: 4px;
-		background: var(--color-accent);
-		border-radius: 2px;
+	.track {
 		flex: 1;
-		max-width: 100%;
+		height: 4px;
+		background: var(--color-explorer-border);
+		border-radius: 2px;
+		overflow: hidden;
+	}
+
+	.fill {
+		height: 100%;
+		background: var(--color-accent);
+		border-radius: inherit;
 	}
 
 	.pct {

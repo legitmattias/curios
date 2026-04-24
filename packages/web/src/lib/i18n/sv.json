@@ -178,7 +178,7 @@
 	"mobile.switchLanguage": "Byt språk",
 	"mobile.card.ask": "Fråga",
 	"mobile.card.about": "Om",
-	"mobile.card.building": "Bygger",
+	"mobile.card.growing": "Växa",
 	"mobile.card.built": "Byggt",
 	"mobile.loading": "Laddar…",
 	"mobile.about.location": "Plats",
@@ -186,5 +186,5 @@
 	"mobile.about.website": "Webbplats",
 	"mobile.about.contact": "Kontakt",
 	"mobile.built.empty": "Inga projekt att visa ännu.",
-	"mobile.building.empty": "Inga aktuella mål att visa ännu."
+	"mobile.growing.empty": "Inga aktuella mål att visa ännu."
 }

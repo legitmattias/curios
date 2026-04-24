@@ -1,4 +1,4 @@
-export type CardId = 'ask' | 'about' | 'building' | 'built';
+export type CardId = 'ask' | 'about' | 'growing' | 'built';
 
 // History-state marker so hardware/gesture back on the browser closes the
 // expanded card instead of navigating away.

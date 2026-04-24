@@ -178,7 +178,7 @@
 	"mobile.switchLanguage": "Switch language",
 	"mobile.card.ask": "Ask",
 	"mobile.card.about": "About",
-	"mobile.card.building": "Building",
+	"mobile.card.growing": "Growing",
 	"mobile.card.built": "Built",
 	"mobile.loading": "Loading…",
 	"mobile.about.location": "Location",
@@ -186,5 +186,5 @@
 	"mobile.about.website": "Website",
 	"mobile.about.contact": "Contact",
 	"mobile.built.empty": "No projects to show yet.",
-	"mobile.building.empty": "No current goals to show yet."
+	"mobile.growing.empty": "No current goals to show yet."
 }

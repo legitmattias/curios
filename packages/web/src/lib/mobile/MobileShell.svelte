@@ -6,14 +6,14 @@
 	import { localeStore } from '$lib/os/locale-store.svelte.js';
 	import IconChat from '$lib/components/icons/IconChat.svelte';
 	import IconPerson from './icons/IconPerson.svelte';
-	import IconHammer from './icons/IconHammer.svelte';
+	import IconSprout from './icons/IconSprout.svelte';
 	import IconStack from './icons/IconStack.svelte';
 	import IconGlobe from './icons/IconGlobe.svelte';
 	import Carousel, { type CarouselCard } from './Carousel.svelte';
 	import ExpandedCard from './ExpandedCard.svelte';
 	import AboutCard from './cards/AboutCard.svelte';
 	import BuiltCard from './cards/BuiltCard.svelte';
-	import BuildingCard from './cards/BuildingCard.svelte';
+	import GrowingCard from './cards/GrowingCard.svelte';
 	import MobileChat from './cards/MobileChat.svelte';
 	import { mobileStore, type CardId } from './mobile-store.svelte.js';
 
@@ -24,21 +24,21 @@
 	const icons: Record<CardId, Component<{ size?: number }>> = {
 		ask: IconChat,
 		about: IconPerson,
-		building: IconHammer,
+		growing: IconSprout,
 		built: IconStack
 	};
 
 	const meta = $derived<Record<CardId, { title: string; icon: Component<{ size?: number }> }>>({
 		ask: { title: t('mobile.card.ask'), icon: icons.ask },
 		about: { title: t('mobile.card.about'), icon: icons.about },
-		building: { title: t('mobile.card.building'), icon: icons.building },
+		growing: { title: t('mobile.card.growing'), icon: icons.growing },
 		built: { title: t('mobile.card.built'), icon: icons.built }
 	});
 
 	const cards = $derived<CarouselCard[]>([
 		{ id: 'ask', title: meta.ask.title, icon: meta.ask.icon },
 		{ id: 'about', title: meta.about.title, icon: meta.about.icon },
-		{ id: 'building', title: meta.building.title, icon: meta.building.icon },
+		{ id: 'growing', title: meta.growing.title, icon: meta.growing.icon },
 		{ id: 'built', title: meta.built.title, icon: meta.built.icon }
 	]);
 
@@ -99,8 +99,8 @@
 			<MobileChat />
 		{:else if expId === 'about'}
 			<AboutCard />
-		{:else if expId === 'building'}
-			<BuildingCard />
+		{:else if expId === 'growing'}
+			<GrowingCard />
 		{:else}
 			<BuiltCard />
 		{/if}
