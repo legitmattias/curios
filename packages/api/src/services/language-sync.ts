@@ -2,6 +2,7 @@ import { db } from "../db/index.js";
 import { profile } from "../db/schema.js";
 import { eq } from "drizzle-orm";
 import { getProficiencyRank } from "@curios/shared/i18n";
+import { dossierGet } from "./dossier-http.js";
 
 interface DossierSkill {
   name: string;
@@ -34,35 +35,6 @@ interface LanguageSyncResult {
 }
 
 const SPOKEN_LANGUAGES_CATEGORY = "Spoken Languages";
-
-function getDossierApiUrl(): string {
-  const url = process.env.DOSSIER_API_URL;
-  if (!url) throw new Error("DOSSIER_API_URL is required");
-  return url;
-}
-
-function getDossierApiKey(): string {
-  const key = process.env.DOSSIER_API_KEY;
-  if (!key) throw new Error("DOSSIER_API_KEY is required");
-  return key;
-}
-
-// Dossier GET with Bearer auth. Wraps network errors so callers see
-// "Dossier /path unreachable: <cause>" instead of bare "fetch failed".
-async function dossierGet(path: string): Promise<Response> {
-  try {
-    return await fetch(`${getDossierApiUrl()}${path}`, {
-      headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-    });
-  } catch (err) {
-    const raw = err instanceof Error ? err.message : String(err);
-    const cause =
-      err instanceof Error && err.cause instanceof Error
-        ? ` (${err.cause.message})`
-        : "";
-    throw new Error(`Dossier ${path} unreachable: ${raw}${cause}`);
-  }
-}
 
 async function fetchCategoryMap(): Promise<Map<string, string>> {
   const res = await dossierGet("/profile");

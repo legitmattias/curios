@@ -3,6 +3,7 @@ import { db } from "../db/index.js";
 import { projects, skills, translations } from "../db/schema.js";
 import { and, eq, notInArray } from "drizzle-orm";
 import { createHash } from "crypto";
+import { dossierGet } from "./dossier-http.js";
 
 // ── Translation helper ────────────────────────────────
 
@@ -93,36 +94,6 @@ interface LlmTechItem {
 interface LlmProjectSummary {
   summary: string;
   tech: LlmTechItem[];
-}
-
-function getDossierApiUrl(): string {
-  const url = process.env.DOSSIER_API_URL;
-  if (!url) throw new Error("DOSSIER_API_URL is required");
-  return url;
-}
-
-function getDossierApiKey(): string {
-  const key = process.env.DOSSIER_API_KEY;
-  if (!key) throw new Error("DOSSIER_API_KEY is required");
-  return key;
-}
-
-// Dossier GET with Bearer auth. Wraps network errors so the admin panel sees
-// "Dossier /path unreachable: <cause>" instead of the bare "fetch failed".
-async function dossierGet(path: string, query?: string): Promise<Response> {
-  const url = `${getDossierApiUrl()}${path}${query ? `?${query}` : ""}`;
-  try {
-    return await fetch(url, {
-      headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-    });
-  } catch (err) {
-    const raw = err instanceof Error ? err.message : String(err);
-    const cause =
-      err instanceof Error && err.cause instanceof Error
-        ? ` (${err.cause.message})`
-        : "";
-    throw new Error(`Dossier ${path} unreachable: ${raw}${cause}`);
-  }
 }
 
 async function fetchDossierProjects(): Promise<DossierProject[]> {
