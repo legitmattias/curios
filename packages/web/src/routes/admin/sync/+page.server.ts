@@ -7,7 +7,7 @@ export interface SyncStateRow {
 	operation: OpKey;
 	lastRunAt: string | null;
 	lastDurationMs: number | null;
-	lastStatus: 'success' | 'error';
+	lastStatus: 'running' | 'success' | 'error';
 	lastResult: unknown;
 	lastError: string | null;
 }

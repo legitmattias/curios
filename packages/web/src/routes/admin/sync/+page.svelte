@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import Tooltip from '$lib/admin/components/Tooltip.svelte';
 	import StatusPill from '$lib/admin/components/StatusPill.svelte';
 	import ConfirmModal from '$lib/admin/components/ConfirmModal.svelte';
 	import RelativeTime from '$lib/admin/components/RelativeTime.svelte';
+	import type { SyncStateRow } from './+page.server.js';
 
 	let { data } = $props();
 
@@ -87,9 +89,11 @@
 		const row = data.syncState[op];
 		if (!row) return blank();
 		return {
-			// Preserve the last outcome visually but always start inactive —
-			// this is historical data, not a currently-running operation.
-			status: row.lastStatus === 'error' ? 'error' : 'idle',
+			// Pass 'running' through so in-flight syncs stay visible across reloads.
+			// Successful finishes collapse to 'idle' (the row still shows the
+			// result + timestamp); errors surface as 'error' until the next run.
+			status:
+				row.lastStatus === 'running' ? 'running' : row.lastStatus === 'error' ? 'error' : 'idle',
 			lastRunAt: row.lastRunAt,
 			lastDuration: row.lastDurationMs,
 			lastResult: row.lastResult,
@@ -167,6 +171,85 @@
 			}
 		}, SUCCESS_FADE_MS);
 	}
+
+	// ── Background polling ──
+	// While any operation is 'running' (including runs started in a prior
+	// session or another tab), poll /admin/sync/state so the page picks up
+	// the outcome and fires a toast — even if the user reloaded or navigated
+	// away while the API server was still working.
+	const POLL_INTERVAL_MS = 3000;
+	let pollTimer: ReturnType<typeof setInterval> | undefined;
+
+	async function pollTick() {
+		try {
+			const res = await fetch('/admin/sync/state');
+			if (!res.ok) return;
+			const body = (await res.json()) as { data: SyncStateRow[] };
+			for (const row of body.data) {
+				const op = row.operation as OpKey;
+				if (!(op in runState)) continue;
+				const prev = runState[op].status;
+				const title = ops.find((o) => o.key === op)?.title ?? op;
+
+				if (row.lastStatus === 'running') {
+					if (prev !== 'running') {
+						runState[op] = fromServerRow(op);
+					}
+					continue;
+				}
+
+				// Terminal status in DB. If we were observing a run (local or
+				// resumed after reload), surface the transition.
+				if (prev === 'running') {
+					if (row.lastStatus === 'success') {
+						runState[op] = {
+							status: 'success',
+							lastRunAt: row.lastRunAt,
+							lastDuration: row.lastDurationMs,
+							lastResult: row.lastResult,
+							lastError: row.lastError
+						};
+						scheduleFade(op);
+						const secs =
+							row.lastDurationMs !== null ? Math.round(row.lastDurationMs / 100) / 10 : null;
+						showToast(`${title}: done${secs !== null ? ` (${secs}s)` : ''}`, 'success');
+					} else {
+						runState[op] = {
+							status: 'error',
+							lastRunAt: row.lastRunAt,
+							lastDuration: row.lastDurationMs,
+							lastResult: null,
+							lastError: row.lastError
+						};
+						showToast(`${title}: ${row.lastError ?? 'failed'}`, 'error');
+					}
+				}
+			}
+		} catch {
+			// Transient network error — keep polling; next tick may succeed.
+		}
+	}
+
+	// Start/stop the poll based on whether anything is running. Rerun each time
+	// runState changes, which covers: initial hydration, in-session triggers,
+	// and transitions observed by polling itself (at which point we can stop).
+	$effect(() => {
+		const anyRunning = (Object.keys(runState) as OpKey[]).some(
+			(k) => runState[k].status === 'running'
+		);
+		if (anyRunning && !pollTimer) {
+			pollTimer = setInterval(() => void pollTick(), POLL_INTERVAL_MS);
+		} else if (!anyRunning && pollTimer) {
+			clearInterval(pollTimer);
+			pollTimer = undefined;
+		}
+	});
+
+	onDestroy(() => {
+		if (pollTimer) clearInterval(pollTimer);
+		if (toastTimer) clearTimeout(toastTimer);
+		for (const t of Object.values(fadeTimers)) if (t) clearTimeout(t);
+	});
 
 	async function run(op: SyncOp, doForce: boolean) {
 		runState[op.key] = { ...runState[op.key], status: 'running', lastError: null };
@@ -283,9 +366,8 @@
 			on a row to see its dependency.
 		</p>
 		<p class="meta-line quiet">
-			<em>Last run</em> reflects the last recorded run across any session (stored in the database).
-			<em>Status</em> shows the outcome of the most recent run from this browser session — it resets on
-			reload.
+			Sync jobs run on the API server. <em>Last run</em> and <em>Status</em> are persisted, so closing
+			the tab or reloading won't interrupt a running job — you'll see the outcome when you return.
 		</p>
 	</header>
 

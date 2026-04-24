@@ -4,6 +4,7 @@ import { syncCvSkills } from "../services/cv-skills-sync.js";
 import { syncCvProjects } from "../services/cv-projects-sync.js";
 import { syncLanguages } from "../services/language-sync.js";
 import {
+  recordSyncStart,
   recordSyncSuccess,
   recordSyncError,
   listSyncState,
@@ -32,6 +33,11 @@ async function runAndRecord<T>(
   fn: () => Promise<T>,
 ): Promise<{ ok: true; result: T } | { ok: false; error: string }> {
   const start = performance.now();
+  // Mark the row as running before we start — so reloads of the admin panel
+  // still show an in-flight status until we record success/error below.
+  await recordSyncStart(operation).catch((err) =>
+    console.error("Failed to record sync start:", err),
+  );
   try {
     const result = await fn();
     const durationMs = performance.now() - start;

@@ -20,6 +20,31 @@ interface RecordErrorArgs {
   message: string;
 }
 
+// Marks an operation as in-flight. Used by runAndRecord so the admin panel
+// can see "running" even after a reload or navigation away.
+export async function recordSyncStart(operation: SyncOperation): Promise<void> {
+  await db
+    .insert(syncState)
+    .values({
+      operation,
+      lastRunAt: new Date(),
+      lastDurationMs: null,
+      lastStatus: "running",
+      lastResult: null,
+      lastError: null,
+    })
+    .onConflictDoUpdate({
+      target: syncState.operation,
+      set: {
+        lastRunAt: new Date(),
+        lastDurationMs: null,
+        lastStatus: "running",
+        lastResult: null,
+        lastError: null,
+      },
+    });
+}
+
 export async function recordSyncSuccess(
   args: RecordSuccessArgs,
 ): Promise<void> {
