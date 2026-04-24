@@ -225,9 +225,9 @@ async function generateProjectSummary(
         content: context,
       },
     ],
-    system: `You generate portfolio descriptions for software projects. Return a JSON object with exactly two fields:
+    system: `You generate descriptions for software projects. Return a JSON object with exactly two fields:
 
-1. "summary": A concise, compelling 2-3 sentence description for a portfolio site. Focus on what it does, what makes it interesting, and the technical approach. Write for recruiters and senior developers. No filler, no clichés.
+1. "summary": 2-3 sentences focused on technical substance — what the project does, how it's architected, and the notable technical choices. Prefer concrete over abstract: name the patterns, protocols, libraries, or approaches where they're meaningful. Write as if for another engineer reading the source. Do NOT describe the project in terms of its audience (recruiters, visitors, clients), framing (portfolio, showcase, demo), or presentation purpose, even if that's part of its role. Describe WHAT IT DOES, not WHAT IT REPRESENTS. No filler, no clichés.
 
 2. "tech": An array of objects, each with "name" and "description". Include 6-12 items.
 
