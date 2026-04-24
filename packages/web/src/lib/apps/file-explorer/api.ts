@@ -58,3 +58,15 @@ export async function fetchEducation() {
 export async function fetchProfile() {
 	return fetchJson<Profile>('/profile');
 }
+
+export interface NowGoal {
+	id: string;
+	name: string;
+	description: string | null;
+	priority: 'high' | 'medium' | 'low';
+	progress: number | null;
+}
+
+export async function fetchNow() {
+	return fetchJson<NowGoal[]>('/now');
+}

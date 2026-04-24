@@ -11,6 +11,7 @@ import { metricsRoute } from "./routes/metrics.js";
 import { educationRoute } from "./routes/education.js";
 import { cvRoute } from "./routes/cv.js";
 import { syncRoute } from "./routes/sync.js";
+import { nowRoute } from "./routes/now.js";
 import { createMetricsWsHandlers } from "./ws/metrics-handler.js";
 import { createChatWsHandlers } from "./ws/chat-handler.js";
 
@@ -30,6 +31,7 @@ app.route("/metrics", metricsRoute);
 app.route("/education", educationRoute);
 app.route("/cv", cvRoute);
 app.route("/sync", syncRoute);
+app.route("/now", nowRoute);
 
 // WebSocket
 app.get(
