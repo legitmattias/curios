@@ -302,7 +302,9 @@
 		grid-template-areas:
 			'sidebar topbar'
 			'sidebar main';
-		min-height: 100vh;
+		/* Bounded height so .main's overflow-y actually has something to scroll
+		   against — with min-height the 1fr row grew to content and broke scroll. */
+		height: 100dvh;
 		background: var(--color-desktop-bg);
 		color: var(--color-text-primary);
 		transition: grid-template-columns var(--transition-fast);
