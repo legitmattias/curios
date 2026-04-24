@@ -168,6 +168,9 @@ jobs:
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
           # Seed content (private JSON from curios-dev — see update-secret.sh)
           CURIOS_SEED_CONTENT: ${{ secrets.CURIOS_SEED_CONTENT }}
+          # Admin panel
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_SESSION_SECRET: ${{ secrets.ADMIN_SESSION_SECRET }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -f docker-compose.staging.yml pull
@@ -225,6 +228,9 @@ jobs:
           DOSSIER_API_KEY: ${{ secrets.DOSSIER_API_KEY }}
           # Seed content (private JSON from curios-dev — see update-secret.sh)
           CURIOS_SEED_CONTENT: ${{ secrets.CURIOS_SEED_CONTENT }}
+          # Admin panel
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          ADMIN_SESSION_SECRET: ${{ secrets.ADMIN_SESSION_SECRET }}
         run: |
           echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose -f docker-compose.production.yml pull

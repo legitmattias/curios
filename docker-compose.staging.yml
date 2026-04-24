@@ -44,6 +44,13 @@ services:
     restart: unless-stopped
     environment:
       ORIGIN: ${ORIGIN}
+      # Admin panel (/admin/*)
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET}
+      DOSSIER_API_KEY: ${DOSSIER_API_KEY}
+      # Internal service URL so the web server-side proxy hits the api container
+      # directly, bypassing Caddy.
+      ADMIN_API_URL: http://api:4000
     ports:
       # Bound to loopback only — Caddy (staging.curios.mattic.dev) is the public entry point.
       - '127.0.0.1:3010:3000'
