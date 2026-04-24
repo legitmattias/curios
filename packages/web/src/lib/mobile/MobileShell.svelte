@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Component } from 'svelte';
+	import { onMount } from 'svelte';
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { profileStore } from '$lib/os/profile-store.svelte.js';
 	import { localeStore } from '$lib/os/locale-store.svelte.js';
@@ -44,6 +45,12 @@
 	function switchToDesktop() {
 		window.location.href = '/?force=desktop';
 	}
+
+	onMount(() => {
+		const handler = (e: PopStateEvent) => mobileStore.onHistoryChange(e.state);
+		window.addEventListener('popstate', handler);
+		return () => window.removeEventListener('popstate', handler);
+	});
 </script>
 
 <svelte:head>
