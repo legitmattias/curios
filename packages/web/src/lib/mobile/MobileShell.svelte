@@ -4,6 +4,7 @@
 	import { t } from '$lib/os/i18n.svelte.js';
 	import { profileStore } from '$lib/os/profile-store.svelte.js';
 	import { localeStore } from '$lib/os/locale-store.svelte.js';
+	import { themeStore, type Accent } from '$lib/os/theme-store.svelte.js';
 	import IconChat from '$lib/components/icons/IconChat.svelte';
 	import IconPerson from './icons/IconPerson.svelte';
 	import IconSprout from './icons/IconSprout.svelte';
@@ -42,14 +43,29 @@
 		{ id: 'built', title: meta.built.title, icon: meta.built.icon }
 	]);
 
-	function switchToDesktop() {
-		window.location.href = '/?force=desktop';
+	const ACCENTS: Accent[] = ['teal', 'purple', 'amber', 'slate'];
+	function cycleAccent() {
+		const idx = ACCENTS.indexOf(themeStore.accent);
+		themeStore.setAccent(ACCENTS[(idx + 1) % ACCENTS.length]);
 	}
 
 	onMount(() => {
 		const handler = (e: PopStateEvent) => mobileStore.onHistoryChange(e.state);
 		window.addEventListener('popstate', handler);
-		return () => window.removeEventListener('popstate', handler);
+
+		// The mobile shell is a dark-only design — light mode breaks the
+		// visual identity. Strip the class while we're mounted, restore on
+		// unmount so the user's stored preference survives for desktop.
+		const root = document.documentElement;
+		const hadLight = root.classList.contains('mode-light');
+		const hadHc = root.classList.contains('high-contrast');
+		root.classList.remove('mode-light', 'high-contrast');
+
+		return () => {
+			window.removeEventListener('popstate', handler);
+			if (hadLight) root.classList.add('mode-light');
+			if (hadHc) root.classList.add('high-contrast');
+		};
 	});
 </script>
 
@@ -65,26 +81,31 @@
 			<span class="role">{title}</span>
 		</div>
 
-		<button
-			class="lang-toggle"
-			type="button"
-			onclick={() => localeStore.toggle()}
-			aria-label={t('mobile.switchLanguage')}
-		>
-			<IconGlobe size={14} />
-			<span class="lang-code">{localeStore.current.toUpperCase()}</span>
-		</button>
+		<div class="head-actions">
+			<button
+				class="accent-toggle"
+				type="button"
+				onclick={cycleAccent}
+				aria-label={t('mobile.cycleAccent')}
+			>
+				<span class="swatch"></span>
+			</button>
+
+			<button
+				class="lang-toggle"
+				type="button"
+				onclick={() => localeStore.toggle()}
+				aria-label={t('mobile.switchLanguage')}
+			>
+				<IconGlobe size={14} />
+				<span class="lang-code">{localeStore.current.toUpperCase()}</span>
+			</button>
+		</div>
 	</header>
 
 	<main class="stage">
 		<Carousel {cards} />
 	</main>
-
-	<footer class="footer">
-		<button class="desktop-link" type="button" onclick={switchToDesktop}>
-			{t('mobile.desktopVersion')}
-		</button>
-	</footer>
 </div>
 
 {#if mobileStore.expandedCard}
@@ -112,7 +133,7 @@
 		position: fixed;
 		inset: 0;
 		display: grid;
-		grid-template-rows: auto 1fr auto;
+		grid-template-rows: auto 1fr;
 		background: var(--gradient-desktop, var(--color-desktop-bg));
 		color: var(--color-text-primary);
 		font-family: var(--font-sans);
@@ -149,6 +170,40 @@
 		letter-spacing: 0.04em;
 	}
 
+	.head-actions {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.accent-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		padding: 0;
+		background: transparent;
+		border: 1px solid var(--color-explorer-border);
+		border-radius: 50%;
+		cursor: pointer;
+		transition: border-color var(--transition-fast);
+	}
+
+	.accent-toggle:active,
+	.accent-toggle:focus-visible {
+		border-color: var(--color-accent);
+		outline: none;
+	}
+
+	.swatch {
+		display: block;
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--color-accent);
+	}
+
 	.lang-toggle {
 		display: inline-flex;
 		align-items: center;
@@ -181,30 +236,6 @@
 	.stage {
 		min-height: 0;
 		overflow: hidden;
-	}
-
-	.footer {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 8px var(--space-3) calc(env(safe-area-inset-bottom) + 8px);
-		border-top: 1px solid var(--color-explorer-border);
-		background: var(--color-window-bg);
-	}
-
-	.desktop-link {
-		font-family: var(--font-mono);
-		font-size: 10.5px;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--color-text-muted);
-		background: transparent;
-		border: none;
-		padding: 4px 8px;
-		cursor: pointer;
-	}
-
-	.desktop-link:active {
-		color: var(--color-accent);
+		padding-bottom: env(safe-area-inset-bottom);
 	}
 </style>
