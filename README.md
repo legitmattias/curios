@@ -29,10 +29,9 @@ A portfolio site at [mattiasubbesen.com](https://mattiasubbesen.com) that presen
 ```
 mattiasubbesen.com          → SvelteKit frontend (Docker, port 3000)
 curios.mattic.dev/api       → Hono REST API (Docker, port 4000)
-staging.curios.mattic.dev   → Staging (frontend + API, same origin)
 ```
 
-The frontend and API run as separate Docker containers on a Hetzner VPS. Caddy handles TLS and reverse proxying. GitHub Actions builds images, pushes to GHCR, and deploys via Docker context over SSH — no config files or scripts on the server.
+The frontend and API run as separate Docker containers on a Hetzner VPS, with a parallel staging environment for pre-production verification. Caddy handles TLS and reverse proxying. GitHub Actions builds images, pushes to GHCR, and deploys via Docker context over SSH — no config files or scripts on the server.
 
 The AI chat agent connects to [Dossier](https://github.com/legitmattias/dossier) via the Model Context Protocol (MCP) to query skills, goals, and profile data at runtime. Local tools query the CuriOS database for projects, experience, and education.
 
