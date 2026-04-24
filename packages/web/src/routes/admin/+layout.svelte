@@ -10,8 +10,25 @@
 
 	// G-prefix navigation shortcuts (press G, then a key within 1s).
 	// Pattern: Linear / GitHub / Superhuman. The badges in the nav advertise them.
-	const goShortcuts: Record<string, string> = {
+	type AdminRoute =
+		| '/admin'
+		| '/admin/projects'
+		| '/admin/skills'
+		| '/admin/experience'
+		| '/admin/education'
+		| '/admin/profile'
+		| '/admin/cv-skills'
+		| '/admin/cv-projects'
+		| '/admin/sync';
+	const goShortcuts: Record<string, AdminRoute> = {
 		d: '/admin',
+		p: '/admin/projects',
+		k: '/admin/skills',
+		x: '/admin/experience',
+		e: '/admin/education',
+		r: '/admin/profile',
+		c: '/admin/cv-skills',
+		v: '/admin/cv-projects',
 		s: '/admin/sync'
 	};
 	let gPending = false;
@@ -24,11 +41,28 @@
 	const navSections = [
 		{
 			heading: 'Overview',
-			items: [{ label: 'Dashboard', href: '/admin', kbd: 'G D', icon: 'grid' }]
+			items: [{ label: 'Dashboard', href: '/admin', kbd: 'G D' }]
+		},
+		{
+			heading: 'Data',
+			items: [
+				{ label: 'Projects', href: '/admin/projects', kbd: 'G P' },
+				{ label: 'Skills', href: '/admin/skills', kbd: 'G K' },
+				{ label: 'Experience', href: '/admin/experience', kbd: 'G X' },
+				{ label: 'Education', href: '/admin/education', kbd: 'G E' },
+				{ label: 'Profile', href: '/admin/profile', kbd: 'G R' }
+			]
+		},
+		{
+			heading: 'Generated',
+			items: [
+				{ label: 'CV skills', href: '/admin/cv-skills', kbd: 'G C' },
+				{ label: 'CV projects', href: '/admin/cv-projects', kbd: 'G V' }
+			]
 		},
 		{
 			heading: 'Actions',
-			items: [{ label: 'Sync', href: '/admin/sync', kbd: 'G S', icon: 'sync' }]
+			items: [{ label: 'Sync', href: '/admin/sync', kbd: 'G S' }]
 		}
 	] as const;
 
@@ -78,16 +112,27 @@
 			const target = goShortcuts[key];
 			if (target) {
 				e.preventDefault();
-				void goto(resolve(target as '/admin' | '/admin/sync'));
+				void goto(resolve(target));
 			}
 		}
 	}
 
 	// ── Breadcrumb ──
+	const crumbMap: Record<string, string[]> = {
+		'/admin': ['Dashboard'],
+		'/admin/projects': ['Data', 'Projects'],
+		'/admin/skills': ['Data', 'Skills'],
+		'/admin/experience': ['Data', 'Experience'],
+		'/admin/education': ['Data', 'Education'],
+		'/admin/profile': ['Data', 'Profile'],
+		'/admin/cv-skills': ['Generated', 'CV skills'],
+		'/admin/cv-projects': ['Generated', 'CV projects'],
+		'/admin/sync': ['Actions', 'Sync']
+	};
 	const crumb = $derived.by(() => {
 		const path = page.url.pathname;
-		if (path === '/admin') return ['Dashboard'];
-		if (path === '/admin/sync') return ['Actions', 'Sync'];
+		if (crumbMap[path]) return crumbMap[path];
+		// Sub-routes (e.g. /admin/projects/[slug]) — fall back to generic split
 		return [path.replace('/admin/', '').split('/').join(' / ')];
 	});
 

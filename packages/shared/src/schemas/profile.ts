@@ -11,6 +11,13 @@ export const ProfileSchema = z.object({
   linkedin: z.string().nullable(),
   website: z.string().nullable(),
   birthDate: z.string().nullable().optional(),
+  otherInfo: z
+    .object({
+      en: z.array(z.string()),
+      sv: z.array(z.string()),
+    })
+    .nullable()
+    .optional(),
 });
 
 export type Profile = z.infer<typeof ProfileSchema>;
