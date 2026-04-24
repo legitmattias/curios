@@ -179,5 +179,11 @@
 	"mobile.card.ask": "Fråga",
 	"mobile.card.about": "Om",
 	"mobile.card.building": "Bygger",
-	"mobile.card.built": "Byggt"
+	"mobile.card.built": "Byggt",
+	"mobile.loading": "Laddar…",
+	"mobile.about.location": "Plats",
+	"mobile.about.email": "E-post",
+	"mobile.about.website": "Webbplats",
+	"mobile.about.contact": "Kontakt",
+	"mobile.built.empty": "Inga projekt att visa ännu."
 }

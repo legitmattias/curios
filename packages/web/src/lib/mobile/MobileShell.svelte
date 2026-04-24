@@ -10,6 +10,8 @@
 	import IconGlobe from './icons/IconGlobe.svelte';
 	import Carousel, { type CarouselCard } from './Carousel.svelte';
 	import ExpandedCard from './ExpandedCard.svelte';
+	import AboutCard from './cards/AboutCard.svelte';
+	import BuiltCard from './cards/BuiltCard.svelte';
 	import { mobileStore, type CardId } from './mobile-store.svelte.js';
 
 	const name = $derived(profileStore.data?.name ?? '');
@@ -82,11 +84,11 @@
 		{#if expId === 'ask'}
 			<p class="placeholder">Full-screen Ask (Phase D wires real chat here).</p>
 		{:else if expId === 'about'}
-			<p class="placeholder">Full About view (Phase C).</p>
+			<AboutCard />
 		{:else if expId === 'building'}
 			<p class="placeholder">Full Building view (Phase E).</p>
 		{:else}
-			<p class="placeholder">Full Built view (Phase C).</p>
+			<BuiltCard />
 		{/if}
 	</ExpandedCard>
 {/if}

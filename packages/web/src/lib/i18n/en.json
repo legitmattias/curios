@@ -179,5 +179,11 @@
 	"mobile.card.ask": "Ask",
 	"mobile.card.about": "About",
 	"mobile.card.building": "Building",
-	"mobile.card.built": "Built"
+	"mobile.card.built": "Built",
+	"mobile.loading": "Loading…",
+	"mobile.about.location": "Location",
+	"mobile.about.email": "Email",
+	"mobile.about.website": "Website",
+	"mobile.about.contact": "Contact",
+	"mobile.built.empty": "No projects to show yet."
 }
