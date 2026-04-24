@@ -124,4 +124,15 @@
 	--font-weight-normal: 400;
 	--font-weight-medium: 500;
 	--font-weight-semibold: 600;
+
+	/* ── Mobile shell ── */
+	/* Launcher-tile carousel: each tile is a fixed-size square; the centered
+	   tile fills --mobile-slide-size, neighbours peek in from the sides. */
+	--mobile-slide-size: min(62vw, 240px);
+	--mobile-gap: 18px;
+	--mobile-side-scale: 0.82;
+	--mobile-side-opacity: 0.5;
+	/* Gentle ease-out evokes the deliberate feel of early-2000s phone menus. */
+	--mobile-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	--mobile-ease-dur: 240ms;
 }

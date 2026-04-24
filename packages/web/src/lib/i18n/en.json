@@ -173,5 +173,11 @@
 	"chat.prompt.skills": "What technologies does {name} work with?",
 	"chat.prompt.projects": "Tell me about the projects",
 	"chat.prompt.available": "Is {name} available for work?",
-	"chat.prompt.learning": "What is {name} currently learning?"
+	"chat.prompt.learning": "What is {name} currently learning?",
+	"mobile.desktopVersion": "Open desktop version",
+	"mobile.switchLanguage": "Switch language",
+	"mobile.card.ask": "Ask",
+	"mobile.card.about": "About",
+	"mobile.card.building": "Building",
+	"mobile.card.built": "Built"
 }

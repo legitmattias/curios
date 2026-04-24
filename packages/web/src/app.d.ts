@@ -5,6 +5,8 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			admin?: { userId: string };
+			// Chosen shell for the visitor. Cookie override first, then UA sniff.
+			shell?: 'mobile' | 'desktop';
 		}
 		// interface PageData {}
 		// interface PageState {}

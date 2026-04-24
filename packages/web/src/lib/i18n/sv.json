@@ -173,5 +173,11 @@
 	"chat.prompt.skills": "Vilka teknologier arbetar {name} med?",
 	"chat.prompt.projects": "Berätta om projekten",
 	"chat.prompt.available": "Är {name} tillgänglig för arbete?",
-	"chat.prompt.learning": "Vad lär sig {name} just nu?"
+	"chat.prompt.learning": "Vad lär sig {name} just nu?",
+	"mobile.desktopVersion": "Öppna skrivbordsversionen",
+	"mobile.switchLanguage": "Byt språk",
+	"mobile.card.ask": "Fråga",
+	"mobile.card.about": "Om",
+	"mobile.card.building": "Bygger",
+	"mobile.card.built": "Byggt"
 }
