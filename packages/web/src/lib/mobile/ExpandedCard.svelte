@@ -7,11 +7,15 @@
 		id,
 		title,
 		icon: Icon,
+		// Drops the body padding + internal scroll so the content can manage
+		// its own layout (used by the chat which needs to fill the full body).
+		fullBleed = false,
 		children
 	}: {
 		id: CardId;
 		title: string;
 		icon: Component<{ size?: number }>;
+		fullBleed?: boolean;
 		children: Snippet;
 	} = $props();
 
@@ -60,7 +64,7 @@
 		<span class="spacer"></span>
 	</header>
 
-	<div class="body">
+	<div class="body" class:full-bleed={fullBleed}>
 		{@render children()}
 	</div>
 </div>
@@ -130,5 +134,10 @@
 		font-size: 14px;
 		line-height: 1.55;
 		color: var(--color-text-secondary);
+	}
+
+	.body.full-bleed {
+		overflow: hidden;
+		padding: 0;
 	}
 </style>

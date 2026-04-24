@@ -12,6 +12,8 @@
 	import ExpandedCard from './ExpandedCard.svelte';
 	import AboutCard from './cards/AboutCard.svelte';
 	import BuiltCard from './cards/BuiltCard.svelte';
+	import BuildingCard from './cards/BuildingCard.svelte';
+	import MobileChat from './cards/MobileChat.svelte';
 	import { mobileStore, type CardId } from './mobile-store.svelte.js';
 
 	const name = $derived(profileStore.data?.name ?? '');
@@ -80,13 +82,18 @@
 
 {#if mobileStore.expandedCard}
 	{@const expId = mobileStore.expandedCard}
-	<ExpandedCard id={expId} title={meta[expId].title} icon={meta[expId].icon}>
+	<ExpandedCard
+		id={expId}
+		title={meta[expId].title}
+		icon={meta[expId].icon}
+		fullBleed={expId === 'ask'}
+	>
 		{#if expId === 'ask'}
-			<p class="placeholder">Full-screen Ask (Phase D wires real chat here).</p>
+			<MobileChat />
 		{:else if expId === 'about'}
 			<AboutCard />
 		{:else if expId === 'building'}
-			<p class="placeholder">Full Building view (Phase E).</p>
+			<BuildingCard />
 		{:else}
 			<BuiltCard />
 		{/if}
@@ -192,9 +199,5 @@
 
 	.desktop-link:active {
 		color: var(--color-accent);
-	}
-
-	.placeholder {
-		margin: 0;
 	}
 </style>

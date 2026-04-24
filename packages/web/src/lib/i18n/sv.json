@@ -185,5 +185,6 @@
 	"mobile.about.email": "E-post",
 	"mobile.about.website": "Webbplats",
 	"mobile.about.contact": "Kontakt",
-	"mobile.built.empty": "Inga projekt att visa ännu."
+	"mobile.built.empty": "Inga projekt att visa ännu.",
+	"mobile.building.empty": "Inga aktuella mål att visa ännu."
 }

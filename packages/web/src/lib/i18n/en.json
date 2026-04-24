@@ -185,5 +185,6 @@
 	"mobile.about.email": "Email",
 	"mobile.about.website": "Website",
 	"mobile.about.contact": "Contact",
-	"mobile.built.empty": "No projects to show yet."
+	"mobile.built.empty": "No projects to show yet.",
+	"mobile.building.empty": "No current goals to show yet."
 }
