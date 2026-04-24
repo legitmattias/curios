@@ -32,9 +32,9 @@
 		font-size: 10px;
 		font-weight: 500;
 		line-height: 1;
-		color: var(--color-text-muted);
-		background: transparent;
-		border: 1px dashed var(--color-explorer-border);
+		color: var(--color-text-secondary);
+		background: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
+		border: 1px solid color-mix(in srgb, var(--color-text-primary) 18%, transparent);
 		border-radius: 3px;
 		letter-spacing: 0.02em;
 		text-transform: none;

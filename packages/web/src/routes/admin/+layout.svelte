@@ -1,11 +1,21 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import Tooltip from '$lib/admin/components/Tooltip.svelte';
 	import KbdHint from '$lib/admin/components/KbdHint.svelte';
 	import ConfirmModal from '$lib/admin/components/ConfirmModal.svelte';
 
 	let { data, children } = $props();
+
+	// G-prefix navigation shortcuts (press G, then a key within 1s).
+	// Pattern: Linear / GitHub / Superhuman. The badges in the nav advertise them.
+	const goShortcuts: Record<string, string> = {
+		d: '/admin',
+		s: '/admin/sync'
+	};
+	let gPending = false;
+	let gTimer: ReturnType<typeof setTimeout> | undefined;
 
 	// Don't render the admin shell on the login page — it has its own centered layout.
 	const isLogin = $derived(page.url.pathname === '/admin/login');
@@ -41,9 +51,35 @@
 		const tag = (e.target as HTMLElement)?.tagName;
 		if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
+		// Modifier-keyed shortcut: open command palette.
 		if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
 			e.preventDefault();
 			cmdkOpen = true;
+			return;
+		}
+
+		// Ignore plain letters if any modifier is held.
+		if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+		const key = e.key.toLowerCase();
+
+		// Start of a G-prefix sequence.
+		if (!gPending && key === 'g') {
+			gPending = true;
+			if (gTimer) clearTimeout(gTimer);
+			gTimer = setTimeout(() => (gPending = false), 1000);
+			return;
+		}
+
+		// Second key of a G-prefix sequence.
+		if (gPending) {
+			gPending = false;
+			if (gTimer) clearTimeout(gTimer);
+			const target = goShortcuts[key];
+			if (target) {
+				e.preventDefault();
+				void goto(resolve(target as '/admin' | '/admin/sync'));
+			}
 		}
 	}
 
