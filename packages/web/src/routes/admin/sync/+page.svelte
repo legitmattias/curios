@@ -258,8 +258,8 @@
 	});
 
 	async function run(op: SyncOp, doForce: boolean) {
+		// Optimistic "running" flip — the poll loop handles the terminal state.
 		runState[op.key] = { ...runState[op.key], status: 'running', lastError: null };
-		const start = performance.now();
 
 		try {
 			const res = await fetch('/admin/sync', {
@@ -277,41 +277,23 @@
 				error: string | null;
 			};
 
-			const duration = performance.now() - start;
-
 			if (!body.ok) {
 				runState[op.key] = {
 					status: 'error',
 					lastRunAt: new Date().toISOString(),
-					lastDuration: duration,
+					lastDuration: null,
 					lastResult: null,
 					lastError: body.error ?? `HTTP ${body.status}`
 				};
-				showToast(`${op.title}: ${body.error ?? 'failed'}`, 'error');
-				return;
+				showToast(`${op.title}: ${body.error ?? 'failed to start'}`, 'error');
 			}
-
-			runState[op.key] = {
-				status: 'success',
-				lastRunAt: new Date().toISOString(),
-				lastDuration: duration,
-				lastResult: body.data,
-				lastError: null
-			};
-			scheduleFade(op.key);
-			const partial = resultErrors(body.data).length;
-			showToast(
-				`${op.title}: done (${Math.round(duration / 100) / 10}s)${
-					partial > 0 ? ` — ${partial} item${partial === 1 ? '' : 's'} failed` : ''
-				}`,
-				partial > 0 ? 'error' : 'success'
-			);
+			// ok === true → server accepted (202). Outcome will arrive via polling.
 		} catch (err) {
 			runState[op.key] = {
 				...runState[op.key],
 				status: 'error',
 				lastRunAt: new Date().toISOString(),
-				lastDuration: performance.now() - start,
+				lastDuration: null,
 				lastError: err instanceof Error ? err.message : String(err)
 			};
 			showToast(`${op.title}: ${err instanceof Error ? err.message : 'failed'}`, 'error');

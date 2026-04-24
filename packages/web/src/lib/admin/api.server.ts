@@ -31,7 +31,9 @@ export async function adminApi<T = unknown>(
 	path: string,
 	opts: FetchOptions = {}
 ): Promise<ApiResult<T>> {
-	const { method = 'GET', body, query, timeoutMs = 300_000 } = opts;
+	// Generous cap — sync endpoints return 202 without doing work, so this
+	// only bounds slow reads (Dossier pass-through, DB lookups).
+	const { method = 'GET', body, query, timeoutMs = 600_000 } = opts;
 	const qs = query
 		? '?' +
 			new URLSearchParams(

@@ -287,7 +287,7 @@ export async function syncProjects(force = false): Promise<SyncResult> {
 
   const syncedSlugs: string[] = [];
 
-  for (const project of dossierProjects) {
+  async function processOne(project: DossierProject): Promise<void> {
     try {
       const repo = extractGitHubRepo(project.url);
 
@@ -315,7 +315,7 @@ export async function syncProjects(force = false): Promise<SyncResult> {
         result.skipped++;
         syncedSlugs.push(project.slug);
         console.log(`  [skip] ${project.slug} (unchanged)`);
-        continue;
+        return;
       }
 
       // Generate LLM summary
@@ -403,6 +403,21 @@ export async function syncProjects(force = false): Promise<SyncResult> {
       console.error(`  [error] ${msg}`);
     }
   }
+
+  // Cap concurrent LLM calls to stay well under Anthropic rate limits.
+  const CONCURRENCY = 4;
+  const queue = [...dossierProjects];
+  const workers = Array.from(
+    { length: Math.min(CONCURRENCY, queue.length) },
+    async () => {
+      while (queue.length) {
+        const project = queue.shift();
+        if (!project) return;
+        await processOne(project);
+      }
+    },
+  );
+  await Promise.all(workers);
 
   // Remove projects no longer in Dossier featured list
   if (syncedSlugs.length > 0) {

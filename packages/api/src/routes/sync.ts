@@ -1,4 +1,5 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import type { Context } from "hono";
 import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { syncCvSkills } from "../services/cv-skills-sync.js";
 import { syncCvProjects } from "../services/cv-projects-sync.js";
@@ -26,65 +27,70 @@ syncRoute.use("*", async (c, next) => {
   await next();
 });
 
-// Runs a sync function and records the outcome in sync_state so the admin
-// panel's "Last run" column survives page reloads / server restarts.
-async function runAndRecord<T>(
+// Runs fn and records its outcome in sync_state. Intended to be invoked
+// as `void runInBackground(...)` after `await recordSyncStart(op)` so the
+// handler can return 202 while the UI observes completion via polling.
+async function runInBackground<T>(
   operation: SyncOperation,
   fn: () => Promise<T>,
-): Promise<{ ok: true; result: T } | { ok: false; error: string }> {
+): Promise<void> {
   const start = performance.now();
-  // Mark the row as running before we start — so reloads of the admin panel
-  // still show an in-flight status until we record success/error below.
-  await recordSyncStart(operation).catch((err) =>
-    console.error("Failed to record sync start:", err),
-  );
   try {
     const result = await fn();
     const durationMs = performance.now() - start;
-    await recordSyncSuccess({ operation, durationMs, result }).catch((err) =>
-      console.error("Failed to record sync success:", err),
-    );
-    return { ok: true, result };
+    await recordSyncSuccess({ operation, durationMs, result });
   } catch (err) {
     const durationMs = performance.now() - start;
     const message = err instanceof Error ? err.message : String(err);
+    console.error(`[sync ${operation}] failed:`, err);
     await recordSyncError({ operation, durationMs, message }).catch((logErr) =>
       console.error("Failed to record sync error:", logErr),
     );
-    return { ok: false, error: message };
   }
+}
+
+// Writes the "running" marker, kicks off the work in the background, and
+// responds 202. A failure to record the start marker is the only case that
+// surfaces as 500 — actual job errors land in sync_state instead.
+async function startSync<T>(
+  c: Context,
+  operation: SyncOperation,
+  fn: () => Promise<T>,
+) {
+  try {
+    await recordSyncStart(operation);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    return c.json(
+      { error: `Could not mark ${operation} running: ${message}` },
+      500,
+    );
+  }
+  // Fire-and-forget: errors are recorded into sync_state inside runInBackground.
+  void runInBackground(operation, fn);
+  return c.json({ started: true, operation }, 202);
 }
 
 syncRoute.post("/projects", async (c) => {
   const force = c.req.query("force") === "true";
-  const outcome = await runAndRecord("projects", () => syncProjects(force));
-  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
-  return c.json(outcome.result);
+  return startSync(c, "projects", () => syncProjects(force));
 });
 
 syncRoute.post("/skills", async (c) => {
   const force = c.req.query("force") === "true";
-  const outcome = await runAndRecord("skills", () => syncSkills(force));
-  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
-  return c.json(outcome.result);
+  return startSync(c, "skills", () => syncSkills(force));
 });
 
 syncRoute.post("/cv-skills", async (c) => {
-  const outcome = await runAndRecord("cv-skills", () => syncCvSkills());
-  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
-  return c.json(outcome.result);
+  return startSync(c, "cv-skills", () => syncCvSkills());
 });
 
 syncRoute.post("/languages", async (c) => {
-  const outcome = await runAndRecord("languages", () => syncLanguages());
-  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
-  return c.json(outcome.result);
+  return startSync(c, "languages", () => syncLanguages());
 });
 
 syncRoute.post("/cv-projects", async (c) => {
-  const outcome = await runAndRecord("cv-projects", () => syncCvProjects());
-  if (!outcome.ok) return c.json({ error: outcome.error }, 500);
-  return c.json(outcome.result);
+  return startSync(c, "cv-projects", () => syncCvProjects());
 });
 
 // Returns the latest recorded state of every sync operation. Admin panel
