@@ -47,11 +47,26 @@ function getDossierApiKey(): string {
   return key;
 }
 
+// Dossier GET with Bearer auth. Wraps network errors so callers see
+// "Dossier /path unreachable: <cause>" instead of bare "fetch failed".
+async function dossierGet(path: string): Promise<Response> {
+  try {
+    return await fetch(`${getDossierApiUrl()}${path}`, {
+      headers: { Authorization: `Bearer ${getDossierApiKey()}` },
+    });
+  } catch (err) {
+    const raw = err instanceof Error ? err.message : String(err);
+    const cause =
+      err instanceof Error && err.cause instanceof Error
+        ? ` (${err.cause.message})`
+        : "";
+    throw new Error(`Dossier ${path} unreachable: ${raw}${cause}`);
+  }
+}
+
 async function fetchCategoryMap(): Promise<Map<string, string>> {
-  const res = await fetch(`${getDossierApiUrl()}/profile`, {
-    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-  });
-  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const res = await dossierGet("/profile");
+  if (!res.ok) throw new Error(`Dossier /profile returned ${res.status}`);
   const data = (await res.json()) as DossierProfile;
   const map = new Map<string, string>();
   for (const domain of data.domains) {
@@ -72,10 +87,9 @@ export async function syncLanguages(): Promise<LanguageSyncResult> {
 
   const categoryMap = await fetchCategoryMap();
 
-  const res = await fetch(`${getDossierApiUrl()}/profile/skills`, {
-    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-  });
-  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const res = await dossierGet("/profile/skills");
+  if (!res.ok)
+    throw new Error(`Dossier /profile/skills returned ${res.status}`);
   const data = (await res.json()) as { skills: DossierSkill[] };
 
   const featuredSpoken = data.skills.filter((s) => {

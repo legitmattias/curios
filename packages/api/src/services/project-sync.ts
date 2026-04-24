@@ -107,14 +107,28 @@ function getDossierApiKey(): string {
   return key;
 }
 
-async function fetchDossierProjects(): Promise<DossierProject[]> {
-  const res = await fetch(
-    `${getDossierApiUrl()}/profile/projects?featured=true`,
-    {
+// Dossier GET with Bearer auth. Wraps network errors so the admin panel sees
+// "Dossier /path unreachable: <cause>" instead of the bare "fetch failed".
+async function dossierGet(path: string, query?: string): Promise<Response> {
+  const url = `${getDossierApiUrl()}${path}${query ? `?${query}` : ""}`;
+  try {
+    return await fetch(url, {
       headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-    },
-  );
-  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+    });
+  } catch (err) {
+    const raw = err instanceof Error ? err.message : String(err);
+    const cause =
+      err instanceof Error && err.cause instanceof Error
+        ? ` (${err.cause.message})`
+        : "";
+    throw new Error(`Dossier ${path} unreachable: ${raw}${cause}`);
+  }
+}
+
+async function fetchDossierProjects(): Promise<DossierProject[]> {
+  const res = await dossierGet("/profile/projects", "featured=true");
+  if (!res.ok)
+    throw new Error(`Dossier /profile/projects returned ${res.status}`);
   const data = (await res.json()) as { projects: DossierProject[] };
   return data.projects;
 }
@@ -495,10 +509,8 @@ interface DossierProfile {
 }
 
 async function fetchCategoryMap(): Promise<Map<string, string>> {
-  const res = await fetch(`${getDossierApiUrl()}/profile`, {
-    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-  });
-  if (!res.ok) throw new Error(`Dossier profile API error: ${res.status}`);
+  const res = await dossierGet("/profile");
+  if (!res.ok) throw new Error(`Dossier /profile returned ${res.status}`);
   const profile = (await res.json()) as DossierProfile;
 
   const map = new Map<string, string>();
@@ -526,10 +538,9 @@ export async function syncSkills(force = false): Promise<SkillsSyncResult> {
   const categoryMap = await fetchCategoryMap();
 
   // Fetch skills
-  const res = await fetch(`${getDossierApiUrl()}/profile/skills`, {
-    headers: { Authorization: `Bearer ${getDossierApiKey()}` },
-  });
-  if (!res.ok) throw new Error(`Dossier API error: ${res.status}`);
+  const res = await dossierGet("/profile/skills");
+  if (!res.ok)
+    throw new Error(`Dossier /profile/skills returned ${res.status}`);
   const data = (await res.json()) as { skills: DossierSkill[] };
 
   // Filter: featured + public + exclude Spoken Languages (handled by language sync).
@@ -610,20 +621,22 @@ export async function syncSkills(force = false): Promise<SkillsSyncResult> {
     notes: s.notes,
   }));
 
-  // Fetch projects for cross-referencing
-  const projectRes = await fetch(
-    `${getDossierApiUrl()}/profile/projects?featured=true`,
-    { headers: { Authorization: `Bearer ${getDossierApiKey()}` } },
-  );
-  const projectData = projectRes.ok
-    ? (
-        (await projectRes.json()) as { projects: DossierProject[] }
-      ).projects.map((p) => ({
-        name: p.name,
-        description: p.description,
-        tech: [] as string[],
-      }))
-    : [];
+  // Fetch projects for cross-referencing (best-effort — skill sync continues
+  // even if this call fails, just without project cross-references).
+  const projectRes = await dossierGet(
+    "/profile/projects",
+    "featured=true",
+  ).catch(() => null);
+  const projectData =
+    projectRes && projectRes.ok
+      ? (
+          (await projectRes.json()) as { projects: DossierProject[] }
+        ).projects.map((p) => ({
+          name: p.name,
+          description: p.description,
+          tech: [] as string[],
+        }))
+      : [];
 
   // Hash all LLM inputs to detect changes
   const descriptionInputHash = computeHash({

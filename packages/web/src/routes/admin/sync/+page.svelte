@@ -212,7 +212,13 @@
 						scheduleFade(op);
 						const secs =
 							row.lastDurationMs !== null ? Math.round(row.lastDurationMs / 100) / 10 : null;
-						showToast(`${title}: done${secs !== null ? ` (${secs}s)` : ''}`, 'success');
+						const partial = resultErrors(row.lastResult).length;
+						showToast(
+							`${title}: done${secs !== null ? ` (${secs}s)` : ''}${
+								partial > 0 ? ` — ${partial} item${partial === 1 ? '' : 's'} failed` : ''
+							}`,
+							partial > 0 ? 'error' : 'success'
+						);
 					} else {
 						runState[op] = {
 							status: 'error',
@@ -293,7 +299,13 @@
 				lastError: null
 			};
 			scheduleFade(op.key);
-			showToast(`${op.title}: done (${Math.round(duration / 100) / 10}s)`, 'success');
+			const partial = resultErrors(body.data).length;
+			showToast(
+				`${op.title}: done (${Math.round(duration / 100) / 10}s)${
+					partial > 0 ? ` — ${partial} item${partial === 1 ? '' : 's'} failed` : ''
+				}`,
+				partial > 0 ? 'error' : 'success'
+			);
 		} catch (err) {
 			runState[op.key] = {
 				...runState[op.key],
@@ -345,6 +357,15 @@
 		if (op === 'cv-skills' && 'clusters' in r) return `${r.clusters} clusters`;
 		if (op === 'cv-projects' && 'projects' in r) return `${r.projects} summaries`;
 		return '';
+	}
+
+	// Pulls the per-item errors array from a successful-but-partially-failed
+	// sync result. Sync services return { synced: N, errors: [...] } so the
+	// whole run can report success while individual items failed.
+	function resultErrors(result: unknown): string[] {
+		if (!result || typeof result !== 'object') return [];
+		const errs = (result as Record<string, unknown>).errors;
+		return Array.isArray(errs) ? errs.filter((e): e is string => typeof e === 'string') : [];
 	}
 </script>
 
@@ -422,6 +443,15 @@
 						<div class="err" title={s.lastError}>{s.lastError}</div>
 					{:else if s.lastResult}
 						<div class="result">{resultSummary(op.key, s.lastResult)}</div>
+						{@const partialErrs = resultErrors(s.lastResult)}
+						{#if partialErrs.length > 0}
+							<Tooltip label={partialErrs.join('\n')} side="top">
+								<div class="partial-err">
+									{partialErrs.length}
+									{partialErrs.length === 1 ? 'item' : 'items'} failed
+								</div>
+							</Tooltip>
+						{/if}
 					{/if}
 				</div>
 
@@ -665,6 +695,19 @@
 		-webkit-line-clamp: 2;
 		line-clamp: 2;
 		-webkit-box-orient: vertical;
+	}
+
+	.partial-err {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 1px 6px;
+		font-family:
+			ui-monospace, 'SF Mono', 'JetBrains Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+		font-size: 10.5px;
+		color: var(--color-control-close);
+		border: 1px solid var(--color-control-close);
+		border-radius: 2px;
+		cursor: help;
 	}
 
 	.op-action {
