@@ -92,6 +92,13 @@
       "when": 1777027835204,
       "tag": "0012_red_golden_guardian",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1777103242974,
+      "tag": "0013_old_zombie",
+      "breakpoints": true
     }
   ]
 }

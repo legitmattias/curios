@@ -6,7 +6,8 @@ export type SyncOperation =
   | "skills"
   | "languages"
   | "cv-skills"
-  | "cv-projects";
+  | "cv-projects"
+  | "now-goals";
 
 interface RecordSuccessArgs {
   operation: SyncOperation;

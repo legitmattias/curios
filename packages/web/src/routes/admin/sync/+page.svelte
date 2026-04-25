@@ -8,7 +8,7 @@
 
 	let { data } = $props();
 
-	type OpKey = 'projects' | 'skills' | 'languages' | 'cv-skills' | 'cv-projects';
+	type OpKey = 'projects' | 'skills' | 'languages' | 'cv-skills' | 'cv-projects' | 'now-goals';
 
 	interface SyncOp {
 		key: OpKey;
@@ -73,6 +73,16 @@
 			supportsForce: false,
 			order: 5,
 			orderNote: 'Requires projects to be synced first.'
+		},
+		{
+			key: 'now-goals',
+			title: 'Now goals',
+			description:
+				'Pulls active public goals from Dossier into local DB and translates descriptions to Swedish. Hash cache skips unchanged goals unless force is on.',
+			cost: 'llm',
+			supportsForce: true,
+			order: 6,
+			orderNote: 'Independent — can run at any time after first sync.'
 		}
 	];
 
@@ -106,7 +116,8 @@
 		skills: fromServerRow('skills'),
 		languages: fromServerRow('languages'),
 		'cv-skills': fromServerRow('cv-skills'),
-		'cv-projects': fromServerRow('cv-projects')
+		'cv-projects': fromServerRow('cv-projects'),
+		'now-goals': fromServerRow('now-goals')
 	};
 
 	let runState = $state<Record<OpKey, OpState>>(initial);
@@ -115,7 +126,8 @@
 		skills: false,
 		languages: false,
 		'cv-skills': false,
-		'cv-projects': false
+		'cv-projects': false,
+		'now-goals': false
 	});
 
 	// ── Confirmation modal ──
@@ -338,6 +350,8 @@
 			return `${r.languages} languages${'skipped' in r && Number(r.skipped) > 0 ? `, skipped ${r.skipped}` : ''}`;
 		if (op === 'cv-skills' && 'clusters' in r) return `${r.clusters} clusters`;
 		if (op === 'cv-projects' && 'projects' in r) return `${r.projects} summaries`;
+		if (op === 'now-goals' && 'synced' in r)
+			return `synced ${r.synced}${'removed' in r && Number(r.removed) > 0 ? `, removed ${r.removed}` : ''}`;
 		return '';
 	}
 

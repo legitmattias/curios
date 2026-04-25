@@ -4,6 +4,7 @@ import { syncProjects, syncSkills } from "../services/project-sync.js";
 import { syncCvSkills } from "../services/cv-skills-sync.js";
 import { syncCvProjects } from "../services/cv-projects-sync.js";
 import { syncLanguages } from "../services/language-sync.js";
+import { syncNowGoals } from "../services/now-goals-sync.js";
 import {
   recordSyncStart,
   recordSyncSuccess,
@@ -91,6 +92,11 @@ syncRoute.post("/languages", async (c) => {
 
 syncRoute.post("/cv-projects", async (c) => {
   return startSync(c, "cv-projects", () => syncCvProjects());
+});
+
+syncRoute.post("/now-goals", async (c) => {
+  const force = c.req.query("force") === "true";
+  return startSync(c, "now-goals", () => syncNowGoals(force));
 });
 
 // Returns the latest recorded state of every sync operation. Admin panel

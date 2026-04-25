@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types.js';
 import { adminApi } from '$lib/admin/api.server.js';
 
-export type OpKey = 'projects' | 'skills' | 'languages' | 'cv-skills' | 'cv-projects';
+export type OpKey = 'projects' | 'skills' | 'languages' | 'cv-skills' | 'cv-projects' | 'now-goals';
 
 export interface SyncStateRow {
 	operation: OpKey;

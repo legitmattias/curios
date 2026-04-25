@@ -1,7 +1,14 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 import { adminApi } from '$lib/admin/api.server.js';
 
-const OPERATIONS = new Set(['projects', 'skills', 'languages', 'cv-skills', 'cv-projects']);
+const OPERATIONS = new Set([
+	'projects',
+	'skills',
+	'languages',
+	'cv-skills',
+	'cv-projects',
+	'now-goals'
+]);
 
 export const POST: RequestHandler = async ({ locals, request }) => {
 	if (!locals.admin) throw error(401, 'Unauthorised');
@@ -17,7 +24,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	}
 
 	const force = body.force === true;
-	const query = op === 'projects' || op === 'skills' ? { force } : undefined;
+	const query = op === 'projects' || op === 'skills' || op === 'now-goals' ? { force } : undefined;
 	const res = await adminApi<unknown>(`/sync/${op}`, { method: 'POST', query });
 
 	return json({

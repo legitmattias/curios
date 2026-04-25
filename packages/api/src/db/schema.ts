@@ -59,6 +59,22 @@ export const education = pgTable("education", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const nowGoals = pgTable("now_goals", {
+  id: uuid().defaultRandom().primaryKey(),
+  // Dossier's goal id — kept so we can match against upstream and reuse it
+  // as the translations table's entity_id for stable per-goal SV strings.
+  dossierId: varchar("dossier_id", { length: 64 }).notNull().unique(),
+  name: varchar({ length: 256 }).notNull(),
+  description: text(),
+  priority: varchar({ length: 16 }).notNull(),
+  progress: integer(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  contentHash: varchar("content_hash", { length: 64 }),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 export const translations = pgTable(
   "translations",
   {
