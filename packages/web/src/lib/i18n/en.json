@@ -163,7 +163,7 @@
 	"translation.tooltip": "Automatically translated. Switch to English (EN) in the taskbar for the original.",
 
 	"app.chat": "Chat",
-	"chat.welcome": "Hi! I'm an AI agent representing {name}. Ask me anything about skills, experience, or projects.",
+	"chat.welcome": "Hi! I'm a custom designed AI agent representing {name}. Ask me anything about skills, experience, or projects.",
 	"chat.inputPlaceholder": "Type a message...",
 	"chat.thinking": "Thinking...",
 	"chat.fetchingData": "Fetching data",
