@@ -37,6 +37,10 @@
 	function primaryLink(p: Project): string | null {
 		return p.url ?? p.repo ?? null;
 	}
+
+	function prettyUrl(url: string): string {
+		return url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+	}
 </script>
 
 {#if loading}
@@ -66,6 +70,20 @@
 						{/each}
 						{#if p.tech.length > MAX_TECH}
 							<span class="tag more">+{p.tech.length - MAX_TECH}</span>
+						{/if}
+					</div>
+				{/if}
+				{#if p.url || p.repo}
+					<div class="links">
+						{#if p.url}
+							<a class="link" href={p.url} target="_blank" rel="noopener external"
+								>{prettyUrl(p.url)}</a
+							>
+						{/if}
+						{#if p.repo && p.repo !== p.url}
+							<a class="link" href={p.repo} target="_blank" rel="noopener external"
+								>{prettyUrl(p.repo)}</a
+							>
 						{/if}
 					</div>
 				{/if}
@@ -158,5 +176,24 @@
 	.tag.more {
 		color: var(--color-text-muted);
 		font-style: italic;
+	}
+
+	.links {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+		margin-top: 6px;
+	}
+
+	.link {
+		font-family: var(--font-mono);
+		font-size: 11px;
+		color: var(--color-accent);
+		text-decoration: none;
+		word-break: break-all;
+	}
+
+	.link:active {
+		text-decoration: underline;
 	}
 </style>
