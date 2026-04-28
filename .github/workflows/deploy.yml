@@ -43,6 +43,10 @@ jobs:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
       DATABASE_URL: postgres://curios:curios@localhost:5432/curios
       PUBLIC_API_URL: http://localhost:4000
+      # SvelteKit's $env/static/public requires the var to exist at build
+      # time; empty is fine for the test build (Sentry no-ops without DSN).
+      PUBLIC_SENTRY_DSN: ''
+      PUBLIC_SENTRY_ENV: ''
 
     steps:
       - uses: actions/checkout@v4
