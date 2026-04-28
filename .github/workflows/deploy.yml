@@ -95,7 +95,7 @@ jobs:
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
 
-      # Web staging image (PUBLIC_API_URL baked in at build time)
+      # Web staging image (PUBLIC_* baked in at build time)
       - name: Build and push Web staging image
         uses: docker/build-push-action@v6
         with:
@@ -104,6 +104,12 @@ jobs:
           push: true
           build-args: |
             PUBLIC_API_URL=https://staging.curios.mattic.dev/api
+            PUBLIC_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            PUBLIC_SENTRY_ENV=staging
+            PUBLIC_SENTRY_RELEASE=${{ github.sha }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG=${{ vars.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }}
           tags: |
             ${{ env.WEB_IMAGE }}:${{ github.sha }}-staging
             ${{ env.WEB_IMAGE }}:staging
@@ -120,6 +126,12 @@ jobs:
           push: true
           build-args: |
             PUBLIC_API_URL=https://curios.mattic.dev/api
+            PUBLIC_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            PUBLIC_SENTRY_ENV=production
+            PUBLIC_SENTRY_RELEASE=${{ github.sha }}
+            SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+            SENTRY_ORG=${{ vars.SENTRY_ORG }}
+            SENTRY_PROJECT=${{ vars.SENTRY_PROJECT }}
           tags: |
             ${{ env.WEB_IMAGE }}:${{ github.sha }}
             ${{ env.WEB_IMAGE }}:production

@@ -1,10 +1,23 @@
+import { sequence } from '@sveltejs/kit/hooks';
+import * as Sentry from '@sentry/sveltekit';
+import { handleErrorWithSentry, sentryHandle } from '@sentry/sveltekit';
 import type { Handle } from '@sveltejs/kit';
+import { PUBLIC_SENTRY_DSN, PUBLIC_SENTRY_ENV } from '$env/static/public';
 import { getAdminSession } from '$lib/admin/auth.server.js';
+
+if (PUBLIC_SENTRY_DSN) {
+	Sentry.init({
+		dsn: PUBLIC_SENTRY_DSN,
+		environment: PUBLIC_SENTRY_ENV || 'unknown',
+		tracesSampleRate: 0,
+		sendDefaultPii: false
+	});
+}
 
 const MOBILE_UA_RE = /iPhone|Android.*Mobile|webOS|BlackBerry|IEMobile|Opera Mini/i;
 const SHELL_COOKIE = 'curios_shell';
 
-export const handle: Handle = async ({ event, resolve }) => {
+const appHandle: Handle = async ({ event, resolve }) => {
 	const session = getAdminSession(event.cookies);
 	if (session) {
 		event.locals.admin = { userId: session.userId };
@@ -24,3 +37,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	return resolve(event);
 };
+
+// sentryHandle wraps each request so server-side errors get reported with
+// request context. It's a no-op when Sentry isn't initialised.
+export const handle = sequence(sentryHandle(), appHandle);
+export const handleError = handleErrorWithSentry();
