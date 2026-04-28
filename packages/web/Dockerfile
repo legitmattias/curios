@@ -39,7 +39,7 @@ WORKDIR /app
 COPY --from=build /app/packages/web/build ./build
 
 # Install runtime dependencies needed for SSR (separate from workspace package.json)
-RUN echo '{"dependencies":{"marked":"^18.0.0","dompurify":"^3.3.3"}}' > package.json \
+RUN echo '{"dependencies":{"marked":"^18.0.0","dompurify":"^3.3.3","@sentry/sveltekit":"^10.50.0"}}' > package.json \
     && npm install \
     && chown -R curios:curios /app
 
