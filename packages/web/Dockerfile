@@ -12,24 +12,26 @@ RUN pnpm install --frozen-lockfile
 COPY packages/shared/ packages/shared/
 COPY packages/web/ packages/web/
 
-# PUBLIC_* vars are baked into the client bundle at build time by SvelteKit
-# ($env/static/public). SENTRY_AUTH_TOKEN + SENTRY_ORG + SENTRY_PROJECT are
-# only used by @sentry/vite-plugin to upload source maps; they don't ship.
+# PUBLIC_* vars get baked into the client bundle at build time by SvelteKit
+# ($env/static/public); they're public anyway. SENTRY_ORG / SENTRY_PROJECT
+# are public identifiers — fine as ARG. SENTRY_AUTH_TOKEN is a real
+# credential, so we mount it as a build-time secret instead of an ARG/ENV
+# (otherwise it ends up in image-layer metadata).
 ARG PUBLIC_API_URL=http://localhost:4000
 ARG PUBLIC_SENTRY_DSN=
 ARG PUBLIC_SENTRY_ENV=
 ARG PUBLIC_SENTRY_RELEASE=
-ARG SENTRY_AUTH_TOKEN=
 ARG SENTRY_ORG=
 ARG SENTRY_PROJECT=
 ENV PUBLIC_API_URL=${PUBLIC_API_URL}
 ENV PUBLIC_SENTRY_DSN=${PUBLIC_SENTRY_DSN}
 ENV PUBLIC_SENTRY_ENV=${PUBLIC_SENTRY_ENV}
 ENV PUBLIC_SENTRY_RELEASE=${PUBLIC_SENTRY_RELEASE}
-ENV SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
 ENV SENTRY_ORG=${SENTRY_ORG}
 ENV SENTRY_PROJECT=${SENTRY_PROJECT}
-RUN pnpm --filter @curios/web build
+RUN --mount=type=secret,id=sentry_auth_token \
+    SENTRY_AUTH_TOKEN="$(cat /run/secrets/sentry_auth_token 2>/dev/null || true)" \
+    pnpm --filter @curios/web build
 
 # Run
 FROM node:22-alpine
