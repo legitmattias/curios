@@ -41,8 +41,6 @@
 					view: 'project-detail' as const,
 					param: p.slug
 				}));
-				// Trigger reactivity by reassigning tree
-				tree = structuredClone(tree);
 			}
 		});
 	});
