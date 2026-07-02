@@ -49,6 +49,7 @@
 	"terminal.desc.project": "Visa projektdetaljer",
 	"terminal.desc.skills": "Lista kompetenser per kategori",
 	"terminal.desc.experience": "Visa arbetslivserfarenhet",
+	"terminal.desc.education": "Visa utbildningsbakgrund",
 	"terminal.desc.about": "Om mig",
 	"terminal.desc.contact": "Kontaktinformation",
 	"terminal.desc.neofetch": "Systeminformation med stil",

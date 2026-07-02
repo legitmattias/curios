@@ -49,6 +49,7 @@
 	"terminal.desc.project": "Show project details",
 	"terminal.desc.skills": "List skills by category",
 	"terminal.desc.experience": "Show work experience",
+	"terminal.desc.education": "Show education background",
 	"terminal.desc.about": "About me",
 	"terminal.desc.contact": "Contact information",
 	"terminal.desc.neofetch": "System info with style",
