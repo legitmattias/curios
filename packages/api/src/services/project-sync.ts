@@ -120,8 +120,9 @@ async function generateProjectSummary(
   const skillList = knownSkillNames.join(", ");
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-5",
     max_tokens: 2048,
+    thinking: { type: "disabled" },
     messages: [
       {
         role: "user",
@@ -379,8 +380,9 @@ async function generateSkillDescriptions(
     .join("\n");
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-5",
     max_tokens: 4096,
+    thinking: { type: "disabled" },
     system: `You generate short tooltip descriptions for skills on a developer portfolio. Return a JSON object mapping each skill name to its description.
 
 Rules:

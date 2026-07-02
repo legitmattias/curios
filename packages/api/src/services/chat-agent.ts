@@ -284,8 +284,9 @@ export async function handleChatMessage(
 
     // Initial API call
     let response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
+      model: "claude-sonnet-5",
+      max_tokens: 1536,
+      thinking: { type: "disabled" },
       system: systemPrompt,
       messages: apiMessages,
       tools: tools as Anthropic.Messages.Tool[],
@@ -330,8 +331,9 @@ export async function handleChatMessage(
 
       // Continue with tool results — this time stream the response
       const stream = anthropic.messages.stream({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1024,
+        model: "claude-sonnet-5",
+        max_tokens: 1536,
+        thinking: { type: "disabled" },
         system: systemPrompt,
         messages: [
           ...apiMessages,

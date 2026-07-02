@@ -13,8 +13,9 @@ export async function translateToSwedish(
 
   const anthropic = new Anthropic();
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-5",
     max_tokens: 4096,
+    thinking: { type: "disabled" },
     system: `Translate the provided JSON values from English to Swedish. Rules:
 - Keep ALL technical terms in English: framework names, tool names, programming concepts, architecture terms, protocol names, API terminology, etc. Swedish developers use these terms in English.
 - Only translate natural language parts — verbs, prepositions, general descriptions.
