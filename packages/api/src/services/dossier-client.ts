@@ -21,10 +21,9 @@ function getMcpUrl(): string {
   return url;
 }
 
-function getMcpApiKey(): string {
-  const key = process.env.DOSSIER_MCP_API_KEY;
-  if (!key)
-    throw new Error("DOSSIER_MCP_API_KEY environment variable is required");
+function getApiKey(): string {
+  const key = process.env.DOSSIER_API_KEY;
+  if (!key) throw new Error("DOSSIER_API_KEY environment variable is required");
   return key;
 }
 
@@ -32,7 +31,7 @@ async function createClient(): Promise<Client> {
   const transport = new StreamableHTTPClientTransport(new URL(getMcpUrl()), {
     requestInit: {
       headers: {
-        Authorization: `Bearer ${getMcpApiKey()}`,
+        Authorization: `Bearer ${getApiKey()}`,
       },
     },
   });
