@@ -1,0 +1,35 @@
+name: Health Check
+
+# Polls the production chat backend's deep readiness endpoint. On a non-200
+# (database down, Dossier MCP auth broken/unreachable, missing LLM key, or the
+# API being down entirely) the job fails, which emails the repo owner — so a
+# silent chat outage surfaces within ~30 min instead of going unnoticed.
+#
+# Note: GitHub cron timing is best-effort and can be delayed under load.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  chat-backend:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Probe production /health/ready
+        run: |
+          set -euo pipefail
+          url="https://curios.mattic.dev/api/health/ready"
+          echo "Probing $url"
+          code=$(curl -sS -o /tmp/ready.json -w '%{http_code}' \
+            --max-time 20 --retry 2 --retry-delay 5 --retry-all-errors \
+            "$url" || echo 000)
+          echo "HTTP status: $code"
+          echo "Response body:"
+          cat /tmp/ready.json 2>/dev/null || echo '(no body)'
+          echo
+          if [ "$code" != "200" ]; then
+            echo "::error::Chat backend health check FAILED (HTTP $code) — see body above"
+            exit 1
+          fi
+          echo "Chat backend healthy."
